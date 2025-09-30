@@ -1,10 +1,10 @@
 <section class="mx-auto w-full px-[var(--side-p)] py-[3rem]">
 	<div class="mb-8 flex items-baseline justify-between">
-		<h2 class="font-clash-grotesk text-[2.5rem] font-semibold text-secondary">About the Founder</h2>
+		<h2 class="font-clash-grotesk text-[1.7rem] lg:text-[2.5rem] font-semibold leading-none text-secondary">About the Founder</h2>
 		<div class="h-[2px] w-[80px] bg-accent"></div>
 	</div>
 
-	<div class="flex gap-10">
+	<div class="flex flex-col lg:flex-row gap-10">
 		<div class="w-[38%] overflow-hidden rounded-xl border border-secondary/10 bg-primary shadow-sm">
 			<picture>
 				<source srcset="/images/founder.webp" type="image/webp" />

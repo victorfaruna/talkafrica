@@ -8,7 +8,18 @@
 	onMount(() => {
 		swiperInstance = new Swiper('.swiper', {
 			modules: [Autoplay, Pagination],
-			slidesPerView: 4,
+		
+			breakpoints: {
+				640: {
+					slidesPerView: 2
+				},
+				1024: {
+					slidesPerView: 3
+				},
+				1440: {
+					slidesPerView: 4
+				}
+			},
 			spaceBetween: 20,
 			loop: true,
 			autoplay: {
@@ -33,19 +44,19 @@
 </script>
 
 <div
-	class="teams-container flex w-screen justify-between gap-[5rem] overflow-x-hidden bg-white px-[var(--side-p)] py-[6rem]"
+	class="teams-container flex flex-col lg:flex-row w-screen justify-between gap-[2rem] lg:gap-[5rem] overflow-x-hidden bg-white px-[var(--side-p)] py-[6rem]"
 >
 	<div class="flex flex-col gap-4">
 		<div class="dash w-[100px] border-b-2 border-accent"></div>
 		<p
-			class="w-[400px] font-clash-grotesk text-[3rem] leading-none font-bold text-secondary uppercase lg:text-[5rem]"
+			class="w-[200px] lg:w-[400px] font-clash-grotesk text-[2rem] lg:text-[3rem] leading-none font-bold text-secondary uppercase lg:text-[5rem]"
 		>
 			Meet our talented team.
 		</p>
 	</div>
 
 	<div class="w-full">
-		<div class="swiper w-screen">
+		<div class="swiper w-full">
 			<div class="swiper-wrapper">
 				{#each data as item}
 					<div class="swiper-slide">

@@ -34,8 +34,8 @@
 </script>
 
 <section class="flex flex-col gap-[0.5rem] px-[var(--side-p)] py-[4rem]">
-	<p class="section-title font-clash-grotesk text-[3rem]">Popular Blogs</p>
-	<div class="grid grid-cols-3 gap-x-[0.4rem] gap-y-[0.5rem]">
+	<p class="section-title font-clash-grotesk text-[1.2rem] lg:text-[3rem]">Popular Blogs</p>
+	<div class="grid grid-cols-1 lg:grid-cols-3 gap-x-[0.4rem] gap-y-[0.5rem]">
 		{#each list as item}
 			<a href={item.url}>
 				<div class="flex w-full flex-col gap-4 rounded-2xl px-2 py-4 shadow-lg shadow-secondary/5">

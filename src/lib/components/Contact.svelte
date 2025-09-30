@@ -28,7 +28,7 @@
 		<img src="/images/eee.webp" alt="newsletter" class="mx-auto w-[150px]" />
 		<!-- Headline -->
 		<div class="mb-8">
-			<p class="font-clash-grotesk text-[3rem] font-semibold text-primary">
+			<p class="font-clash-grotesk text-[2rem] lg:text-[3rem] font-semibold text-primary leading-none">
 				Subscribe to our newsletter
 			</p>
 			<h2 class="mb-2 text-[0.5rem] text-primary/80 md:text-[1rem]">

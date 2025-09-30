@@ -25,14 +25,14 @@
 </script>
 
 <section class="mt-5 w-screen px-[var(--side-p)] py-[4rem]">
-	<p class="font-clash-grotesk text-[3rem]">Latest Articles</p>
+	<p class="font-clash-grotesk text-[1.2rem] lg:text-[3rem]">Latest Articles</p>
 
-	<div class="mt-5 flex gap-[2rem]">
+	<div class="mt-5 flex flex-col lg:flex-row gap-[2rem]">
 		<div class="list-container flex w-full flex-col gap-5">
 			{#each list as item}
 				<a href={item.url} target="_blank">
 					<div
-						class="item flex w-full gap-5 rounded-[1rem] bg-primary p-3 shadow-lg shadow-secondary/4"
+						class="item flex flex-col lg:flex-row w-full gap-5 rounded-[1rem] bg-primary p-3 shadow-lg shadow-secondary/4"
 					>
 						<img
 							src={item.image}
@@ -49,7 +49,7 @@
 				</a>
 			{/each}
 		</div>
-		<div class="trending max-h-[600px] w-[40%] bg-white p-4 shadow-lg shadow-secondary/4">
+		<div class="trending h-[600px] w-full lg:w-[40%] bg-white p-4 shadow-lg shadow-secondary/4">
 			<p class="text-[1rem] font-medium">Trending news</p>
 		</div>
 	</div>
