@@ -37,7 +37,7 @@
 </script>
 
 <section class="relative h-[100svh] w-screen bg-[url(/images/hero/ta-1.jpeg)]">
-    <div class="conttt absolute top-0 right-0 bottom-0 left-0 z-[1]">
+    <div class="conttt h-[100svh] absolute top-0 right-0 bottom-0 left-0 z-[1]">
         <div class="swiper" bind:this={swiperEl}>
 			<div class="swiper-wrapper">
 				<div class="swiper-slide">
@@ -65,7 +65,7 @@
 	</div>
 
 	<div
-		class="mask relative z-[2] flex w-full h-[100svh] flex-col justify-center bg-secondary/50 bg-gradient-to-r from-secondary/50 to-transparent p-[5rem] px-[var(--side-p)] py-[2rem]"
+		class="mask relative z-[2] flex size-full flex-col justify-center bg-secondary/50 bg-gradient-to-r from-secondary/50 to-transparent p-[5rem] px-[var(--side-p)] py-[2rem]"
 	>
 		<div class="mx-auto">
 			<p
