@@ -1,33 +1,44 @@
-<script>
-	import { onMount } from 'svelte';
-	import Swiper from 'swiper';
-	import { Autoplay, Pagination } from 'swiper/modules';
-	import 'swiper/css';
-	import 'swiper/css/pagination';
+<script lang="ts">
+    import { onMount, onDestroy } from 'svelte';
+    import 'swiper/css';
+    import 'swiper/css/pagination';
 
-	let swiperInstance;
+    let swiperInstance: import('swiper').Swiper | undefined;
+    let swiperEl: HTMLDivElement | null = null;
+    let paginationEl: HTMLDivElement | null = null;
 
-	onMount(() => {
-		swiperInstance = new Swiper('.swiper', {
-			modules: [Autoplay, Pagination],
-			slidesPerView: 1,
-			spaceBetween: 0,
-			loop: true,
-			autoplay: {
-				delay: 5000,
-				disableOnInteraction: false
-			},
-			pagination: {
-				el: '.swiper-pagination',
-				clickable: true
-			}
-		});
-	});
+    onMount(async () => {
+        if (!swiperEl || !paginationEl) return;
+        const [{ default: Swiper }, { Autoplay, Pagination }] = await Promise.all([
+            import('swiper'),
+            import('swiper/modules')
+        ]);
+
+        swiperInstance = new Swiper(swiperEl, {
+            modules: [Autoplay, Pagination],
+            slidesPerView: 1,
+            spaceBetween: 0,
+            loop: true,
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false
+            },
+            pagination: {
+                el: paginationEl,
+                clickable: true
+            }
+        });
+    });
+
+    onDestroy(() => {
+        swiperInstance?.destroy(true, true);
+        swiperInstance = undefined;
+    });
 </script>
 
 <section class="relative h-screen w-screen bg-[url(/images/hero/ta-1.jpeg)]">
-	<div class="conttt absolute top-0 right-0 bottom-0 left-0 z-[1]">
-		<div class="swiper">
+    <div class="conttt absolute top-0 right-0 bottom-0 left-0 z-[1]">
+        <div class="swiper" bind:this={swiperEl}>
 			<div class="swiper-wrapper">
 				<div class="swiper-slide">
 					<div class="h-screen w-full bg-[url(/images/hero/ta-1.jpeg)] bg-cover bg-center"></div>
@@ -48,8 +59,8 @@
 					<div class="h-screen w-full bg-[url(/images/hero/ta-6.jpeg)] bg-cover bg-center"></div>
 				</div>
 			</div>
-			<!-- Pagination -->
-			<div class="swiper-pagination"></div>
+            <!-- Pagination -->
+            <div class="swiper-pagination" bind:this={paginationEl}></div>
 		</div>
 	</div>
 

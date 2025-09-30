@@ -1,46 +1,56 @@
-<script>
-	import { onMount } from 'svelte';
-	import Swiper from 'swiper';
-	import { Autoplay, Pagination } from 'swiper/modules';
-	import 'swiper/css';
-	import 'swiper/css/pagination';
-	let swiperInstance;
-	onMount(() => {
-		swiperInstance = new Swiper('.swiper', {
-			modules: [Autoplay, Pagination],
-		
-			breakpoints: {
-				640: {
-					slidesPerView: 2
-				},
-				1024: {
-					slidesPerView: 3
-				},
-				1440: {
-					slidesPerView: 4
-				}
-			},
-			spaceBetween: 20,
-			loop: true,
-			autoplay: {
-				delay: 5000,
-				disableOnInteraction: false
-			},
-			pagination: {
-				el: '.swiper-pagination',
-				clickable: true
-			}
-		});
-	});
+<script lang="ts">
+    import { onMount, onDestroy } from 'svelte';
+    import 'swiper/css';
+    import 'swiper/css/pagination';
+    let swiperInstance: import('swiper').Swiper | undefined;
+    let swiperEl: HTMLDivElement | null = null;
+    let paginationEl: HTMLDivElement | null = null;
+    onMount(async () => {
+        if (!swiperEl) return;
+        const [{ default: Swiper }, { Autoplay, Pagination }] = await Promise.all([
+            import('swiper'),
+            import('swiper/modules')
+        ]);
+        swiperInstance = new Swiper(swiperEl, {
+            modules: [Autoplay, Pagination],
+        
+            breakpoints: {
+                640: {
+                    slidesPerView: 2
+                },
+                1024: {
+                    slidesPerView: 3
+                },
+                1440: {
+                    slidesPerView: 4
+                }
+            },
+            spaceBetween: 20,
+            loop: true,
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false
+            },
+            pagination: {
+                el: paginationEl ?? undefined,
+                clickable: true
+            }
+        });
+    });
 
-	const data = [
-		{ name: 'Korede', image: '/images/op.webp', role: 'Founder' },
-		{ name: 'Korede', image: '/images/op.webp', role: 'Founder' },
-		{ name: 'Korede', image: '/images/op.webp', role: 'Founder' },
-		{ name: 'Korede', image: '/images/op.webp', role: 'Founder' },
-		{ name: 'Korede', image: '/images/op.webp', role: 'Founder' },
-		{ name: 'Korede', image: '/images/op.webp', role: 'Founder' }
-	];
+    onDestroy(() => {
+        swiperInstance?.destroy(true, true);
+        swiperInstance = undefined;
+    });
+
+    const data = [
+        { name: 'Korede', image: '/images/op.webp', role: 'Founder' },
+        { name: 'Korede', image: '/images/op.webp', role: 'Founder' },
+        { name: 'Korede', image: '/images/op.webp', role: 'Founder' },
+        { name: 'Korede', image: '/images/op.webp', role: 'Founder' },
+        { name: 'Korede', image: '/images/op.webp', role: 'Founder' },
+        { name: 'Korede', image: '/images/op.webp', role: 'Founder' }
+    ];
 </script>
 
 <div
@@ -55,8 +65,8 @@
 		</p>
 	</div>
 
-	<div class="w-full">
-		<div class="swiper w-full">
+    <div class="w-full">
+        <div class="swiper w-full" bind:this={swiperEl}>
 			<div class="swiper-wrapper">
 				{#each data as item}
 					<div class="swiper-slide">
@@ -71,7 +81,7 @@
 							<div>
 								<p class="text-[1.5rem] leading-none font-medium text-secondary/80">{item.name}</p>
 								<p class="text-[0.8rem] text-secondary/50">{item.role}</p>
-							</div>
+        </div>
 						</div>
 					</div>
 				{/each}

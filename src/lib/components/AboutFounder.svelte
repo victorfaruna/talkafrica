@@ -25,7 +25,7 @@
 				<p class="text-[0.95rem] text-tertiary">Founder, TalkAfrica</p>
 			</div>
 
-			<p class="text-[1rem] leading-relaxed text-secondary/80">
+			<p class="text-[0.7rem] lg:text-[1rem] leading-relaxed text-secondary/80">
 				John Emmanuel Fagbemi stands at the intersection of culture, creativity, and impact. As a
 				storyteller and media advocate, he is committed to reshaping Africa’s narrative by
 				amplifying voices, preserving heritage, and championing authentic content rooted in truth
