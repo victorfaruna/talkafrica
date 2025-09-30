@@ -36,8 +36,8 @@
     });
 </script>
 
-<section class="relative h-[100svh] w-screen bg-[url(/images/hero/ta-1.jpeg)]">
-    <div class="conttt h-[100svh] overflow-y-hidden absolute top-0 right-0 bottom-0 left-0 z-[1]">
+<section class="relative h-[600px] overflow-y-hidden w-screen bg-[url(/images/hero/ta-1.jpeg)]">
+    <div class="conttt h-[100svh]  absolute top-0 right-0 bottom-0 left-0 z-[1]">
         <div class="swiper" bind:this={swiperEl}>
 			<div class="swiper-wrapper">
 				<div class="swiper-slide">
@@ -72,7 +72,7 @@
 				style="text-shadow: 0 0 10px rgba(255, 255, 255, 0.2)"
 				class="mb-5 font-clash-grotesk text-[2rem] lg:text-[6rem] leading-none font-bold text-primary/80"
 			>
-				Talkafrica.<span class="hidden text-primary lowercase">.ng</span>
+				TalkAfrica NG<span class="hidden text-primary lowercase">.ng</span>
 			</p>
 			<p class="max-w-[80%] text-[0.7rem] lg:text-[1.2rem] text-primary/70">
 				Empowering African entrepreneurs to connect, share their stories, and shape the future of
