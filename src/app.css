@@ -1,0 +1,20 @@
+@import 'tailwindcss';
+@import './lib/fonts.css';
+
+@theme {
+	--color-primary: #fff;
+	--color-secondary: #000;
+	--color-tertiary: #6c757d;
+	--color-accent: orange;
+
+	--font-poppins: 'Poppins', sans-serif;
+	--font-clash-grotesk: 'ClashGrotesk', sans-serif;
+}
+
+body {
+	background-color: #f9f9f9;
+	color: var(--color-secondary);
+	font-family: 'Poppins', sans-serif;
+	font-weight: 400;
+	font-size: 14px;
+}
