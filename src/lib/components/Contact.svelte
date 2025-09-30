@@ -22,9 +22,9 @@
 	}
 </script>
 
-<div class="flex w-full items-center justify-center px-4 py-20 text-center">
+<div class="flex w-screen items-center justify-center px-4 py-20 text-center">
 	<!-- Newsletter Subscription Container -->
-	<div class="mx-auto rounded-[2rem] bg-secondary/90 p-8 text-center md:p-20">
+	<div class="mx-auto max-h-[95%] rounded-[2rem] bg-secondary/90 p-8 text-center md:p-20">
 		<img src="/images/eee.webp" alt="newsletter" class="mx-auto w-[150px]" />
 		<!-- Headline -->
 		<div class="mb-8">

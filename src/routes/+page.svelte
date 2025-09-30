@@ -11,7 +11,7 @@
 	import Team from '$lib/components/Team.svelte';
 </script>
 
-<div class="app-container flex flex-col">
+<div class="app-container w-screen overflow-x-hidden flex flex-col">
 	<Header />
 	<Hero />
 	<Headlines />

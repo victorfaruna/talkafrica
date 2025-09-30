@@ -24,7 +24,7 @@
 	];
 </script>
 
-<section class="mt-5 w-screen px-[var(--side-p)] py-[4rem]">
+<section class="mt-5 w-screen px-[var(--side-p)] py-[2rem] lg:py-[4rem]">
 	<p class="font-clash-grotesk text-[1.2rem] lg:text-[3rem]">Latest Articles</p>
 
 	<div class="mt-5 flex flex-col lg:flex-row gap-[2rem]">
@@ -40,10 +40,10 @@
 							class="h-[200px] w-[300px] rounded-[0.7rem] bg-secondary/1 object-cover"
 						/>
 						<div class="flex flex-col gap-4 py-0 pr-8">
-							<div class="title text-[1.2rem] leading-none font-medium text-secondary/80">
+							<div class="title text-[0.8rem] lg:text-[1.2rem] leading-none font-medium text-secondary/80">
 								{item.title}
 							</div>
-							<div class="description text-[0.8rem] text-secondary/50">{item.description}</div>
+							<div class="description text-[0.6rem] lg:text-[0.8rem] text-secondary/50">{item.description}</div>
 						</div>
 					</div>
 				</a>
