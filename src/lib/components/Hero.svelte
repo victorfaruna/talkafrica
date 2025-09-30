@@ -36,7 +36,7 @@
     });
 </script>
 
-<section class="relative h-screen w-screen bg-[url(/images/hero/ta-1.jpeg)]">
+<section class="relative h-[100svh] w-screen bg-[url(/images/hero/ta-1.jpeg)]">
     <div class="conttt absolute top-0 right-0 bottom-0 left-0 z-[1]">
         <div class="swiper" bind:this={swiperEl}>
 			<div class="swiper-wrapper">
