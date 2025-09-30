@@ -5,12 +5,6 @@
 	import 'swiper/css';
 	import 'swiper/css/pagination';
 
-	import fitty from 'fitty';
-
-	$effect(() => {
-		fitty('#fitText1');
-	});
-
 	let swiperInstance;
 
 	onMount(() => {
@@ -60,16 +54,16 @@
 	</div>
 
 	<div
-		class="mask relative z-[2] flex size-full flex-col justify-center bg-secondary/50 bg-gradient-to-r from-secondary/80 to-transparent p-[5rem] px-[var(--side-p)] py-[2rem]"
+		class="mask relative z-[2] flex size-full flex-col justify-center bg-secondary/50 bg-gradient-to-r from-secondary/50 to-transparent p-[5rem] px-[var(--side-p)] py-[2rem]"
 	>
 		<div class="mx-auto">
 			<p
 				style="text-shadow: 0 0 10px rgba(255, 255, 255, 0.2)"
-				class="mb-5 font-clash-grotesk text-[6rem] leading-none font-bold text-primary/80"
+				class="mb-5 font-clash-grotesk text-[2rem] lg:text-[6rem] leading-none font-bold text-primary/80"
 			>
 				Talkafrica.<span class="hidden text-primary lowercase">.ng</span>
 			</p>
-			<p class="max-w-[80%] text-[1.2rem] text-primary/70">
+			<p class="max-w-[80%] text-[0.7rem] lg:text-[1.2rem] text-primary/70">
 				Empowering African entrepreneurs to connect, share their stories, and shape the future of
 				innovation across the continent. At TalkAfrica, we provide a vibrant platform where
 				founders, creators, and visionaries can collaborate, inspire one another, and gain
@@ -79,7 +73,7 @@
 			</p>
 
 			<button
-				class="mt-8 cursor-pointer rounded-[0.3rem] border-2 border-accent/50 bg-transparent px-10 py-3 text-[1.2rem] font-semibold text-accent shadow-lg transition-all duration-200 hover:scale-105 hover:bg-accent/70 hover:text-primary"
+				class="mt-8 cursor-pointer rounded-[0.3rem] border-2 border-accent/50 bg-transparent px-10 py-3 text-[0.8rem] lg:text-[1.2rem] font-semibold text-accent shadow-lg transition-all duration-200 hover:scale-105 hover:bg-accent/70 hover:text-primary"
 			>
 				Explore
 			</button>

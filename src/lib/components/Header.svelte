@@ -36,7 +36,7 @@
 		</svg>
 	</div>
 	<div class="middle part flex w-full items-center justify-center gap-5">
-		<ul class="flex items-center gap-5 text-[12px]">
+		<ul class="lg:flex items-center gap-5 text-[12px] hidden">
 			{#each categories as category}
 				<li>
 					<a
