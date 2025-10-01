@@ -1,5 +1,17 @@
 {
 	"/": [],
+	"/api/auth/login": [
+		"src/routes/api/auth/login/+server.ts"
+	],
+	"/api/auth/logout": [
+		"src/routes/api/auth/logout/+server.ts"
+	],
+	"/api/donate": [
+		"src/routes/api/donate/+server.ts"
+	],
+	"/api/posts": [
+		"src/routes/api/posts/+server.ts"
+	],
 	"/donate": [],
 	"/[category]": [
 		"src/routes/[category]/+page.server.ts"
