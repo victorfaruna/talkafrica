@@ -36,27 +36,27 @@
     });
 </script>
 
-<section class="relative h-[600px] lg:h-[800px] overflow-y-hidden w-screen bg-[url(/images/hero/ta-1.jpeg)]">
-    <div class="conttt h-[100svh]  absolute top-0 right-0 bottom-0 left-0 z-[1]">
-        <div class="swiper" bind:this={swiperEl}>
-			<div class="swiper-wrapper">
+<section class="relative h-[600px] lg:h-[100svh] overflow-y-hidden w-screen">
+    <div class="conttt h-full  absolute top-0 right-0 bottom-0 left-0 z-[1]">
+        <div class="swiper h-full" bind:this={swiperEl}>
+			<div class="swiper-wrapper h-full">
 				<div class="swiper-slide">
-					<div class="h-screen w-full bg-[url(/images/hero/ta-1.jpeg)] bg-cover bg-center"></div>
+					<div class="h-full w-full bg-[url(/images/hero/ta-1.jpeg)] bg-cover bg-center"></div>
 				</div>
 				<div class="swiper-slide">
-					<div class="h-screen w-full bg-[url(/images/hero/ta-2.jpeg)] bg-cover bg-center"></div>
+					<div class="h-full w-full bg-[url(/images/hero/ta-2.jpeg)] bg-cover bg-center"></div>
 				</div>
 				<div class="swiper-slide">
-					<div class="h-screen w-full bg-[url(/images/hero/ta-3.jpeg)] bg-cover bg-center"></div>
+					<div class="h-full w-full bg-[url(/images/hero/ta-3.jpeg)] bg-cover bg-center"></div>
 				</div>
 				<div class="swiper-slide">
-					<div class="h-screen w-full bg-[url(/images/hero/ta-4.jpeg)] bg-cover bg-center"></div>
+					<div class="h-full w-full bg-[url(/images/hero/ta-4.jpeg)] bg-cover bg-center"></div>
 				</div>
 				<div class="swiper-slide">
-					<div class="h-screen w-full bg-[url(/images/hero/ta-5.jpeg)] bg-cover bg-center"></div>
+					<div class="h-full w-full bg-[url(/images/hero/ta-5.jpeg)] bg-cover bg-center"></div>
 				</div>
 				<div class="swiper-slide">
-					<div class="h-screen w-full bg-[url(/images/hero/ta-6.jpeg)] bg-cover bg-center"></div>
+					<div class="h-full w-full bg-[url(/images/hero/ta-6.jpeg)] bg-cover bg-center"></div>
 				</div>
 			</div>
             <!-- Pagination -->
@@ -72,15 +72,19 @@
 				style="text-shadow: 0 0 10px rgba(255, 255, 255, 0.2)"
 				class="mb-5 font-clash-grotesk text-[2rem] lg:text-[6rem] leading-none font-bold text-primary/80"
 			>
-				TalkAfrica NG<span class="hidden text-primary lowercase">.ng</span>
+				TalkAfricaNG<span class="hidden text-primary lowercase">.ng</span>
 			</p>
-			<p class="max-w-[80%] text-[0.7rem] lg:text-[1.2rem] text-primary/70">
-				Empowering African entrepreneurs to connect, share their stories, and shape the future of
-				innovation across the continent. At TalkAfrica, we provide a vibrant platform where
-				founders, creators, and visionaries can collaborate, inspire one another, and gain
-				visibility for their unique journeys. Join a growing community dedicated to amplifying
-				African voices, fostering meaningful connections, and driving impactful change for
-				generations to come.
+			<p class="max-w-[90%] text-[0.7rem] lg:text-[1.2rem] text-primary/70">
+			alkAfrica NG is a vibrant storytelling platform dedicated to capturing the authentic voices of Africa. We tell the stories of our people—their hustle and bustle, their struggles, and their wins. 
+From the bustling streets to rural communities, we shine a light on the resilience, creativity, and innovation that define the African spirit.
+<br/>
+<br/>
+
+Here, stories meet opportunities: a space where culture, entrepreneurship, and everyday life intersect. We inspire connections, empower voices, and celebrate Africa’s journey—one story at a time.
+<br/>
+<br/>
+
+Telling Africa’s stories. Inspiring the world.
 			</p>
 
 			<button

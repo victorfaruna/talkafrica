@@ -57,18 +57,18 @@
 
 				<!-- Main Heading -->
 				<h2 class="mb-6 font-clash-grotesk text-5xl font-bold text-secondary md:text-7xl">
-					<span class="block">Empower</span>
+					<span class="block">Support</span>
 					<span
 						class="block bg-gradient-to-r from-accent to-primary/70 bg-clip-text text-transparent"
 					>
-						African Innovation
+ African Innovation 
+
 					</span>
 				</h2>
 
 				<!-- Subheading -->
 				<p class="mx-auto mb-12 max-w-3xl text-lg leading-relaxed text-secondary/80 md:text-[1rem]">
-					Join thousands of supporters helping us amplify African voices, share entrepreneurial
-					stories, and build a vibrant community that connects innovators across the continent.
+Join us in amplifying African voices and empowering not just changemakers, but everyday Africans: the unheard, the unseen, those rising from hardship to hope. Together, we’re building a connected continent through stories, creativity, and collective impact.
 				</p>
 
 				<!-- CTA Buttons -->
