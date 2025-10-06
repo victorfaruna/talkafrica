@@ -57,7 +57,7 @@
                 School of Business and Management in the United Kingdom.
             </p>
 
-            <div class="mt-2 flex items-center gap-4">
+            <div class="mt-2 flex items-center gap-4 t">
                 <a
                     href="#"
                     class="inline-flex items-center gap-2 rounded-md border border-accent/40 px-4 py-2 text-[0.9rem] text-accent hover:border-accent hover:bg-accent/5"
