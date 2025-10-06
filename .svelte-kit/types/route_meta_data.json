@@ -1,5 +1,17 @@
 {
-	"/": [],
+	"/": [
+		"src/routes/+page.server.ts"
+	],
+	"/admin": [
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/admin/+layout.server.ts"
+	],
+	"/admin/login": [
+		"src/routes/admin/+layout.server.ts"
+	],
+	"/admin/posts/new": [
+		"src/routes/admin/+layout.server.ts"
+	],
 	"/api/auth/login": [
 		"src/routes/api/auth/login/+server.ts"
 	],
@@ -12,7 +24,13 @@
 	"/api/posts": [
 		"src/routes/api/posts/+server.ts"
 	],
+	"/api/upload": [
+		"src/routes/api/upload/+server.ts"
+	],
 	"/donate": [],
+	"/posts/[post_id]": [
+		"src/routes/posts/[post_id]/+page.server.ts"
+	],
 	"/[category]": [
 		"src/routes/[category]/+page.server.ts"
 	]

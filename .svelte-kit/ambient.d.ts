@@ -26,7 +26,9 @@
  * ```
  */
 declare module '$env/static/private' {
+	export const DATABASE_URL: string;
 	export const NVM_RC_VERSION: string;
+	export const npm_package_dependencies_drizzle_orm: string;
 	export const npm_package_devDependencies_prettier: string;
 	export const npm_package_devDependencies__eslint_compat: string;
 	export const TERM_PROGRAM: string;
@@ -35,6 +37,7 @@ declare module '$env/static/private' {
 	export const NODE: string;
 	export const INIT_CWD: string;
 	export const NVM_CD_FLAGS: string;
+	export const npm_package_dependencies_axios: string;
 	export const npm_package_devDependencies_typescript: string;
 	export const npm_package_devDependencies_prettier_plugin_svelte: string;
 	export const npm_config_version_git_tag: string;
@@ -45,11 +48,13 @@ declare module '$env/static/private' {
 	export const npm_package_scripts_lint: string;
 	export const npm_config_init_license: string;
 	export const TERM_PROGRAM_VERSION: string;
+	export const npm_package_devDependencies_drizzle_kit: string;
 	export const npm_package_scripts_dev: string;
 	export const MallocNanoZone: string;
 	export const ORIGINAL_XDG_CURRENT_DESKTOP: string;
 	export const CURSOR_TRACE_ID: string;
 	export const ZDOTDIR: string;
+	export const npm_package_dependencies_quill: string;
 	export const npm_package_devDependencies__sveltejs_kit: string;
 	export const npm_package_private: string;
 	export const npm_config_registry: string;
@@ -67,10 +72,12 @@ declare module '$env/static/private' {
 	export const VSCODE_PROFILE_INITIALIZED: string;
 	export const npm_package_devDependencies_eslint: string;
 	export const npm_execpath: string;
+	export const npm_package_devDependencies_tsx: string;
 	export const npm_package_devDependencies_svelte: string;
 	export const PATH: string;
 	export const npm_config_argv: string;
 	export const npm_package_dependencies_swiper: string;
+	export const LaunchInstanceID: string;
 	export const _: string;
 	export const __CFBundleIdentifier: string;
 	export const USER_ZDOTDIR: string;
@@ -86,6 +93,7 @@ declare module '$env/static/private' {
 	export const npm_config_version_commit_hooks: string;
 	export const XPC_FLAGS: string;
 	export const VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
+	export const npm_package_dependencies__supabase_ssr: string;
 	export const npm_config_bin_links: string;
 	export const npm_package_devDependencies_eslint_config_prettier: string;
 	export const XPC_SERVICE_NAME: string;
@@ -98,6 +106,7 @@ declare module '$env/static/private' {
 	export const npm_package_type: string;
 	export const VSCODE_GIT_ASKPASS_MAIN: string;
 	export const npm_package_dependencies_fitty: string;
+	export const npm_package_dependencies_dotenv: string;
 	export const npm_config_save_prefix: string;
 	export const npm_config_strict_ssl: string;
 	export const npm_config_version_git_message: string;
@@ -107,6 +116,7 @@ declare module '$env/static/private' {
 	export const npm_lifecycle_script: string;
 	export const VSCODE_GIT_IPC_HANDLE: string;
 	export const npm_package_devDependencies_prettier_plugin_tailwindcss: string;
+	export const npm_package_dependencies__supabase_supabase_js: string;
 	export const npm_config_version_git_sign: string;
 	export const npm_config_ignore_scripts: string;
 	export const npm_config_user_agent: string;
@@ -114,8 +124,10 @@ declare module '$env/static/private' {
 	export const VSCODE_GIT_ASKPASS_NODE: string;
 	export const npm_package_devDependencies__types_node: string;
 	export const npm_package_scripts_prepare: string;
+	export const npm_package_dependencies_postgres: string;
 	export const npm_config_init_version: string;
 	export const npm_config_ignore_optional: string;
+	export const SECURITYSESSIONID: string;
 	export const npm_package_scripts_check: string;
 	export const COLORTERM: string;
 	export const npm_node_execpath: string;
@@ -150,7 +162,9 @@ declare module '$env/static/public' {
  */
 declare module '$env/dynamic/private' {
 	export const env: {
+		DATABASE_URL: string;
 		NVM_RC_VERSION: string;
+		npm_package_dependencies_drizzle_orm: string;
 		npm_package_devDependencies_prettier: string;
 		npm_package_devDependencies__eslint_compat: string;
 		TERM_PROGRAM: string;
@@ -159,6 +173,7 @@ declare module '$env/dynamic/private' {
 		NODE: string;
 		INIT_CWD: string;
 		NVM_CD_FLAGS: string;
+		npm_package_dependencies_axios: string;
 		npm_package_devDependencies_typescript: string;
 		npm_package_devDependencies_prettier_plugin_svelte: string;
 		npm_config_version_git_tag: string;
@@ -169,11 +184,13 @@ declare module '$env/dynamic/private' {
 		npm_package_scripts_lint: string;
 		npm_config_init_license: string;
 		TERM_PROGRAM_VERSION: string;
+		npm_package_devDependencies_drizzle_kit: string;
 		npm_package_scripts_dev: string;
 		MallocNanoZone: string;
 		ORIGINAL_XDG_CURRENT_DESKTOP: string;
 		CURSOR_TRACE_ID: string;
 		ZDOTDIR: string;
+		npm_package_dependencies_quill: string;
 		npm_package_devDependencies__sveltejs_kit: string;
 		npm_package_private: string;
 		npm_config_registry: string;
@@ -191,10 +208,12 @@ declare module '$env/dynamic/private' {
 		VSCODE_PROFILE_INITIALIZED: string;
 		npm_package_devDependencies_eslint: string;
 		npm_execpath: string;
+		npm_package_devDependencies_tsx: string;
 		npm_package_devDependencies_svelte: string;
 		PATH: string;
 		npm_config_argv: string;
 		npm_package_dependencies_swiper: string;
+		LaunchInstanceID: string;
 		_: string;
 		__CFBundleIdentifier: string;
 		USER_ZDOTDIR: string;
@@ -210,6 +229,7 @@ declare module '$env/dynamic/private' {
 		npm_config_version_commit_hooks: string;
 		XPC_FLAGS: string;
 		VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
+		npm_package_dependencies__supabase_ssr: string;
 		npm_config_bin_links: string;
 		npm_package_devDependencies_eslint_config_prettier: string;
 		XPC_SERVICE_NAME: string;
@@ -222,6 +242,7 @@ declare module '$env/dynamic/private' {
 		npm_package_type: string;
 		VSCODE_GIT_ASKPASS_MAIN: string;
 		npm_package_dependencies_fitty: string;
+		npm_package_dependencies_dotenv: string;
 		npm_config_save_prefix: string;
 		npm_config_strict_ssl: string;
 		npm_config_version_git_message: string;
@@ -231,6 +252,7 @@ declare module '$env/dynamic/private' {
 		npm_lifecycle_script: string;
 		VSCODE_GIT_IPC_HANDLE: string;
 		npm_package_devDependencies_prettier_plugin_tailwindcss: string;
+		npm_package_dependencies__supabase_supabase_js: string;
 		npm_config_version_git_sign: string;
 		npm_config_ignore_scripts: string;
 		npm_config_user_agent: string;
@@ -238,8 +260,10 @@ declare module '$env/dynamic/private' {
 		VSCODE_GIT_ASKPASS_NODE: string;
 		npm_package_devDependencies__types_node: string;
 		npm_package_scripts_prepare: string;
+		npm_package_dependencies_postgres: string;
 		npm_config_init_version: string;
 		npm_config_ignore_optional: string;
+		SECURITYSESSIONID: string;
 		npm_package_scripts_check: string;
 		COLORTERM: string;
 		npm_node_execpath: string;
