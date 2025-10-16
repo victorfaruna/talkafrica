@@ -10,6 +10,10 @@
     let status = $state("draft");
     let content = $state("");
     let editingPostId = $state<string | null>(null);
+    let uploadStatus = $state<"idle" | "uploading" | "success" | "error">(
+        "idle"
+    );
+    let uploadMessage = $state("");
 
     let quillEditor: any = null;
     let editorContainer: HTMLElement;
@@ -83,18 +87,107 @@
         })();
     });
 
+    // Client-side file validation
+    function validateFile(file: File): { isValid: boolean; message: string } {
+        // Check file size (10MB limit)
+        const maxSize = 10 * 1024 * 1024; // 10MB
+        if (file.size > maxSize) {
+            return {
+                isValid: false,
+                message: `File too large. Maximum size is ${Math.round(maxSize / (1024 * 1024))}MB.`,
+            };
+        }
+
+        // Check file type
+        const allowedTypes = [
+            "image/jpeg",
+            "image/jpg",
+            "image/png",
+            "image/webp",
+            "image/gif",
+            "image/bmp",
+            "image/tiff",
+            "image/x-icon",
+            "image/svg+xml",
+        ];
+        if (!allowedTypes.includes(file.type)) {
+            return {
+                isValid: false,
+                message: `Invalid file type. Allowed types: ${allowedTypes.join(", ")}`,
+            };
+        }
+
+        // Check file extension
+        const allowedExtensions = [
+            "jpg",
+            "jpeg",
+            "png",
+            "webp",
+            "gif",
+            "bmp",
+            "tiff",
+            "tif",
+            "ico",
+            "svg",
+        ];
+        const extension = file.name.split(".").pop()?.toLowerCase();
+        if (!extension || !allowedExtensions.includes(extension)) {
+            return {
+                isValid: false,
+                message: `Invalid file extension. Allowed extensions: ${allowedExtensions.join(", ")}`,
+            };
+        }
+
+        return { isValid: true, message: "" };
+    }
+
     async function handleImageUpload(event: Event) {
         const target = event.target as HTMLInputElement;
         const file = target.files?.[0];
-        if (!file) return;
-        const formData = new FormData();
-        formData.append("file", file);
-        const resp = await fetch("/api/upload", {
-            method: "POST",
-            body: formData,
-        });
-        const data = await resp.json();
-        if (data.success) image = data.url;
+
+        if (!file) {
+            uploadStatus = "idle";
+            uploadMessage = "";
+            return;
+        }
+
+        // Reset upload status
+        uploadStatus = "uploading";
+        uploadMessage = "Validating file...";
+
+        // Client-side validation
+        const validation = validateFile(file);
+        if (!validation.isValid) {
+            uploadStatus = "error";
+            uploadMessage = validation.message;
+            return;
+        }
+
+        try {
+            uploadMessage = "Uploading file...";
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const resp = await fetch("/api/upload", {
+                method: "POST",
+                body: formData,
+            });
+
+            const data = await resp.json();
+
+            if (data.success) {
+                image = data.url;
+                uploadStatus = "success";
+                uploadMessage = `File uploaded successfully (${data.detectedType || "unknown type"}, ${Math.round(data.fileSize / 1024)}KB)`;
+            } else {
+                uploadStatus = "error";
+                uploadMessage = data.message || "Upload failed";
+            }
+        } catch (error) {
+            uploadStatus = "error";
+            uploadMessage = "Network error during upload";
+            console.error("Upload error:", error);
+        }
     }
 
     async function save() {
@@ -208,16 +301,72 @@
                 <input
                     id="image"
                     type="file"
-                    accept="image/*"
+                    accept="image/jpeg,image/jpg,image/png,image/webp,image/gif,image/bmp,image/tiff,image/x-icon,image/svg+xml"
                     onchange={handleImageUpload}
                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
                 />
+
+                <!-- Upload Status Display -->
+                {#if uploadStatus !== "idle"}
+                    <div
+                        class="mt-2 p-3 rounded-lg {uploadStatus === 'uploading'
+                            ? 'bg-blue-50 border border-blue-200'
+                            : uploadStatus === 'success'
+                              ? 'bg-green-50 border border-green-200'
+                              : 'bg-red-50 border border-red-200'}"
+                    >
+                        <div class="flex items-center">
+                            {#if uploadStatus === "uploading"}
+                                <div
+                                    class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"
+                                ></div>
+                            {:else if uploadStatus === "success"}
+                                <svg
+                                    class="w-4 h-4 text-green-600 mr-2"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                >
+                                    <path
+                                        fill-rule="evenodd"
+                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                        clip-rule="evenodd"
+                                    ></path>
+                                </svg>
+                            {:else if uploadStatus === "error"}
+                                <svg
+                                    class="w-4 h-4 text-red-600 mr-2"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                >
+                                    <path
+                                        fill-rule="evenodd"
+                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                        clip-rule="evenodd"
+                                    ></path>
+                                </svg>
+                            {/if}
+                            <span
+                                class="text-sm {uploadStatus === 'uploading'
+                                    ? 'text-blue-700'
+                                    : uploadStatus === 'success'
+                                      ? 'text-green-700'
+                                      : 'text-red-700'}"
+                            >
+                                {uploadMessage}
+                            </span>
+                        </div>
+                    </div>
+                {/if}
+
                 {#if image}
-                    <img
-                        src={image}
-                        alt="Preview"
-                        class="mt-2 w-32 h-20 object-cover rounded"
-                    />
+                    <div class="mt-2">
+                        <img
+                            src={image}
+                            alt="Preview"
+                            class="w-32 h-20 object-cover rounded border"
+                        />
+                        <p class="text-xs text-gray-500 mt-1">Current image</p>
+                    </div>
                 {/if}
             </div>
 
