@@ -39,7 +39,8 @@
 	},
 	"dependencies": {
 		"@supabase/ssr": "^0.7.0",
-		"@supabase/supabase-js": "^2.58.0",
+		"@supabase/supabase-js": "^2.75.0",
+		"@sveltejs/adapter-node": "^5.4.0",
 		"axios": "^1.12.2",
 		"dotenv": "^17.2.3",
 		"drizzle-orm": "^0.44.6",

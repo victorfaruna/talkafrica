@@ -1,8 +1,6 @@
 import { json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
-import { writeFile, mkdir } from "fs/promises";
-import { join } from "path";
-import { existsSync } from "fs";
+import { supabase } from "$lib/supabase";
 
 // Image file signatures (magic numbers) for validation
 const IMAGE_SIGNATURES = {
@@ -157,12 +155,31 @@ function validateFileExtension(filename: string): boolean {
     return ALLOWED_EXTENSIONS.includes(extension);
 }
 
-// Function to ensure upload directory exists
-async function ensureUploadDirectory(): Promise<void> {
-    const uploadDir = join(process.cwd(), "static", "images", "uploads");
-    if (!existsSync(uploadDir)) {
-        await mkdir(uploadDir, { recursive: true });
+// Function to upload file to Supabase Storage
+async function uploadToSupabase(
+    file: File,
+    filename: string
+): Promise<{ url: string; path: string }> {
+    const { data, error } = await supabase.storage
+        .from("images")
+        .upload(filename, file, {
+            cacheControl: "3600",
+            upsert: false,
+        });
+
+    if (error) {
+        throw new Error(`Failed to upload to Supabase: ${error.message}`);
     }
+
+    // Get the public URL
+    const { data: urlData } = supabase.storage
+        .from("images")
+        .getPublicUrl(data.path);
+
+    return {
+        url: urlData.publicUrl,
+        path: data.path,
+    };
 }
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -231,9 +248,6 @@ export const POST: RequestHandler = async ({ request }) => {
             );
         }
 
-        // Ensure upload directory exists
-        await ensureUploadDirectory();
-
         // Generate unique filename with proper extension
         const timestamp = Date.now();
         const originalExtension = getFileExtension(file.name);
@@ -244,25 +258,15 @@ export const POST: RequestHandler = async ({ request }) => {
             detectedType === "jpeg" ? "jpg" : detectedType || originalExtension;
         const filename = `${timestamp}.${finalExtension}`;
 
-        // Save file to static/images/uploads directory
-        const uploadPath = join(
-            process.cwd(),
-            "static",
-            "images",
-            "uploads",
-            filename
-        );
-
-        await writeFile(uploadPath, buffer);
-
-        // Return the public URL
-        const publicUrl = `/images/uploads/${filename}`;
+        // Upload to Supabase Storage
+        const { url, path } = await uploadToSupabase(file, filename);
 
         return json({
             success: true,
             message: "File uploaded successfully",
-            url: publicUrl,
+            url: url,
             filename: filename,
+            path: path,
             detectedType: detectedType,
             fileSize: file.size,
         });
@@ -272,12 +276,10 @@ export const POST: RequestHandler = async ({ request }) => {
         // More specific error handling
         let errorMessage = "Failed to upload file";
         if (error instanceof Error) {
-            if (error.message.includes("ENOENT")) {
-                errorMessage = "Upload directory not found";
-            } else if (error.message.includes("EACCES")) {
-                errorMessage = "Permission denied when writing file";
-            } else if (error.message.includes("ENOSPC")) {
-                errorMessage = "Insufficient disk space";
+            if (error.message.includes("Failed to upload to Supabase")) {
+                errorMessage = error.message;
+            } else if (error.message.includes("Invalid image file")) {
+                errorMessage = error.message;
             } else {
                 errorMessage = error.message;
             }

@@ -27,6 +27,8 @@
  */
 declare module '$env/static/private' {
 	export const DATABASE_URL: string;
+	export const SUPABASE_URL: string;
+	export const SUPABASE_ANON_KEY: string;
 	export const NVM_RC_VERSION: string;
 	export const VSCODE_CRASH_REPORTER_PROCESS_TYPE: string;
 	export const NODE: string;
@@ -119,6 +121,8 @@ declare module '$env/static/public' {
 declare module '$env/dynamic/private' {
 	export const env: {
 		DATABASE_URL: string;
+		SUPABASE_URL: string;
+		SUPABASE_ANON_KEY: string;
 		NVM_RC_VERSION: string;
 		VSCODE_CRASH_REPORTER_PROCESS_TYPE: string;
 		NODE: string;

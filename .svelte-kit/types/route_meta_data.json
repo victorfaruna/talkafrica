@@ -24,6 +24,9 @@
 	"/api/posts": [
 		"src/routes/api/posts/+server.ts"
 	],
+	"/api/test-supabase": [
+		"src/routes/api/test-supabase/+server.ts"
+	],
 	"/api/upload": [
 		"src/routes/api/upload/+server.ts"
 	],
