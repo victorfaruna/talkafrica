@@ -7,6 +7,12 @@
                 <h3
                     class="mb-4 font-clash-grotesk text-[2rem] font-bold text-primary/80"
                 >
+                    <img
+                        src="/images/logo.webp"
+                        alt="Talk Africa"
+                        class="size-10 inline-block object-fit"
+                    />
+                    {" "}
                     TalkAfrica
                 </h3>
                 <p class="mb-6 text-sm leading-relaxed text-primary/50">
