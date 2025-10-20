@@ -10,7 +10,8 @@ export const nodes = [
 	() => import('./nodes/6'),
 	() => import('./nodes/7'),
 	() => import('./nodes/8'),
-	() => import('./nodes/9')
+	() => import('./nodes/9'),
+	() => import('./nodes/10')
 ];
 
 export const server_loads = [2];
@@ -18,10 +19,11 @@ export const server_loads = [2];
 export const dictionary = {
 		"/": [~3],
 		"/admin": [5,[2]],
-		"/admin/login": [6,[2]],
-		"/admin/posts/new": [7,[2]],
-		"/donate": [8],
-		"/posts/[post_id]": [~9],
+		"/admin/categories": [6,[2]],
+		"/admin/login": [7,[2]],
+		"/admin/posts/new": [8,[2]],
+		"/donate": [9],
+		"/posts/[post_id]": [~10],
 		"/[category]": [~4]
 	};
 

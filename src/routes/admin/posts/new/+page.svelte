@@ -18,15 +18,9 @@
     let quillEditor: any = null;
     let editorContainer: HTMLElement;
 
-    const categories = [
-        "News",
-        "Politics",
-        "Business",
-        "Technology",
-        "Sports",
-        "Entertainment",
-        "Health",
-    ];
+    import { getPostCategories } from "$lib/categories";
+
+    const categories = getPostCategories();
 
     $effect(() => {
         if (!browser) return;
@@ -272,8 +266,8 @@
                     bind:value={category}
                 >
                     <option value="">Select category</option>
-                    {#each categories as c}
-                        <option value={c}>{c}</option>
+                    {#each categories as cat}
+                        <option value={cat.slug}>{cat.display_name}</option>
                     {/each}
                 </select>
             </div>

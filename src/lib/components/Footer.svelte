@@ -1,7 +1,13 @@
+<script>
+    import { getCategoryHierarchy } from "$lib/categories";
+
+    const { main_categories, subcategories } = getCategoryHierarchy();
+</script>
+
 <footer class="bg-secondary/95 px-[var(--side-p)] py-16 text-primary">
     <div class="mx-auto max-w-7xl">
         <!-- Main Footer Content -->
-        <div class="mb-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+        <div class="mb-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-5">
             <!-- Brand Section -->
             <div class="lg:col-span-1">
                 <h3
@@ -99,138 +105,36 @@
                 </div>
             </div>
 
-            <!-- News Categories -->
-            <div>
-                <h4 class="mb-4 font-clash-grotesk text-lg font-semibold">
-                    News
-                </h4>
-                <ul class="space-y-3">
-                    <li>
-                        <a
-                            href="/news"
-                            class="text-sm text-primary/50 transition-colors duration-300 hover:text-accent"
-                            >Latest News</a
-                        >
-                    </li>
-                    <li>
-                        <a
-                            href="/politics"
-                            class="text-sm text-primary/50 transition-colors duration-300 hover:text-accent"
-                            >Politics</a
-                        >
-                    </li>
-                    <li>
-                        <a
-                            href="/economy"
-                            class="text-sm text-primary/50 transition-colors duration-300 hover:text-accent"
-                            >Economy</a
-                        >
-                    </li>
-                    <li>
-                        <a
-                            href="/health"
-                            class="text-sm text-primary/50 transition-colors duration-300 hover:text-accent"
-                            >Health</a
-                        >
-                    </li>
-                    <li>
-                        <a
-                            href="/technology"
-                            class="text-sm text-primary/50 transition-colors duration-300 hover:text-accent"
-                            >Technology</a
-                        >
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Culture & Lifestyle -->
-            <div>
-                <h4 class="mb-4 font-clash-grotesk text-lg font-semibold">
-                    Culture
-                </h4>
-                <ul class="space-y-3">
-                    <li>
-                        <a
-                            href="/arts"
-                            class="text-sm text-primary/50 transition-colors duration-300 hover:text-accent"
-                            >Arts</a
-                        >
-                    </li>
-
-                    <li>
-                        <a
-                            href="/afrtican-history"
-                            class="text-sm text-primary/50 transition-colors duration-300 hover:text-accent"
-                            >African History</a
-                        >
-                    </li>
-                    <li>
-                        <a
-                            href="/animated-fucktales"
-                            class="text-sm text-primary/50 transition-colors duration-300 hover:text-accent"
-                            >Animated Fucktales</a
-                        >
-                    </li>
-                    <li>
-                        <a
-                            href="/historical-sites"
-                            class="text-sm text-primary/50 transition-colors duration-300 hover:text-accent"
-                            >Historical Sites</a
-                        >
-                    </li>
-                    <li>
-                        <a
-                            href="/fun-facts"
-                            class="text-sm text-primary/50 transition-colors duration-300 hover:text-accent"
-                            >Fun facts about africa</a
-                        >
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Sports & Entertainment -->
-            <div>
-                <h4 class="mb-4 font-clash-grotesk text-lg font-semibold">
-                    Sports
-                </h4>
-                <ul class="space-y-3">
-                    <li>
-                        <a
-                            href="/sport"
-                            class="text-sm text-primary/50 transition-colors duration-300 hover:text-accent"
-                            >Football</a
-                        >
-                    </li>
-                    <li>
-                        <a
-                            href="/basketball"
-                            class="text-sm text-primary/50 transition-colors duration-300 hover:text-accent"
-                            >Basketball</a
-                        >
-                    </li>
-                    <li>
-                        <a
-                            href="/athletics"
-                            class="text-sm text-primary/50 transition-colors duration-300 hover:text-accent"
-                            >Athletics</a
-                        >
-                    </li>
-                    <li>
-                        <a
-                            href="/tennis"
-                            class="text-sm text-primary/50 transition-colors duration-300 hover:text-accent"
-                            >Tennis</a
-                        >
-                    </li>
-                    <li>
-                        <a
-                            href="/olympics"
-                            class="text-sm text-primary/50 transition-colors duration-300 hover:text-accent"
-                            >Olympics</a
-                        >
-                    </li>
-                </ul>
-            </div>
+            <!-- Dynamic Categories -->
+            {#each main_categories as category}
+                <div>
+                    <h4 class="mb-4 font-clash-grotesk text-lg font-semibold">
+                        {category.display_name}
+                    </h4>
+                    <ul class="space-y-3">
+                        <!-- Main category link -->
+                        <li>
+                            <a
+                                href="/{category.slug}"
+                                class="text-sm text-primary/50 transition-colors duration-300 hover:text-accent"
+                                >{category.display_name}</a
+                            >
+                        </li>
+                        <!-- Subcategories -->
+                        {#if subcategories[category.slug]}
+                            {#each subcategories[category.slug] as subcategory}
+                                <li>
+                                    <a
+                                        href="/{subcategory.slug}"
+                                        class="text-sm text-primary/50 transition-colors duration-300 hover:text-accent"
+                                        >{subcategory.display_name}</a
+                                    >
+                                </li>
+                            {/each}
+                        {/if}
+                    </ul>
+                </div>
+            {/each}
         </div>
 
         <!-- Newsletter Subscription -->

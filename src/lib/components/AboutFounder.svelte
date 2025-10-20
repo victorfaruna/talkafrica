@@ -10,14 +10,14 @@
 
     <div class="flex flex-col lg:flex-row gap-10">
         <div
-            class="w-[38%] overflow-hidden rounded-xl border border-secondary/10 bg-primary shadow-sm"
+            class="w-[38%] h-full lg:h-[550px] overflow-hidden rounded-xl border border-secondary/10 bg-primary shadow-sm"
         >
             <picture>
-                <source srcset="/images/founder.webp" type="image/webp" />
+                <source srcset="/images/headshot-001.webp" type="image/webp" />
                 <img
-                    src="/images/founder.webp"
+                    src="/images/headshot-001.webp"
                     alt="Portrait of the founder"
-                    class="block h-full w-full object-cover"
+                    class="block h-full w-full object-top object-cover"
                     loading="lazy"
                 />
             </picture>

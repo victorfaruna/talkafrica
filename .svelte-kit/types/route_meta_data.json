@@ -6,6 +6,9 @@
 		"src/routes/admin/+layout.server.ts",
 		"src/routes/admin/+layout.server.ts"
 	],
+	"/admin/categories": [
+		"src/routes/admin/+layout.server.ts"
+	],
 	"/admin/login": [
 		"src/routes/admin/+layout.server.ts"
 	],
@@ -18,17 +21,29 @@
 	"/api/auth/logout": [
 		"src/routes/api/auth/logout/+server.ts"
 	],
+	"/api/categories": [
+		"src/routes/api/categories/+server.ts"
+	],
+	"/api/comments": [
+		"src/routes/api/comments/+server.ts"
+	],
 	"/api/donate": [
 		"src/routes/api/donate/+server.ts"
 	],
 	"/api/posts": [
 		"src/routes/api/posts/+server.ts"
 	],
+	"/api/seed-categories": [
+		"src/routes/api/seed-categories/+server.ts"
+	],
 	"/api/test-supabase": [
 		"src/routes/api/test-supabase/+server.ts"
 	],
 	"/api/upload": [
 		"src/routes/api/upload/+server.ts"
+	],
+	"/api/users": [
+		"src/routes/api/users/+server.ts"
 	],
 	"/donate": [],
 	"/posts/[post_id]": [

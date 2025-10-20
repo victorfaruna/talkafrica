@@ -20,12 +20,16 @@
     }));
 </script>
 
-<section class="mt-5 w-screen px-[var(--side-p)] py-[2rem] lg:py-[4rem]">
-    <p class="font-clash-grotesk text-[1.2rem] lg:text-[3rem]">
+<section
+    class="mt-5 w-full px-4 sm:px-6 lg:px-[var(--side-p)] py-6 sm:py-8 lg:py-[4rem]"
+>
+    <p class="font-clash-grotesk text-[1rem] sm:text-[1.2rem] lg:text-[3rem]">
         Latest Articles
     </p>
 
-    <div class="mt-5 flex flex-col lg:flex-row gap-[2rem]">
+    <div
+        class="mt-4 sm:mt-5 flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-[2rem]"
+    >
         <div class="list-container flex w-full flex-col gap-5">
             {#if list.length === 0}
                 <div class="text-secondary/50">No posts yet.</div>

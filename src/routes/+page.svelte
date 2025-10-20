@@ -12,7 +12,7 @@
     export let data;
 </script>
 
-<div class="app-container w-screen overflow-x-hidden flex flex-col">
+<div class="app-container w-full min-h-screen overflow-x-hidden flex flex-col">
     <Header />
     <Hero />
     <Headlines

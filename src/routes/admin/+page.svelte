@@ -42,21 +42,60 @@
     }
 
     async function loadStats() {
-        // Calculate stats from loaded posts
-        const totalViews = posts.reduce(
-            (sum, post) => sum + (post.views || 0),
-            0
-        );
-        const publishedPosts = posts.filter(
-            (post) => post.status === "published"
-        ).length;
+        try {
+            // Calculate stats from loaded posts
+            const totalViews = posts.reduce(
+                (sum, post) => sum + (post.views || 0),
+                0
+            );
 
-        stats = {
-            totalPosts: posts.length,
-            totalUsers: 156, // This would come from a users API in a real app
-            totalViews: totalViews,
-            totalComments: 89, // This would come from a comments API in a real app
-        };
+            let totalUsers = 0;
+            let totalComments = 0;
+
+            // Try to fetch real data from APIs with better error handling
+            try {
+                const [usersResponse, commentsResponse] = await Promise.all([
+                    fetch("/api/users").catch(() => null),
+                    fetch("/api/comments").catch(() => null),
+                ]);
+
+                if (usersResponse && usersResponse.ok) {
+                    const usersData = await usersResponse.json();
+                    totalUsers = usersData.totalUsers || 0;
+                }
+
+                if (commentsResponse && commentsResponse.ok) {
+                    const commentsData = await commentsResponse.json();
+                    totalComments = commentsData.totalComments || 0;
+                }
+            } catch (apiError) {
+                console.warn(
+                    "API calls failed, using fallback values:",
+                    apiError
+                );
+            }
+
+            stats = {
+                totalPosts: posts.length,
+                totalUsers: totalUsers,
+                totalViews: totalViews,
+                totalComments: totalComments,
+            };
+        } catch (error) {
+            console.error("Error loading stats:", error);
+            // Fallback to basic stats if everything fails
+            const totalViews = posts.reduce(
+                (sum, post) => sum + (post.views || 0),
+                0
+            );
+
+            stats = {
+                totalPosts: posts.length,
+                totalUsers: 0,
+                totalViews: totalViews,
+                totalComments: 0,
+            };
+        }
     }
 
     function editPost(post: any) {
@@ -181,9 +220,9 @@
                 <a class="flex items-center gap-3" href="/">
                     <div>
                         <img
-                            src="/images/logo-1.webp"
+                            src="/images/logo.webp"
                             alt="TalkAfrica Logo"
-                            class="w-15 h-15 object-cover"
+                            class="w-15 h-15 object-cover shadow-md"
                         />
                     </div>
                     <h1 class="text-xl font-semibold text-gray-900">

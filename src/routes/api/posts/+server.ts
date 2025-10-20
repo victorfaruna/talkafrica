@@ -10,10 +10,13 @@ export const GET: RequestHandler = async ({ url }) => {
         const status = url.searchParams.get("status");
         const category = url.searchParams.get("category");
         const featured = url.searchParams.get("featured");
+        const includeDeleted =
+            url.searchParams.get("includeDeleted") === "true";
 
         const results = await db
             .select()
             .from(postTable)
+            .where(includeDeleted ? undefined : eq(postTable.deleted, false))
             .orderBy(desc(postTable.created_at));
 
         const filtered = results.filter((p) => {
@@ -123,7 +126,7 @@ export const PUT: RequestHandler = async ({ request }) => {
     }
 };
 
-// DELETE - Delete post by post_id
+// DELETE - Soft delete post by post_id (set deleted=true)
 export const DELETE: RequestHandler = async ({ request }) => {
     try {
         const { post_id } = await request.json();
@@ -134,12 +137,13 @@ export const DELETE: RequestHandler = async ({ request }) => {
             );
         }
 
-        const [deleted] = await db
-            .delete(postTable)
+        const [updated] = await db
+            .update(postTable)
+            .set({ deleted: true, updated_at: new Date() })
             .where(eq(postTable.post_id, post_id))
             .returning({ post_id: postTable.post_id });
 
-        if (!deleted) {
+        if (!updated) {
             return json(
                 { success: false, message: "Post not found" },
                 { status: 404 }
