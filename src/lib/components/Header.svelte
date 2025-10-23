@@ -280,7 +280,11 @@
                     <div
                         class="w-8 h-8 bg-accent rounded-lg flex items-center justify-center"
                     >
-                        <span class="text-white font-bold text-sm">TA</span>
+                        <img
+                            src="/images/logo.webp"
+                            alt="Talk Africa"
+                            class="size-10 inline-block object-fit"
+                        />
                     </div>
                     <h2 class="text-xl font-bold text-gray-900">TalkAfrica</h2>
                 </div>
