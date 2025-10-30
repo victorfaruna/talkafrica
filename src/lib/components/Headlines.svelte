@@ -16,7 +16,9 @@
     console.log(posts);
 </script>
 
-<section class="flex w-screen flex-col gap-[2rem] px-[var(--side-p)] pt-[4rem]">
+<section
+    class="flex w-screen max-w-[1900px] mx-auto flex-col gap-[2rem] px-[var(--side-p)] pt-[4rem]"
+>
     <div class="flex flex-col lg:flex-row gap-2 w-full">
         <a
             class="group relative item w-full lg:w-[70%] h-[220px] lg:h-[520px] overflow-hidden"

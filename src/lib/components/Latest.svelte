@@ -21,7 +21,7 @@
 </script>
 
 <section
-    class="mt-5 w-full px-4 sm:px-6 lg:px-[var(--side-p)] py-6 sm:py-8 lg:py-[4rem]"
+    class="mt-5 w-full max-w-[1900px] mx-auto px-4 sm:px-6 lg:px-[var(--side-p)] py-6 sm:py-8 lg:py-[4rem]"
 >
     <p class="font-clash-grotesk text-[1rem] sm:text-[1.2rem] lg:text-[3rem]">
         Latest Articles
@@ -42,7 +42,7 @@
                             <img
                                 src={item.image}
                                 alt={item.title}
-                                class="h-[200px] w-[300px] rounded-[0.7rem] bg-secondary/1 object-cover"
+                                class="h-[200px] shrink-0 w-[300px] rounded-[0.7rem] bg-secondary/1 object-cover"
                             />
                             <div class="flex flex-col gap-4 py-0 pr-8">
                                 <div

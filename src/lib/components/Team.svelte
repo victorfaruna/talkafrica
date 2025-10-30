@@ -92,7 +92,7 @@
 </script>
 
 <div
-    class="teams-container flex flex-col lg:flex-row w-screen justify-between gap-[2rem] lg:gap-[5rem] overflow-x-hidden bg-white px-[var(--side-p)] py-[6rem]"
+    class="teams-container max-w-[1900px] mx-auto flex flex-col lg:flex-row w-screen justify-between gap-[2rem] lg:gap-[5rem] overflow-x-hidden bg-white px-[var(--side-p)] py-[6rem]"
 >
     <div class="flex flex-col gap-4">
         <div class="dash w-[100px] border-b-2 border-accent"></div>

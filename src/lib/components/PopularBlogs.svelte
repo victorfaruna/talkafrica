@@ -13,7 +13,7 @@
 </script>
 
 <section
-    class="flex flex-col gap-[0.5rem] px-[var(--side-p)] py-[2rem] lg:py-[4rem]"
+    class="flex max-w-[1900px] mx-auto flex-col gap-[0.5rem] px-[var(--side-p)] py-[2rem] lg:py-[4rem]"
 >
     <p class="section-title font-clash-grotesk text-[1.2rem] lg:text-[3rem]">
         Popular Blogs
@@ -30,7 +30,7 @@
                         <img
                             src={item.image}
                             alt={item.title}
-                            class="w-full rounded-2xl object-cover"
+                            class="w-full h-[] lg:h-[250px] rounded-2xl object-cover"
                         />
                         <p
                             class="pr-10 text-[0.8rem] lg:text-[1rem] leading-none font-medium text-secondary/80"

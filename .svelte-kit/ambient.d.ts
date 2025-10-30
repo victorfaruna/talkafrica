@@ -79,7 +79,6 @@ declare module '$env/static/private' {
 	export const PATH: string;
 	export const npm_config_argv: string;
 	export const npm_package_dependencies_swiper: string;
-	export const LaunchInstanceID: string;
 	export const _: string;
 	export const npm_package_dependencies__sveltejs_adapter_node: string;
 	export const __CFBundleIdentifier: string;
@@ -130,7 +129,6 @@ declare module '$env/static/private' {
 	export const npm_package_dependencies_postgres: string;
 	export const npm_config_init_version: string;
 	export const npm_config_ignore_optional: string;
-	export const SECURITYSESSIONID: string;
 	export const npm_package_scripts_check: string;
 	export const COLORTERM: string;
 	export const npm_node_execpath: string;
@@ -218,7 +216,6 @@ declare module '$env/dynamic/private' {
 		PATH: string;
 		npm_config_argv: string;
 		npm_package_dependencies_swiper: string;
-		LaunchInstanceID: string;
 		_: string;
 		npm_package_dependencies__sveltejs_adapter_node: string;
 		__CFBundleIdentifier: string;
@@ -269,7 +266,6 @@ declare module '$env/dynamic/private' {
 		npm_package_dependencies_postgres: string;
 		npm_config_init_version: string;
 		npm_config_ignore_optional: string;
-		SECURITYSESSIONID: string;
 		npm_package_scripts_check: string;
 		COLORTERM: string;
 		npm_node_execpath: string;

@@ -1,4 +1,4 @@
-<section class="mx-auto w-full px-[var(--side-p)] py-[3rem]">
+<section class="mx-auto w-full max-w-[1900px] px-[var(--side-p)] py-[3rem]">
     <div class="mb-8 flex items-baseline justify-between">
         <h2
             class="font-clash-grotesk text-[1.7rem] lg:text-[2.5rem] font-semibold leading-none text-secondary"
