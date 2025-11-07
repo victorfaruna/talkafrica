@@ -10,7 +10,7 @@
 
     <div class="flex flex-col lg:flex-row gap-10">
         <div
-            class="w-[38%] h-full lg:h-[550px] overflow-hidden rounded-xl border border-secondary/10 bg-primary shadow-sm"
+            class="w-full lg:w-[38%] h-full lg:h-[550px] overflow-hidden rounded-xl border border-secondary/10 bg-primary shadow-sm"
         >
             <picture>
                 <source srcset="/images/headshot-001.webp" type="image/webp" />

@@ -8,7 +8,9 @@ export const load: PageServerLoad = async ({ params }) => {
     const [post] = await db
         .select()
         .from(postTable)
-        .where(eq(postTable.post_id, post_id));
+        .where(
+            and(eq(postTable.post_id, post_id), eq(postTable.deleted, false))
+        );
 
     if (!post || post.status !== "published") {
         return {
@@ -33,13 +35,20 @@ export const load: PageServerLoad = async ({ params }) => {
     let relatedPosts = [];
     if (categorySlugs.length > 0) {
         // Get post IDs that share at least one category with this post
+        // Join with postTable to exclude deleted posts
         const relatedPostIds = await db
             .select({ post_id: postCategoriesTable.post_id })
             .from(postCategoriesTable)
+            .innerJoin(
+                postTable,
+                eq(postCategoriesTable.post_id, postTable.post_id)
+            )
             .where(
                 and(
                     inArray(postCategoriesTable.category_slug, categorySlugs),
-                    ne(postCategoriesTable.post_id, post_id)
+                    ne(postCategoriesTable.post_id, post_id),
+                    eq(postTable.status, "published"),
+                    eq(postTable.deleted, false)
                 )
             );
 
@@ -54,7 +63,8 @@ export const load: PageServerLoad = async ({ params }) => {
                     and(
                         eq(postTable.category, post.category),
                         ne(postTable.post_id, post_id),
-                        eq(postTable.status, "published")
+                        eq(postTable.status, "published"),
+                        eq(postTable.deleted, false)
                     )
                 );
             legacyRelated.forEach((p) => relatedPostIdSet.add(p.post_id));
