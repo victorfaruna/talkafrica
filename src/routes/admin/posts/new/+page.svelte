@@ -3,7 +3,8 @@
     import { goto } from "$app/navigation";
 
     let title = $state("");
-    let category = $state("");
+    let category = $state(""); // Keep for backward compatibility if needed
+    let selectedCategories = $state<string[]>([]);
     let excerpt = $state("");
     let image = $state("");
     let featured = $state(false);
@@ -20,7 +21,7 @@
 
     import { getPostCategories } from "$lib/categories";
 
-    const categories = getPostCategories();
+    const availableCategories = getPostCategories();
 
     $effect(() => {
         if (!browser) return;
@@ -66,6 +67,12 @@
                         if (found) {
                             title = found.title || "";
                             category = found.category || "";
+                            // Load categories array if available, otherwise use single category
+                            selectedCategories = found.categories
+                                ? [...found.categories]
+                                : found.category
+                                  ? [found.category]
+                                  : [];
                             excerpt = found.excerpt || "";
                             image = found.image || "";
                             featured = !!found.featured;
@@ -184,6 +191,21 @@
         }
     }
 
+    function toggleCategory(catSlug: string) {
+        const index = selectedCategories.indexOf(catSlug);
+        if (index > -1) {
+            selectedCategories = selectedCategories.filter(
+                (c) => c !== catSlug
+            );
+        } else {
+            selectedCategories = [...selectedCategories, catSlug];
+        }
+    }
+
+    function isCategorySelected(catSlug: string): boolean {
+        return selectedCategories.includes(catSlug);
+    }
+
     async function save() {
         if (!title || !content) {
             alert("Title and content are required");
@@ -194,7 +216,7 @@
             title,
             content,
             excerpt,
-            category,
+            categories: selectedCategories, // Send categories array
             image,
             status,
             featured,
@@ -256,20 +278,70 @@
 
             <div>
                 <label
-                    for="category"
+                    for="categories"
                     class="block text-sm font-medium text-secondary mb-2"
-                    >Category</label
+                    >Categories</label
                 >
-                <select
-                    id="category"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                    bind:value={category}
+                <div
+                    id="categories"
+                    class="w-full min-h-[2.5rem] px-3 py-2 border border-gray-300 rounded-lg focus-within:outline-none focus-within:ring-2 focus-within:ring-accent"
                 >
-                    <option value="">Select category</option>
-                    {#each categories as cat}
-                        <option value={cat.slug}>{cat.display_name}</option>
-                    {/each}
-                </select>
+                    {#if selectedCategories.length === 0}
+                        <p class="text-gray-400 text-sm">
+                            Select categories (like tags)
+                        </p>
+                    {:else}
+                        <div class="flex flex-wrap gap-2 mb-2">
+                            {#each selectedCategories as catSlug}
+                                {@const cat = availableCategories.find(
+                                    (c) => c.slug === catSlug
+                                )}
+                                {@const displayName =
+                                    cat?.display_name || catSlug}
+                                <span
+                                    class="inline-flex items-center gap-1 px-3 py-1 bg-accent/10 text-accent rounded-full text-sm font-medium"
+                                >
+                                    {displayName}
+                                    <button
+                                        type="button"
+                                        onclick={() => toggleCategory(catSlug)}
+                                        class="hover:bg-accent/20 rounded-full p-0.5"
+                                        aria-label="Remove category"
+                                    >
+                                        <svg
+                                            class="w-3 h-3"
+                                            fill="currentColor"
+                                            viewBox="0 0 20 20"
+                                        >
+                                            <path
+                                                fill-rule="evenodd"
+                                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                                clip-rule="evenodd"
+                                            ></path>
+                                        </svg>
+                                    </button>
+                                </span>
+                            {/each}
+                        </div>
+                    {/if}
+                    <div class="flex flex-wrap gap-2">
+                        {#each availableCategories as cat}
+                            {@const isSelected = isCategorySelected(cat.slug)}
+                            {#if !isSelected}
+                                <button
+                                    type="button"
+                                    onclick={() => toggleCategory(cat.slug)}
+                                    class="px-3 py-1 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 hover:border-accent transition-colors"
+                                >
+                                    + {cat.display_name}
+                                </button>
+                            {/if}
+                        {/each}
+                    </div>
+                </div>
+                <p class="text-xs text-gray-500 mt-1">
+                    Click categories to add them as tags
+                </p>
             </div>
 
             <div>

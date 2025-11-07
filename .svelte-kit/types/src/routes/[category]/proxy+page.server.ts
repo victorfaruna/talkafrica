@@ -1,8 +1,8 @@
 // @ts-nocheck
 import type { PageServerLoad } from "./$types";
 import { db } from "$lib/server/db";
-import { eq, desc, and } from "drizzle-orm";
-import { postTable } from "$lib/server/schema";
+import { eq, desc, and, inArray } from "drizzle-orm";
+import { postTable, postCategoriesTable } from "$lib/server/schema";
 import { categoryExists, getCategoryDisplayName } from "$lib/categories";
 
 export const load = async ({ params, url, depends }: Parameters<PageServerLoad>[0]) => {
@@ -24,6 +24,47 @@ export const load = async ({ params, url, depends }: Parameters<PageServerLoad>[
     }
 
     try {
+        // First, get post IDs that have this category
+        const postIdsWithCategory = await db
+            .select({ post_id: postCategoriesTable.post_id })
+            .from(postCategoriesTable)
+            .where(eq(postCategoriesTable.category_slug, categoryParam));
+
+        const postIdSet = new Set(postIdsWithCategory.map((p) => p.post_id));
+
+        // Also check legacy category field for backward compatibility
+        const legacyPosts = await db
+            .select({ post_id: postTable.post_id })
+            .from(postTable)
+            .where(
+                and(
+                    eq(postTable.category, categoryParam),
+                    eq(postTable.status, "published")
+                )
+            );
+
+        legacyPosts.forEach((p) => postIdSet.add(p.post_id));
+
+        const postIdsArray = Array.from(postIdSet);
+
+        if (postIdsArray.length === 0) {
+            return {
+                category: categoryParam,
+                categoryName: getCategoryDisplayName(categoryParam),
+                posts: [],
+                featuredPosts: [],
+                trendingPosts: [],
+                pagination: {
+                    currentPage: 1,
+                    totalPages: 1,
+                    hasNextPage: false,
+                    hasPrevPage: false,
+                    totalPosts: 0,
+                },
+                notFound: false,
+            };
+        }
+
         // Fetch posts for this category
         const posts = await db
             .select({
@@ -40,8 +81,9 @@ export const load = async ({ params, url, depends }: Parameters<PageServerLoad>[
             .from(postTable)
             .where(
                 and(
-                    eq(postTable.category, categoryParam),
-                    eq(postTable.status, "published")
+                    inArray(postTable.post_id, postIdsArray),
+                    eq(postTable.status, "published"),
+                    eq(postTable.deleted, false)
                 )
             )
             .orderBy(desc(postTable.featured), desc(postTable.created_at))
@@ -54,8 +96,9 @@ export const load = async ({ params, url, depends }: Parameters<PageServerLoad>[
             .from(postTable)
             .where(
                 and(
-                    eq(postTable.category, categoryParam),
-                    eq(postTable.status, "published")
+                    inArray(postTable.post_id, postIdsArray),
+                    eq(postTable.status, "published"),
+                    eq(postTable.deleted, false)
                 )
             );
 
@@ -74,9 +117,10 @@ export const load = async ({ params, url, depends }: Parameters<PageServerLoad>[
             .from(postTable)
             .where(
                 and(
-                    eq(postTable.category, categoryParam),
+                    inArray(postTable.post_id, postIdsArray),
                     eq(postTable.status, "published"),
-                    eq(postTable.featured, true)
+                    eq(postTable.featured, true),
+                    eq(postTable.deleted, false)
                 )
             )
             .orderBy(desc(postTable.created_at))
@@ -94,8 +138,9 @@ export const load = async ({ params, url, depends }: Parameters<PageServerLoad>[
             .from(postTable)
             .where(
                 and(
-                    eq(postTable.category, categoryParam),
-                    eq(postTable.status, "published")
+                    inArray(postTable.post_id, postIdsArray),
+                    eq(postTable.status, "published"),
+                    eq(postTable.deleted, false)
                 )
             )
             .orderBy(desc(postTable.views))

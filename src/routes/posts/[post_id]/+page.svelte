@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { browser } from "$app/environment";
+    import { getCategoryDisplayName } from "$lib/categories";
 
     export let data: {
         post: {
@@ -9,6 +10,7 @@
             excerpt?: string | null;
             image?: string | null;
             category?: string | null;
+            categories?: string[];
             created_at?: string | Date;
             author?: string | null;
         };
@@ -22,6 +24,14 @@
         }>;
     };
     const { post, relatedPosts } = data;
+
+    // Get categories to display (prefer categories array, fallback to single category)
+    const displayCategories =
+        post.categories && post.categories.length > 0
+            ? post.categories
+            : post.category
+              ? [post.category]
+              : [];
 
     let readingProgress = 0;
     let showShareButtons = false;
@@ -198,12 +208,17 @@
         <div
             class="flex flex-wrap items-center gap-3 sm:gap-4 mb-6 sm:mb-8 pb-6 sm:pb-8 border-b border-gray-200"
         >
-            {#if post.category}
-                <span
-                    class="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium bg-accent/10 text-accent"
-                >
-                    {post.category}
-                </span>
+            {#if displayCategories.length > 0}
+                <div class="flex flex-wrap gap-2">
+                    {#each displayCategories as catSlug}
+                        <a
+                            href="/{catSlug}"
+                            class="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium bg-accent/10 text-accent hover:bg-accent/20 transition-colors"
+                        >
+                            {getCategoryDisplayName(catSlug)}
+                        </a>
+                    {/each}
+                </div>
             {/if}
             <div
                 class="flex flex-wrap items-center text-gray-600 text-xs sm:text-sm gap-2"

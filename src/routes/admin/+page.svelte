@@ -274,14 +274,18 @@
         </div>
     </header>
 
-    <div class="flex">
+    <div class="flex flex-col lg:flex-row">
         <!-- Sidebar -->
-        <aside class="w-64 bg-white border-r border-gray-200">
+        <aside
+            class="bg-white border-b border-gray-200 lg:border-b-0 lg:border-r lg:w-64 w-full lg:sticky lg:top-0 lg:self-start lg:max-h-[calc(100vh-80px)] lg:overflow-y-auto"
+        >
             <nav class="p-4">
-                <ul class="space-y-1">
+                <ul
+                    class="flex gap-2 overflow-x-auto pb-1 lg:flex-col lg:space-y-1 lg:gap-0 lg:pb-0"
+                >
                     <li>
                         <button
-                            class="w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors {activeTab ===
+                            class="flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors flex-shrink-0 min-w-[150px] lg:w-full lg:min-w-0 {activeTab ===
                             'dashboard'
                                 ? 'bg-accent text-white'
                                 : 'text-gray-700 hover:bg-gray-100'}"
@@ -305,7 +309,7 @@
                     </li>
                     <li>
                         <button
-                            class="w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors {activeTab ===
+                            class="flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors flex-shrink-0 min-w-[150px] lg:w-full lg:min-w-0 {activeTab ===
                             'posts'
                                 ? 'bg-accent text-white'
                                 : 'text-gray-700 hover:bg-gray-100'}"
@@ -329,7 +333,7 @@
                     </li>
                     <li>
                         <button
-                            class="w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors {activeTab ===
+                            class="flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors flex-shrink-0 min-w-[150px] lg:w-full lg:min-w-0 {activeTab ===
                             'users'
                                 ? 'bg-accent text-white'
                                 : 'text-gray-700 hover:bg-gray-100'}"
@@ -353,7 +357,7 @@
                     </li>
                     <li>
                         <button
-                            class="w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors {activeTab ===
+                            class="flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors flex-shrink-0 min-w-[150px] lg:w-full lg:min-w-0 {activeTab ===
                             'media'
                                 ? 'bg-accent text-white'
                                 : 'text-gray-700 hover:bg-gray-100'}"
@@ -377,7 +381,7 @@
                     </li>
                     <li>
                         <button
-                            class="w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors {activeTab ===
+                            class="flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors flex-shrink-0 min-w-[150px] lg:w-full lg:min-w-0 {activeTab ===
                             'settings'
                                 ? 'bg-accent text-white'
                                 : 'text-gray-700 hover:bg-gray-100'}"
@@ -410,7 +414,7 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="flex-1 p-6">
+        <main class="flex-1 p-4 sm:p-6 lg:p-8">
             {#if activeTab === "dashboard"}
                 <!-- Dashboard -->
                 <div class="space-y-8">
@@ -606,7 +610,7 @@
                             <div class="space-y-4">
                                 {#each posts.slice(0, 5) as post}
                                     <div
-                                        class="flex items-center justify-between py-3 border-b border-gray-100 last:border-0"
+                                        class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between py-3 border-b border-gray-100 last:border-0"
                                     >
                                         <div class="flex items-center gap-3">
                                             <div
@@ -734,41 +738,47 @@
                                     All Posts ({posts.length})
                                 </h3>
                             </div>
-                            <div class="px-6 py-3 flex gap-2 items-center">
+                            <div
+                                class="px-6 py-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center"
+                            >
                                 <input
                                     aria-label="Search posts"
                                     placeholder="Search posts..."
-                                    class="w-full md:w-64 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
+                                    class="w-full sm:flex-1 md:flex-none md:w-64 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
                                     bind:value={searchTerm}
                                 />
-                                <select
-                                    aria-label="Filter by status"
-                                    class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                                    bind:value={filterStatus}
-                                >
-                                    <option value="all">All</option>
-                                    <option value="draft">Draft</option>
-                                    <option value="published">Published</option>
-                                </select>
-                                <a
-                                    class="flex items-center gap-2 bg-accent text-white px-3 py-2 rounded-lg hover:bg-accent/90 transition-colors"
-                                    href="/admin/posts/new"
-                                >
-                                    <svg
-                                        class="w-4 h-4"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
+                                <div class="flex gap-2 w-full sm:w-auto">
+                                    <select
+                                        aria-label="Filter by status"
+                                        class="flex-1 sm:flex-none px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
+                                        bind:value={filterStatus}
                                     >
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            stroke-width="2"
-                                            d="M12 4v16m8-8H4"
-                                        />
-                                    </svg>
-                                    New Post
-                                </a>
+                                        <option value="all">All</option>
+                                        <option value="draft">Draft</option>
+                                        <option value="published"
+                                            >Published</option
+                                        >
+                                    </select>
+                                    <a
+                                        class="flex flex-1 sm:flex-none items-center justify-center gap-2 bg-accent text-white px-3 py-2 rounded-lg hover:bg-accent/90 transition-colors"
+                                        href="/admin/posts/new"
+                                    >
+                                        <svg
+                                            class="w-4 h-4"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M12 4v16m8-8H4"
+                                            />
+                                        </svg>
+                                        New Post
+                                    </a>
+                                </div>
                             </div>
                             <div class="max-h-96 overflow-y-auto">
                                 {#each filteredPosts as post}
@@ -919,7 +929,7 @@
                                 All Users
                             </h3>
                         </div>
-                        <div class="p-12">
+                        <div class="p-8 sm:p-10 lg:p-12">
                             <div class="text-center">
                                 <div
                                     class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4"
@@ -972,7 +982,7 @@
                                 Upload & Manage Media
                             </h3>
                         </div>
-                        <div class="p-12">
+                        <div class="p-8 sm:p-10 lg:p-12">
                             <div class="text-center">
                                 <div
                                     class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4"
@@ -1025,7 +1035,7 @@
                                 Site Configuration
                             </h3>
                         </div>
-                        <div class="p-12">
+                        <div class="p-8 sm:p-10 lg:p-12">
                             <div class="text-center">
                                 <div
                                     class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4"
