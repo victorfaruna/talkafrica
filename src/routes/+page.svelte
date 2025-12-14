@@ -8,7 +8,6 @@
     import Footer from "$lib/components/Footer.svelte";
     import Contact from "$lib/components/Contact.svelte";
     import AboutFounder from "$lib/components/AboutFounder.svelte";
-    import Team from "$lib/components/Team.svelte";
     export let data;
 </script>
 
@@ -20,11 +19,10 @@
             ? data.featuredPosts
             : data.latestPosts}
     />
-    <Latest posts={data.latestPosts} />
+    <Latest posts={data.latestPosts} trendingPosts={data.trendingPosts} />
     <PopularBlogs posts={data.posts} />
     <Donate />
     <AboutFounder />
-    <Team />
     <Contact />
     <Footer />
 </div>

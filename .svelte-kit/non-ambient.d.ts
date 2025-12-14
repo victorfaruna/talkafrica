@@ -27,13 +27,14 @@ export {};
 
 declare module "$app/types" {
 	export interface AppTypes {
-		RouteId(): "/" | "/admin" | "/admin/categories" | "/admin/login" | "/admin/posts" | "/admin/posts/new" | "/api" | "/api/auth" | "/api/auth/login" | "/api/auth/logout" | "/api/categories" | "/api/comments" | "/api/donate" | "/api/posts" | "/api/seed-categories" | "/api/test-db" | "/api/test-posts" | "/api/test-supabase" | "/api/upload" | "/api/users" | "/donate" | "/posts" | "/posts/[post_id]" | "/[category]";
+		RouteId(): "/" | "/about" | "/admin" | "/admin/categories" | "/admin/login" | "/admin/posts" | "/admin/posts/new" | "/api" | "/api/auth" | "/api/auth/login" | "/api/auth/logout" | "/api/categories" | "/api/comments" | "/api/donate" | "/api/posts" | "/api/seed-categories" | "/api/test-supabase" | "/api/upload" | "/api/users" | "/donate" | "/posts" | "/posts/[post_id]" | "/[category]";
 		RouteParams(): {
 			"/posts/[post_id]": { post_id: string };
 			"/[category]": { category: string }
 		};
 		LayoutParams(): {
 			"/": { post_id?: string; category?: string };
+			"/about": Record<string, never>;
 			"/admin": Record<string, never>;
 			"/admin/categories": Record<string, never>;
 			"/admin/login": Record<string, never>;
@@ -48,8 +49,6 @@ declare module "$app/types" {
 			"/api/donate": Record<string, never>;
 			"/api/posts": Record<string, never>;
 			"/api/seed-categories": Record<string, never>;
-			"/api/test-db": Record<string, never>;
-			"/api/test-posts": Record<string, never>;
 			"/api/test-supabase": Record<string, never>;
 			"/api/upload": Record<string, never>;
 			"/api/users": Record<string, never>;
@@ -58,7 +57,7 @@ declare module "$app/types" {
 			"/posts/[post_id]": { post_id: string };
 			"/[category]": { category: string }
 		};
-		Pathname(): "/" | "/admin" | "/admin/" | "/admin/categories" | "/admin/categories/" | "/admin/login" | "/admin/login/" | "/admin/posts" | "/admin/posts/" | "/admin/posts/new" | "/admin/posts/new/" | "/api" | "/api/" | "/api/auth" | "/api/auth/" | "/api/auth/login" | "/api/auth/login/" | "/api/auth/logout" | "/api/auth/logout/" | "/api/categories" | "/api/categories/" | "/api/comments" | "/api/comments/" | "/api/donate" | "/api/donate/" | "/api/posts" | "/api/posts/" | "/api/seed-categories" | "/api/seed-categories/" | "/api/test-db" | "/api/test-db/" | "/api/test-posts" | "/api/test-posts/" | "/api/test-supabase" | "/api/test-supabase/" | "/api/upload" | "/api/upload/" | "/api/users" | "/api/users/" | "/donate" | "/donate/" | "/posts" | "/posts/" | `/posts/${string}` & {} | `/posts/${string}/` & {} | `/${string}` & {} | `/${string}/` & {};
+		Pathname(): "/" | "/about" | "/about/" | "/admin" | "/admin/" | "/admin/categories" | "/admin/categories/" | "/admin/login" | "/admin/login/" | "/admin/posts" | "/admin/posts/" | "/admin/posts/new" | "/admin/posts/new/" | "/api" | "/api/" | "/api/auth" | "/api/auth/" | "/api/auth/login" | "/api/auth/login/" | "/api/auth/logout" | "/api/auth/logout/" | "/api/categories" | "/api/categories/" | "/api/comments" | "/api/comments/" | "/api/donate" | "/api/donate/" | "/api/posts" | "/api/posts/" | "/api/seed-categories" | "/api/seed-categories/" | "/api/test-supabase" | "/api/test-supabase/" | "/api/upload" | "/api/upload/" | "/api/users" | "/api/users/" | "/donate" | "/donate/" | "/posts" | "/posts/" | `/posts/${string}` & {} | `/posts/${string}/` & {} | `/${string}` & {} | `/${string}/` & {};
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
 		Asset(): "/favicon.ico" | "/fonts/ClashGrotesk/ClashGrotesk-Bold.eot" | "/fonts/ClashGrotesk/ClashGrotesk-Bold.ttf" | "/fonts/ClashGrotesk/ClashGrotesk-Bold.woff" | "/fonts/ClashGrotesk/ClashGrotesk-Bold.woff2" | "/fonts/ClashGrotesk/ClashGrotesk-Extralight.eot" | "/fonts/ClashGrotesk/ClashGrotesk-Extralight.ttf" | "/fonts/ClashGrotesk/ClashGrotesk-Extralight.woff" | "/fonts/ClashGrotesk/ClashGrotesk-Extralight.woff2" | "/fonts/ClashGrotesk/ClashGrotesk-Light.eot" | "/fonts/ClashGrotesk/ClashGrotesk-Light.ttf" | "/fonts/ClashGrotesk/ClashGrotesk-Light.woff" | "/fonts/ClashGrotesk/ClashGrotesk-Light.woff2" | "/fonts/ClashGrotesk/ClashGrotesk-Medium.eot" | "/fonts/ClashGrotesk/ClashGrotesk-Medium.ttf" | "/fonts/ClashGrotesk/ClashGrotesk-Medium.woff" | "/fonts/ClashGrotesk/ClashGrotesk-Medium.woff2" | "/fonts/ClashGrotesk/ClashGrotesk-Regular.eot" | "/fonts/ClashGrotesk/ClashGrotesk-Regular.ttf" | "/fonts/ClashGrotesk/ClashGrotesk-Regular.woff" | "/fonts/ClashGrotesk/ClashGrotesk-Regular.woff2" | "/fonts/ClashGrotesk/ClashGrotesk-Semibold.eot" | "/fonts/ClashGrotesk/ClashGrotesk-Semibold.ttf" | "/fonts/ClashGrotesk/ClashGrotesk-Semibold.woff" | "/fonts/ClashGrotesk/ClashGrotesk-Semibold.woff2" | "/fonts/ClashGrotesk/ClashGrotesk-Variable.eot" | "/fonts/ClashGrotesk/ClashGrotesk-Variable.ttf" | "/fonts/ClashGrotesk/ClashGrotesk-Variable.woff" | "/fonts/ClashGrotesk/ClashGrotesk-Variable.woff2" | "/images/category/arts.webp" | "/images/category/business.webp" | "/images/category/culture.webp" | "/images/category/innovation.webp" | "/images/category/lifestyle.webp" | "/images/category/music.webp" | "/images/category/news.webp" | "/images/category/sport.webp" | "/images/category/travel.webp" | "/images/eee.png" | "/images/eee.webp" | "/images/founder.webp" | "/images/headshot-001.jpeg" | "/images/headshot-001.webp" | "/images/hero/ta-1.jpeg" | "/images/hero/ta-2.jpeg" | "/images/hero/ta-3.jpeg" | "/images/hero/ta-4.jpeg" | "/images/hero/ta-5.jpeg" | "/images/hero/ta-6.jpeg" | "/images/hero/ta-7.jpeg" | "/images/hero/ta-8.jpeg" | "/images/logo-1.webp" | "/images/logo.webp" | "/images/op.webp" | "/images/placeholder.jpeg" | "/images/placeholder.webp" | "/images/uploads/1759693286674.jpeg" | "/images/uploads/1759698171564.jpeg" | "/images/uploads/1759735010088.jpeg" | "/images/uploads/1759735387474.jpg" | "/images/uploads/1759739637895.jpg" | "/images/uploads/1759741073911.jpg" | "/images/uploads/1759741159818.jpg" | "/images/uploads/1760644014540.jpg" | string & {};
 	}

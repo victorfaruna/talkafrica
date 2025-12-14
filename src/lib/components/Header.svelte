@@ -156,6 +156,15 @@
                         </div>
                     {/if}
                 </li>
+                {#if category.slug === "entertainment"}
+                    <li>
+                        <a
+                            href="/about"
+                            class={`border-accent font-medium capitalize ${url.split("/")[1] === "about" ? "border-b-2 pb-1" : ""} hh`}
+                            >About Us</a
+                        >
+                    </li>
+                {/if}
             {/each}
         </ul>
     </div>
@@ -400,6 +409,30 @@
                                     {/if}
                                 </div>
                             </li>
+                            {#if category.slug === "entertainment"}
+                                <li>
+                                    <a
+                                        href="/about"
+                                        class={`flex items-center px-4 py-3 rounded-xl font-medium transition-all duration-200 ${url.split("/")[1] === "about" ? "bg-accent text-white shadow-lg" : "text-gray-700 hover:bg-gray-100 hover:text-accent"}`}
+                                        onclick={toggleMobileMenu}
+                                    >
+                                        <svg
+                                            class="w-5 h-5 mr-3"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                            />
+                                        </svg>
+                                        About Us
+                                    </a>
+                                </li>
+                            {/if}
                         {/each}
                     </ul>
                 </div>

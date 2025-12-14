@@ -6,9 +6,9 @@
 	let animationDelay = 0;
 
 	const stats = [
-		{ number: '10K+', label: 'Stories Shared' },
-		{ number: '5K+', label: 'Entrepreneurs' },
-		{ number: '50+', label: 'Countries' }
+		{ number: '10K+', label: 'Stories Published' },
+		{ number: '100K+', label: 'Monthly Readers' },
+		{ number: '50+', label: 'Countries Reached' }
 	];
 
 	function navigateToDonate() {
@@ -61,14 +61,13 @@
 					<span
 						class="block bg-gradient-to-r from-accent to-primary/70 bg-clip-text text-transparent"
 					>
- African Innovation 
-
+						Independent Journalism
 					</span>
 				</h2>
 
 				<!-- Subheading -->
 				<p class="mx-auto mb-12 max-w-3xl text-lg leading-relaxed text-secondary/80 md:text-[1rem]">
-Join us in amplifying African voices and empowering not just changemakers, but everyday Africans: the unheard, the unseen, those rising from hardship to hope. Together, we’re building a connected continent through stories, creativity, and collective impact.
+					Help us continue telling authentic African stories, preserving our rich cultural heritage, and providing quality journalism that amplifies voices across the continent. Your support enables us to produce in-depth articles, investigative reports, and cultural content that matters.
 				</p>
 
 				<!-- CTA Buttons -->

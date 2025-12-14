@@ -25,12 +25,19 @@ export const load = async ({ params, url, depends }: Parameters<PageServerLoad>[
 
     try {
         // First, get post IDs that have this category
-        const postIdsWithCategory = await db
-            .select({ post_id: postCategoriesTable.post_id })
-            .from(postCategoriesTable)
-            .where(eq(postCategoriesTable.category_slug, categoryParam));
-
-        const postIdSet = new Set(postIdsWithCategory.map((p) => p.post_id));
+        const postIdSet = new Set<string>();
+        
+        try {
+            const postIdsWithCategory = await db
+                .select({ post_id: postCategoriesTable.post_id })
+                .from(postCategoriesTable)
+                .where(eq(postCategoriesTable.category_slug, categoryParam));
+            
+            postIdsWithCategory.forEach((p) => postIdSet.add(p.post_id));
+        } catch (err) {
+            // If post_categories table doesn't exist, fall back to legacy category field
+            console.warn("Failed to fetch posts from post_categories table, using legacy category field:", err);
+        }
 
         // Also check legacy category field for backward compatibility
         const legacyPosts = await db

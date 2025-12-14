@@ -11,20 +11,22 @@ export const nodes = [
 	() => import('./nodes/7'),
 	() => import('./nodes/8'),
 	() => import('./nodes/9'),
-	() => import('./nodes/10')
+	() => import('./nodes/10'),
+	() => import('./nodes/11')
 ];
 
 export const server_loads = [2];
 
 export const dictionary = {
 		"/": [~3],
+		"/about": [4],
 		"/admin": [5,[2]],
 		"/admin/categories": [6,[2]],
 		"/admin/login": [7,[2]],
 		"/admin/posts/new": [8,[2]],
 		"/donate": [9],
 		"/posts/[post_id]": [~10],
-		"/[category]": [~4]
+		"/[category]": [~11]
 	};
 
 export const hooks = {

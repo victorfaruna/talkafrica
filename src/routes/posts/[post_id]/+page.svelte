@@ -1,7 +1,9 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { browser } from "$app/environment";
-    import { getCategoryDisplayName } from "$lib/categories";
+    import ArticleHero from "$lib/components/ArticleHero.svelte";
+    import ArticleMeta from "$lib/components/ArticleMeta.svelte";
+    import { calculateReadingTime } from "$lib/utils/reading-time";
 
     export let data: {
         post: {
@@ -32,6 +34,9 @@
             : post.category
               ? [post.category]
               : [];
+
+    // Calculate reading time
+    const readingTime = calculateReadingTime(post.content);
 
     let readingProgress = 0;
     let showShareButtons = false;
@@ -92,6 +97,10 @@
 <svelte:head>
     <title>{post.title} - Talk Africa</title>
     <meta name="description" content={post.excerpt || post.title} />
+    <meta name="author" content={post.author || "Talk Africa"} />
+    {#if post.created_at}
+        <meta name="published_time" content={new Date(post.created_at).toISOString()} />
+    {/if}
     {#if post.image}
         <meta property="og:image" content={post.image} />
     {/if}
@@ -99,6 +108,12 @@
     <meta property="og:description" content={post.excerpt || post.title} />
     <meta property="og:url" content={currentUrl} />
     <meta property="og:type" content="article" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={post.title} />
+    <meta name="twitter:description" content={post.excerpt || post.title} />
+    {#if post.image}
+        <meta name="twitter:image" content={post.image} />
+    {/if}
 </svelte:head>
 
 <!-- Reading Progress Bar -->
@@ -110,162 +125,41 @@
 </div>
 
 <div class="min-h-screen bg-white overflow-x-hidden">
-    <!-- Hero Section -->
-    <div class="relative">
-        {#if post.image}
-            <div
-                class="relative h-[50vh] sm:h-[60vh] min-h-[300px] sm:min-h-[400px] overflow-hidden"
-            >
-                <img
-                    src={post.image}
-                    alt={post.title}
-                    class="w-full h-full object-cover"
-                />
-                <div class="absolute inset-0 bg-black bg-opacity-40"></div>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <div
-                        class="text-center text-white px-4 sm:px-6 max-w-4xl w-full"
-                    >
-                        <div class="mb-4">
-                            <a
-                                href="/"
-                                class="inline-flex items-center text-white/80 hover:text-white transition-colors text-sm sm:text-base"
-                            >
-                                <svg
-                                    class="w-4 h-4 mr-2"
-                                    fill="currentColor"
-                                    viewBox="0 0 20 20"
-                                >
-                                    <path
-                                        fill-rule="evenodd"
-                                        d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
-                                        clip-rule="evenodd"
-                                    ></path>
-                                </svg>
-                                Back to Home
-                            </a>
-                        </div>
-                        <h1
-                            class="text-2xl sm:text-4xl md:text-6xl font-bold leading-tight mb-4 sm:mb-6 break-words"
-                        >
-                            {post.title}
-                        </h1>
-                        {#if post.excerpt}
-                            <p
-                                class="text-lg sm:text-xl md:text-2xl text-white/90 leading-relaxed max-w-3xl mx-auto"
-                            >
-                                {post.excerpt}
-                            </p>
-                        {/if}
-                    </div>
-                </div>
-            </div>
-        {:else}
-            <!-- No image hero -->
-            <div
-                class="bg-gradient-to-br from-gray-900 to-gray-800 py-12 sm:py-20"
-            >
-                <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-                    <div class="mb-6">
-                        <a
-                            href="/"
-                            class="inline-flex items-center text-white/80 hover:text-white transition-colors text-sm sm:text-base"
-                        >
-                            <svg
-                                class="w-4 h-4 mr-2"
-                                fill="currentColor"
-                                viewBox="0 0 20 20"
-                            >
-                                <path
-                                    fill-rule="evenodd"
-                                    d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
-                                    clip-rule="evenodd"
-                                ></path>
-                            </svg>
-                            Back to Home
-                        </a>
-                    </div>
-                    <h1
-                        class="text-2xl sm:text-4xl md:text-6xl font-bold text-white leading-tight mb-4 sm:mb-6 break-words"
-                    >
-                        {post.title}
-                    </h1>
-                    {#if post.excerpt}
-                        <p
-                            class="text-lg sm:text-xl md:text-2xl text-white/90 leading-relaxed max-w-3xl mx-auto"
-                        >
-                            {post.excerpt}
-                        </p>
-                    {/if}
-                </div>
-            </div>
-        {/if}
-    </div>
+    <!-- Global Article Hero Component -->
+    <ArticleHero
+        title={post.title}
+        excerpt={post.excerpt}
+        image={post.image}
+    />
 
-    <!-- Article Content -->
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
-        <!-- Article Meta -->
-        <div
-            class="flex flex-wrap items-center gap-3 sm:gap-4 mb-6 sm:mb-8 pb-6 sm:pb-8 border-b border-gray-200"
-        >
-            {#if displayCategories.length > 0}
-                <div class="flex flex-wrap gap-2">
-                    {#each displayCategories as catSlug}
-                        <a
-                            href="/{catSlug}"
-                            class="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium bg-accent/10 text-accent hover:bg-accent/20 transition-colors"
-                        >
-                            {getCategoryDisplayName(catSlug)}
-                        </a>
-                    {/each}
-                </div>
-            {/if}
-            <div
-                class="flex flex-wrap items-center text-gray-600 text-xs sm:text-sm gap-2"
-            >
-                {#if post.author}
-                    <span class="font-medium">By {post.author}</span>
-                {/if}
-                {#if post.created_at}
-                    <span class="hidden sm:inline">•</span>
-                    <time
-                        datetime={new Date(
-                            post.created_at as any
-                        ).toISOString()}
-                        class="block sm:inline"
-                    >
-                        {new Date(post.created_at as any).toLocaleDateString(
-                            "en-US",
-                            {
-                                year: "numeric",
-                                month: "long",
-                                day: "numeric",
-                            }
-                        )}
-                    </time>
-                {/if}
-            </div>
-        </div>
+    <!-- Article Content Layout -->
+    <main class="article-layout">
+        <!-- Global Article Meta Component -->
+        <ArticleMeta
+            categories={displayCategories}
+            author={post.author}
+            publishedDate={post.created_at}
+            readingTime={readingTime}
+        />
 
-        <!-- Article Content -->
-        <article
-            class="prose prose-sm sm:prose-lg prose-gray max-w-none overflow-x-hidden"
-        >
+        <!-- Article Content - Uses global styles -->
+        <article class="article-content">
             {@html post.content}
         </article>
 
         <!-- Share Buttons -->
-        <div class="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-gray-200">
-            <div
-                class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4"
-            >
-                <span class="text-sm font-medium text-gray-700"
-                    >Share this article:</span
-                >
-                <div class="flex flex-wrap gap-2">
+        <div class="mt-12 sm:mt-16 pt-8 sm:pt-10 border-t border-gray-200/60">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5">
+                <span class="text-base sm:text-lg font-semibold text-gray-900 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                    </svg>
+                    Share this article
+                </span>
+                <div class="flex flex-wrap gap-3">
                     <button
                         on:click={shareOnTwitter}
-                        class="inline-flex items-center px-3 sm:px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm"
+                        class="inline-flex items-center px-4 sm:px-5 py-2.5 bg-blue-500 text-white rounded-lg hover:bg-blue-600 hover:scale-105 transition-all duration-200 text-sm font-medium shadow-sm"
                     >
                         <svg
                             class="w-4 h-4 mr-2"
@@ -280,7 +174,7 @@
                     </button>
                     <button
                         on:click={shareOnLinkedIn}
-                        class="inline-flex items-center px-3 sm:px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition-colors text-sm"
+                        class="inline-flex items-center px-4 sm:px-5 py-2.5 bg-blue-700 text-white rounded-lg hover:bg-blue-800 hover:scale-105 transition-all duration-200 text-sm font-medium shadow-sm"
                     >
                         <svg
                             class="w-4 h-4 mr-2"
@@ -295,7 +189,7 @@
                     </button>
                     <button
                         on:click={shareOnFacebook}
-                        class="inline-flex items-center px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                        class="inline-flex items-center px-4 sm:px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 transition-all duration-200 text-sm font-medium shadow-sm"
                     >
                         <svg
                             class="w-4 h-4 mr-2"
@@ -310,7 +204,7 @@
                     </button>
                     <button
                         on:click={copyToClipboard}
-                        class="inline-flex items-center px-3 sm:px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm"
+                        class="inline-flex items-center px-4 sm:px-5 py-2.5 bg-gray-600 text-white rounded-lg hover:bg-gray-700 hover:scale-105 transition-all duration-200 text-sm font-medium shadow-sm"
                     >
                         <svg
                             class="w-4 h-4 mr-2"
@@ -330,7 +224,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
     <!-- Related Posts Section -->
     {#if relatedPosts.length > 0}
@@ -470,102 +364,6 @@
 {/if}
 
 <style>
-    :global(.prose) {
-        color: #374151;
-        line-height: 1.75;
-    }
-
-    :global(.prose h1) {
-        color: #111827;
-        font-size: 2.5rem;
-        font-weight: 700;
-        line-height: 1.2;
-        margin-top: 2rem;
-        margin-bottom: 1rem;
-    }
-
-    :global(.prose h2) {
-        color: #111827;
-        font-size: 2rem;
-        font-weight: 600;
-        line-height: 1.3;
-        margin-top: 2rem;
-        margin-bottom: 1rem;
-    }
-
-    :global(.prose h3) {
-        color: #111827;
-        font-size: 1.5rem;
-        font-weight: 600;
-        line-height: 1.4;
-        margin-top: 1.5rem;
-        margin-bottom: 0.75rem;
-    }
-
-    :global(.prose p) {
-        margin-bottom: 1.5rem;
-        font-size: 1.125rem;
-    }
-
-    :global(.prose a) {
-        color: var(--accent);
-        text-decoration: none;
-        font-weight: 500;
-    }
-
-    :global(.prose a:hover) {
-        text-decoration: underline;
-    }
-
-    :global(.prose blockquote) {
-        border-left: 4px solid var(--accent);
-        padding-left: 1.5rem;
-        margin: 2rem 0;
-        font-style: italic;
-        color: #6b7280;
-    }
-
-    :global(.prose ul, .prose ol) {
-        margin-bottom: 1.5rem;
-        padding-left: 1.5rem;
-    }
-
-    :global(.prose li) {
-        margin-bottom: 0.5rem;
-    }
-
-    :global(.prose img) {
-        border-radius: 0.75rem;
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-        margin: 2rem 0;
-        max-width: 100%;
-        height: auto;
-    }
-
-    :global(.prose code) {
-        background-color: #f3f4f6;
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.375rem;
-        font-size: 0.875rem;
-        color: #dc2626;
-    }
-
-    :global(.prose pre) {
-        background-color: #1f2937;
-        color: #f9fafb;
-        padding: 1rem 1.5rem;
-        border-radius: 0.75rem;
-        overflow-x: auto;
-        margin: 2rem 0;
-        max-width: 100%;
-    }
-
-    :global(.prose pre code) {
-        background-color: transparent;
-        color: inherit;
-        padding: 0;
-    }
-
     /* Line clamp utility */
     .line-clamp-3 {
         display: -webkit-box;
