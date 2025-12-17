@@ -1,6 +1,7 @@
 <script lang="ts">
     import { browser } from "$app/environment";
     import { goto } from "$app/navigation";
+    import RichTextEditor from "$lib/components/RichTextEditor.svelte";
 
     let title = $state("");
     let category = $state(""); // Keep for backward compatibility if needed
@@ -12,12 +13,10 @@
     let content = $state("");
     let editingPostId = $state<string | null>(null);
     let uploadStatus = $state<"idle" | "uploading" | "success" | "error">(
-        "idle"
+        "idle",
     );
     let uploadMessage = $state("");
-
-    let quillEditor: any = null;
-    let editorContainer: HTMLElement;
+    let isSaving = $state(false);
 
     import { getPostCategories } from "$lib/categories";
 
@@ -32,28 +31,6 @@
             if (pid) {
                 editingPostId = pid;
             }
-            const Quill = (await import("quill")).default;
-            quillEditor = new Quill(editorContainer, {
-                theme: "snow",
-                modules: {
-                    toolbar: [
-                        [{ header: [1, 2, 3, false] }],
-                        ["bold", "italic", "underline", "strike"],
-                        [{ list: "ordered" }, { list: "bullet" }],
-                        ["blockquote", "code-block"],
-                        ["link", "image"],
-                        ["clean"],
-                    ],
-                },
-            });
-
-            quillEditor.on("text-change", () => {
-                const html =
-                    typeof quillEditor.getSemanticHTML === "function"
-                        ? quillEditor.getSemanticHTML()
-                        : quillEditor.root.innerHTML;
-                content = html;
-            });
 
             // If editing, load post and prefill
             if (editingPostId) {
@@ -62,7 +39,7 @@
                     const data = await resp.json();
                     if (data.success && Array.isArray(data.posts)) {
                         const found = data.posts.find(
-                            (p: any) => p.post_id === editingPostId
+                            (p: any) => p.post_id === editingPostId,
                         );
                         if (found) {
                             title = found.title || "";
@@ -78,7 +55,7 @@
                             featured = !!found.featured;
                             status = found.status || "draft";
                             content = found.content || "";
-                            quillEditor.root.innerHTML = content;
+                            // Editor will bind to content automatically
                         }
                     }
                 } catch (e) {
@@ -195,7 +172,7 @@
         const index = selectedCategories.indexOf(catSlug);
         if (index > -1) {
             selectedCategories = selectedCategories.filter(
-                (c) => c !== catSlug
+                (c) => c !== catSlug,
             );
         } else {
             selectedCategories = [...selectedCategories, catSlug];
@@ -211,46 +188,55 @@
             alert("Title and content are required");
             return;
         }
-        const method = editingPostId ? "PUT" : "POST";
-        const payload: any = {
-            title,
-            content,
-            excerpt,
-            categories: selectedCategories, // Send categories array
-            image,
-            status,
-            featured,
-        };
-        if (editingPostId) payload.post_id = editingPostId;
-        const resp = await fetch("/api/posts", {
-            method,
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-        });
-        const data = await resp.json();
-        if (data.success) {
-            alert(editingPostId ? "Post updated" : "Post created");
-            goto("/admin");
-        } else {
-            alert(data.message || "Failed to create post");
+
+        isSaving = true;
+        try {
+            const method = editingPostId ? "PUT" : "POST";
+            const payload: any = {
+                title,
+                content,
+                excerpt,
+                categories: selectedCategories, // Send categories array
+                image,
+                status,
+                featured,
+            };
+            if (editingPostId) payload.post_id = editingPostId;
+            const resp = await fetch("/api/posts", {
+                method,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+            const data = await resp.json();
+            if (data.success) {
+                await new Promise((resolve) => setTimeout(resolve, 500));
+                goto("/admin");
+            } else {
+                alert(data.message || "Failed to create post");
+            }
+        } catch (error) {
+            console.error("Save error:", error);
+            alert("An error occurred while saving");
+        } finally {
+            isSaving = false;
         }
     }
 
     function cancel() {
         goto("/admin");
     }
+
+    function handleEditorChange(event: CustomEvent<string>) {
+        content = event.detail;
+    }
 </script>
 
 <svelte:head>
     <title>{editingPostId ? "Edit Post" : "New Post"} - Admin</title>
-    <link
-        href="https://cdn.quilljs.com/1.3.6/quill.snow.css"
-        rel="stylesheet"
-    />
 </svelte:head>
 
 <div class="min-h-screen bg-gray-50">
-    <div class="max-w-4xl mx-auto p-6">
+    <div class="max-w-5xl mx-auto p-6">
         <div class="mb-6 flex items-center justify-between">
             <h1 class="text-2xl font-semibold text-gray-900">
                 {editingPostId ? "Edit Post" : "Create New Post"}
@@ -261,239 +247,248 @@
             >
         </div>
 
-        <div class="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
+        <div
+            class="bg-white rounded-xl border border-gray-200 p-8 space-y-8 shadow-sm"
+        >
+            <!-- Title Section -->
             <div>
                 <label
                     for="title"
-                    class="block text-sm font-medium text-secondary mb-2"
+                    class="block text-sm font-semibold text-gray-700 mb-2"
                     >Title *</label
                 >
                 <input
                     id="title"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
+                    class="w-full px-4 py-3 text-lg border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent transition-all"
+                    placeholder="Enter a catchy title..."
                     bind:value={title}
                     required
                 />
             </div>
 
+            <!-- Editor Section -->
             <div>
-                <label
-                    for="categories"
-                    class="block text-sm font-medium text-secondary mb-2"
-                    >Categories</label
+                <label class="block text-sm font-semibold text-gray-700 mb-2"
+                    >Content *</label
                 >
-                <div
-                    id="categories"
-                    class="w-full min-h-[2.5rem] px-3 py-2 border border-gray-300 rounded-lg focus-within:outline-none focus-within:ring-2 focus-within:ring-accent"
-                >
-                    {#if selectedCategories.length === 0}
-                        <p class="text-gray-400 text-sm">
-                            Select categories (like tags)
-                        </p>
-                    {:else}
-                        <div class="flex flex-wrap gap-2 mb-2">
-                            {#each selectedCategories as catSlug}
-                                {@const cat = availableCategories.find(
-                                    (c) => c.slug === catSlug
-                                )}
-                                {@const displayName =
-                                    cat?.display_name || catSlug}
-                                <span
-                                    class="inline-flex items-center gap-1 px-3 py-1 bg-accent/10 text-accent rounded-full text-sm font-medium"
-                                >
-                                    {displayName}
-                                    <button
-                                        type="button"
-                                        onclick={() => toggleCategory(catSlug)}
-                                        class="hover:bg-accent/20 rounded-full p-0.5"
-                                        aria-label="Remove category"
-                                    >
-                                        <svg
-                                            class="w-3 h-3"
-                                            fill="currentColor"
-                                            viewBox="0 0 20 20"
-                                        >
-                                            <path
-                                                fill-rule="evenodd"
-                                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                                clip-rule="evenodd"
-                                            ></path>
-                                        </svg>
-                                    </button>
-                                </span>
-                            {/each}
-                        </div>
-                    {/if}
-                    <div class="flex flex-wrap gap-2">
-                        {#each availableCategories as cat}
-                            {@const isSelected = isCategorySelected(cat.slug)}
-                            {#if !isSelected}
-                                <button
-                                    type="button"
-                                    onclick={() => toggleCategory(cat.slug)}
-                                    class="px-3 py-1 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 hover:border-accent transition-colors"
-                                >
-                                    + {cat.display_name}
-                                </button>
-                            {/if}
-                        {/each}
-                    </div>
-                </div>
-                <p class="text-xs text-gray-500 mt-1">
-                    Click categories to add them as tags
-                </p>
+                <!-- New Rich Text Editor -->
+                <RichTextEditor
+                    bind:content
+                    on:change={handleEditorChange}
+                    placeholder="Write your story here..."
+                />
             </div>
 
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Categories -->
+                <div>
+                    <label
+                        class="block text-sm font-semibold text-gray-700 mb-2"
+                        >Categories</label
+                    >
+                    <div
+                        class="w-full min-h-[3rem] px-3 py-3 border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-accent/50 bg-white"
+                    >
+                        {#if selectedCategories.length === 0}
+                            <p class="text-gray-400 text-sm italic">
+                                Select categories below...
+                            </p>
+                        {:else}
+                            <div class="flex flex-wrap gap-2 mb-3">
+                                {#each selectedCategories as catSlug}
+                                    {@const cat = availableCategories.find(
+                                        (c) => c.slug === catSlug,
+                                    )}
+                                    {@const displayName =
+                                        cat?.display_name || catSlug}
+                                    <span
+                                        class="inline-flex items-center gap-1.5 px-3 py-1 bg-accent/10 text-accent rounded-full text-sm font-medium border border-accent/10"
+                                    >
+                                        {displayName}
+                                        <button
+                                            type="button"
+                                            onclick={() =>
+                                                toggleCategory(catSlug)}
+                                            class="hover:bg-accent/20 rounded-full p-0.5 text-accent/70 hover:text-accent transition-colors"
+                                            aria-label="Remove category"
+                                        >
+                                            <svg
+                                                class="w-3.5 h-3.5"
+                                                fill="currentColor"
+                                                viewBox="0 0 20 20"
+                                            >
+                                                <path
+                                                    fill-rule="evenodd"
+                                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                                    clip-rule="evenodd"
+                                                ></path>
+                                            </svg>
+                                        </button>
+                                    </span>
+                                {/each}
+                            </div>
+                        {/if}
+
+                        <div
+                            class="border-t border-dashed border-gray-200 my-2"
+                        ></div>
+
+                        <div class="flex flex-wrap gap-2 mt-2">
+                            {#each availableCategories as cat}
+                                {@const isSelected = isCategorySelected(
+                                    cat.slug,
+                                )}
+                                {#if !isSelected}
+                                    <button
+                                        type="button"
+                                        onclick={() => toggleCategory(cat.slug)}
+                                        class="px-3 py-1 border border-gray-200 bg-gray-50 rounded-lg text-sm text-gray-600 hover:bg-white hover:border-accent hover:text-accent hover:shadow-sm transition-all"
+                                    >
+                                        + {cat.display_name}
+                                    </button>
+                                {/if}
+                            {/each}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Featured Image -->
+                <div>
+                    <label
+                        for="image"
+                        class="block text-sm font-semibold text-gray-700 mb-2"
+                        >Featured Image</label
+                    >
+                    <div
+                        class="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:bg-gray-50 transition-colors text-center cursor-pointer relative"
+                    >
+                        <input
+                            id="image"
+                            type="file"
+                            accept="image/*"
+                            onchange={handleImageUpload}
+                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                        />
+
+                        {#if image}
+                            <div class="relative z-20 pointer-events-none">
+                                <img
+                                    src={image}
+                                    alt="Preview"
+                                    class="h-40 mx-auto object-cover rounded-lg shadow-sm"
+                                />
+                                <p
+                                    class="text-xs text-green-600 mt-2 font-medium"
+                                >
+                                    Click to change image
+                                </p>
+                            </div>
+                        {:else}
+                            <div class="pointer-events-none">
+                                <svg
+                                    class="mx-auto h-12 w-12 text-gray-400"
+                                    stroke="currentColor"
+                                    fill="none"
+                                    viewBox="0 0 48 48"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    />
+                                </svg>
+                                <p class="mt-1 text-sm text-gray-600">
+                                    Drag & drop or click to upload
+                                </p>
+                            </div>
+                        {/if}
+                    </div>
+
+                    <!-- Upload Status -->
+                    {#if uploadStatus !== "idle"}
+                        <div
+                            class="mt-2 text-sm flex items-center justify-center gap-2 {uploadStatus ===
+                            'error'
+                                ? 'text-red-600'
+                                : 'text-blue-600'}"
+                        >
+                            {#if uploadStatus === "uploading"}
+                                <div
+                                    class="animate-spin rounded-full h-3 w-3 border-b-2 border-blue-600"
+                                ></div>
+                            {/if}
+                            {uploadMessage}
+                        </div>
+                    {/if}
+                </div>
+            </div>
+
+            <!-- Excerpt -->
             <div>
                 <label
                     for="excerpt"
-                    class="block text-sm font-medium text-secondary mb-2"
-                    >Excerpt</label
+                    class="block text-sm font-semibold text-gray-700 mb-2"
+                    >Excerpt (Optional)</label
                 >
                 <textarea
                     id="excerpt"
                     rows="3"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/50 text-gray-600 text-sm"
+                    placeholder="Brief summary for search results..."
                     bind:value={excerpt}
                 ></textarea>
             </div>
 
-            <div>
-                <label
-                    for="image"
-                    class="block text-sm font-medium text-secondary mb-2"
-                    >Featured Image</label
-                >
-                <input
-                    id="image"
-                    type="file"
-                    accept="image/jpeg,image/jpg,image/png,image/webp,image/gif,image/bmp,image/tiff,image/x-icon,image/svg+xml"
-                    onchange={handleImageUpload}
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                />
-
-                <!-- Upload Status Display -->
-                {#if uploadStatus !== "idle"}
-                    <div
-                        class="mt-2 p-3 rounded-lg {uploadStatus === 'uploading'
-                            ? 'bg-blue-50 border border-blue-200'
-                            : uploadStatus === 'success'
-                              ? 'bg-green-50 border border-green-200'
-                              : 'bg-red-50 border border-red-200'}"
-                    >
-                        <div class="flex items-center">
-                            {#if uploadStatus === "uploading"}
-                                <div
-                                    class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"
-                                ></div>
-                            {:else if uploadStatus === "success"}
-                                <svg
-                                    class="w-4 h-4 text-green-600 mr-2"
-                                    fill="currentColor"
-                                    viewBox="0 0 20 20"
-                                >
-                                    <path
-                                        fill-rule="evenodd"
-                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                        clip-rule="evenodd"
-                                    ></path>
-                                </svg>
-                            {:else if uploadStatus === "error"}
-                                <svg
-                                    class="w-4 h-4 text-red-600 mr-2"
-                                    fill="currentColor"
-                                    viewBox="0 0 20 20"
-                                >
-                                    <path
-                                        fill-rule="evenodd"
-                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                                        clip-rule="evenodd"
-                                    ></path>
-                                </svg>
-                            {/if}
-                            <span
-                                class="text-sm {uploadStatus === 'uploading'
-                                    ? 'text-blue-700'
-                                    : uploadStatus === 'success'
-                                      ? 'text-green-700'
-                                      : 'text-red-700'}"
-                            >
-                                {uploadMessage}
-                            </span>
-                        </div>
-                    </div>
-                {/if}
-
-                {#if image}
-                    <div class="mt-2">
-                        <img
-                            src={image}
-                            alt="Preview"
-                            class="w-32 h-20 object-cover rounded border"
+            <div
+                class="pt-6 border-t border-gray-100 flex items-center justify-between"
+            >
+                <div class="flex items-center gap-6">
+                    <label class="flex items-center cursor-pointer group">
+                        <input
+                            type="checkbox"
+                            class="w-5 h-5 text-accent rounded border-gray-300 focus:ring-accent"
+                            bind:checked={featured}
                         />
-                        <p class="text-xs text-gray-500 mt-1">Current image</p>
+                        <span
+                            class="ml-2 text-gray-700 font-medium group-hover:text-gray-900"
+                            >Featured Post</span
+                        >
+                    </label>
+                    <div class="flex items-center gap-2">
+                        <span class="text-gray-700 font-medium">Status:</span>
+                        <select
+                            class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
+                            bind:value={status}
+                        >
+                            <option value="draft">Draft</option>
+                            <option value="published">Published</option>
+                        </select>
                     </div>
-                {/if}
-            </div>
+                </div>
 
-            <div>
-                <label
-                    for="content"
-                    class="block text-sm font-medium text-secondary mb-2"
-                    >Content *</label
-                >
-                <div
-                    id="content"
-                    bind:this={editorContainer}
-                    class="h-60 border border-gray-300 rounded-lg"
-                ></div>
-            </div>
-
-            <div class="flex items-center gap-4">
-                <label class="flex items-center">
-                    <input
-                        type="checkbox"
-                        class="mr-2"
-                        bind:checked={featured}
-                    /> Featured Post
-                </label>
-                <select
-                    class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                    bind:value={status}
-                >
-                    <option value="draft">Draft</option>
-                    <option value="published">Published</option>
-                </select>
-            </div>
-
-            <div class="flex gap-2">
-                <button
-                    class="bg-accent text-white px-4 py-2 rounded-lg hover:bg-accent/90"
-                    onclick={save}
-                    >{editingPostId ? "Update Post" : "Create Post"}</button
-                >
-                <button
-                    class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
-                    onclick={cancel}>Cancel</button
-                >
+                <div class="flex gap-3">
+                    <button
+                        class="px-6 py-2.5 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors"
+                        onclick={cancel}>Cancel</button
+                    >
+                    <button
+                        class="px-6 py-2.5 bg-accent text-white font-medium rounded-lg hover:bg-accent/90 disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2 shadow-sm transition-all hover:shadow-md"
+                        onclick={save}
+                        disabled={isSaving}
+                    >
+                        {#if isSaving}
+                            <div
+                                class="animate-spin h-4 w-4 border-2 border-white/30 border-b-white rounded-full"
+                            ></div>
+                            Saving...
+                        {:else}
+                            {editingPostId ? "Update Post" : "Publish Post"}
+                        {/if}
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-    :global(.ql-toolbar) {
-        border-top: 1px solid #ccc;
-        border-left: 1px solid #ccc;
-        border-right: 1px solid #ccc;
-        border-top-left-radius: 0.5rem;
-        border-top-right-radius: 0.5rem;
-    }
-    :global(.ql-container) {
-        border-bottom: 1px solid #ccc;
-        border-left: 1px solid #ccc;
-        border-right: 1px solid #ccc;
-        border-bottom-left-radius: 0.5rem;
-        border-bottom-right-radius: 0.5rem;
-    }
-</style>

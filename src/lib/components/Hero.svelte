@@ -107,6 +107,11 @@
             </p>
 
             <button
+                on:click={() => {
+                    document
+                        .getElementById("headlines")
+                        ?.scrollIntoView({ behavior: "smooth" });
+                }}
                 class="mt-8 cursor-pointer rounded-[0.3rem] border-2 border-accent/50 bg-transparent px-10 py-3 text-[0.8rem] lg:text-[1.2rem] font-semibold text-accent shadow-lg transition-all duration-200 hover:scale-105 hover:bg-accent/70 hover:text-primary"
             >
                 Explore
