@@ -23,22 +23,30 @@
             <div class="text-secondary/50">No popular posts yet.</div>
         {:else}
             {#each list as item}
-                <a href={item.url} aria-label={`Read ${item.title}`}>
+                <a
+                    href={item.url}
+                    aria-label={`Read ${item.title}`}
+                    class="h-full block group"
+                >
                     <div
-                        class="flex w-full flex-col gap-4 rounded-2xl px-2 py-4 shadow-lg shadow-secondary/5"
+                        class="flex w-full h-full flex-col gap-4 rounded-2xl px-2 py-4 shadow-lg shadow-secondary/5 transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-2xl bg-white"
                     >
-                        <img
-                            src={item.image}
-                            alt={item.title}
-                            class="w-full h-[] lg:h-[250px] rounded-2xl object-cover"
-                        />
+                        <div
+                            class="overflow-hidden rounded-2xl h-[] lg:h-[250px] w-full"
+                        >
+                            <img
+                                src={item.image}
+                                alt={item.title}
+                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            />
+                        </div>
                         <p
-                            class="pr-10 text-[0.8rem] lg:text-[1rem] leading-none font-medium text-secondary/80"
+                            class="pr-10 text-[0.8rem] lg:text-[1rem] leading-none font-medium text-secondary/80 line-clamp-2"
                         >
                             {item.title}
                         </p>
                         <button
-                            class="self-start rounded-[0.5rem] border border-accent/50 px-5 py-2 text-accent"
+                            class="self-start mt-auto rounded-[0.5rem] border border-accent/50 px-5 py-2 text-accent transition-colors duration-300 group-hover:bg-accent group-hover:text-white"
                             aria-label={`Read ${item.title}`}
                         >
                             Read More <svg

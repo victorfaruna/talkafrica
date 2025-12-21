@@ -53,7 +53,7 @@
         isSearching = true;
         try {
             const response = await fetch(
-                `/api/posts?search=${encodeURIComponent(searchQuery)}`
+                `/api/posts?search=${encodeURIComponent(searchQuery)}`,
             );
             const data = await response.json();
             searchResults = data.posts || [];
@@ -675,7 +675,7 @@
                                                 {post.excerpt ||
                                                     post.content?.substring(
                                                         0,
-                                                        100
+                                                        100,
                                                     ) + "..."}
                                             </p>
                                             <div
@@ -685,7 +685,7 @@
                                                     class="text-xs text-gray-400"
                                                 >
                                                     {new Date(
-                                                        post.created_at
+                                                        post.created_at,
                                                     ).toLocaleDateString()}
                                                 </span>
                                                 {#if post.category}

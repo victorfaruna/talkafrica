@@ -341,7 +341,7 @@
                                             <span>•</span>
                                             <span
                                                 >{formatDate(
-                                                    post.created_at
+                                                    post.created_at,
                                                 )}</span
                                             >
                                         </div>
@@ -383,7 +383,7 @@
                                 const start = Math.max(1, data.pagination.currentPage - 2);
                                 const pageNum = start + i;
                                 return pageNum <= data.pagination.totalPages ? pageNum : null;
-                            } ).filter(Boolean) as pageNum}
+                            }, ).filter(Boolean) as pageNum}
                             <a
                                 href="?page={pageNum}"
                                 class="px-3 py-2 rounded-lg transition-colors {pageNum ===

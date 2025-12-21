@@ -114,9 +114,9 @@ export const CATEGORY_DEFINITIONS: Omit<Category, "id">[] = [
         is_active: true,
     },
     {
-        name: "animated-fucktales",
-        slug: "animated-fucktales",
-        display_name: "Animated Fucktales",
+        name: "animated-folktales",
+        slug: "animated-folktales",
+        display_name: "Animated Folktales",
         description: "Animated stories and tales",
         parent_id: "culture",
         icon: "video",

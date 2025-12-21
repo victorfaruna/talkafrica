@@ -66,7 +66,7 @@ The system supports hierarchical categories with the following main sections:
 
 - Arts
 - African History
-- Animated Fucktales
+- Animated Folktales
 - Historical Sites
 - Fun Facts About Africa
 
