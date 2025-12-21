@@ -69,21 +69,6 @@ type SwiperProps = Omit<
    * Event will be fired on key press
    */
   onKeyPress?: (swiper: SwiperClass, keyCode: string) => void;/**
-   * Event will be fired on navigation hide
-   */
-  onNavigationHide?: (swiper: SwiperClass) => void;
-  /**
-   * Event will be fired on navigation show
-   */
-  onNavigationShow?: (swiper: SwiperClass) => void;
-  /**
-   * Event will be fired on navigation prev button click
-   */
-  onNavigationPrev?: (swiper: SwiperClass) => void;
-  /**
-   * Event will be fired on navigation next button click
-   */
-  onNavigationNext?: (swiper: SwiperClass) => void;/**
    * Event will be fired on mousewheel scroll
    */
   onScroll?: (swiper: SwiperClass, event: WheelEvent) => void;/**
@@ -105,6 +90,21 @@ type SwiperProps = Omit<
    * Event will be fired on pagination show
    */
   onPaginationShow?: (swiper: SwiperClass) => void;/**
+   * Event will be fired on navigation hide
+   */
+  onNavigationHide?: (swiper: SwiperClass) => void;
+  /**
+   * Event will be fired on navigation show
+   */
+  onNavigationShow?: (swiper: SwiperClass) => void;
+  /**
+   * Event will be fired on navigation prev button click
+   */
+  onNavigationPrev?: (swiper: SwiperClass) => void;
+  /**
+   * Event will be fired on navigation next button click
+   */
+  onNavigationNext?: (swiper: SwiperClass) => void;/**
    * Event will be fired on draggable scrollbar drag start
    */
   onScrollbarDragStart?: (swiper: SwiperClass, event: MouseEvent | TouchEvent | PointerEvent) => void;

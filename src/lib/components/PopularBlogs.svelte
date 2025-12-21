@@ -29,7 +29,7 @@
                     class="h-full block group"
                 >
                     <div
-                        class="flex w-full h-full flex-col gap-4 rounded-2xl px-2 py-4 shadow-lg shadow-secondary/5 transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-2xl bg-white"
+                        class="flex w-full h-full flex-col gap-4 rounded-2xl px-2 py-4 shadow-lg shadow-secondary/5 transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-2xl bg-white justify-between"
                     >
                         <div
                             class="overflow-hidden rounded-2xl h-[] lg:h-[250px] w-full"
@@ -41,7 +41,7 @@
                             />
                         </div>
                         <p
-                            class="pr-10 text-[0.8rem] lg:text-[1rem] leading-none font-medium text-secondary/80 line-clamp-2"
+                            class="pr-10 text-[0.8rem] lg:text-[1rem] leading-none font-medium text-secondary/80 line-clamp-2 flex-grow"
                         >
                             {item.title}
                         </p>

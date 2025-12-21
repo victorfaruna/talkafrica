@@ -34,17 +34,7 @@
 			class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-600/10 rounded-full blur-[120px] -z-10 pointer-events-none"
 		></div>
 
-		<!-- Icon -->
-		<div class="mb-10 relative inline-block">
-			<img
-				src="/images/eee.webp"
-				alt="Newsletter"
-				class="mx-auto w-32 md:w-40 drop-shadow-2xl animate-float"
-			/>
-			<div
-				class="absolute inset-0 bg-blue-500/20 blur-3xl -z-10 rounded-full"
-			></div>
-		</div>
+		<!-- Icon Removed -->
 
 		<!-- Headline -->
 		<div class="mb-12 space-y-4">
@@ -95,8 +85,8 @@
 			</div>
 			<button
 				type="submit"
-				disabled={isSubmitting || !email.trim()}
-				class="w-full md:w-auto bg-accent text-white px-10 py-5 font-bold text-lg tracking-wide whitespace-nowrap hover:bg-orange-600 transition-all duration-300 disabled:cursor-not-allowed h-[72px]"
+				disabled={isSubmitting}
+				class="w-full md:w-auto bg-accent text-white px-10 py-5 font-bold text-lg tracking-wide whitespace-nowrap hover:bg-orange-600 transition-all duration-300 cursor-pointer disabled:cursor-not-allowed disabled:opacity-70 h-[72px]"
 			>
 				{isSubmitting ? "Subscribing..." : "Subscribe Now"}
 			</button>
@@ -126,17 +116,5 @@
 <style>
 	.font-clash-grotesk {
 		font-family: var(--font-clash-grotesk);
-	}
-	@keyframes float {
-		0%,
-		100% {
-			transform: translateY(0);
-		}
-		50% {
-			transform: translateY(-10px);
-		}
-	}
-	.animate-float {
-		animation: float 6s ease-in-out infinite;
 	}
 </style>

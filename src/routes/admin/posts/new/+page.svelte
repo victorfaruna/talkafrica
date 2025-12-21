@@ -9,6 +9,7 @@
     let excerpt = $state("");
     let image = $state("");
     let featured = $state(false);
+    let isTrendingNews = $state(false);
     let status = $state("draft");
     let content = $state("");
     let editingPostId = $state<string | null>(null);
@@ -21,6 +22,22 @@
     import { getPostCategories } from "$lib/categories";
 
     const availableCategories = getPostCategories();
+
+    // Excerpt Validation
+    const MIN_WORDS = 50;
+    const MAX_WORDS = 150;
+
+    let wordCount = $derived(
+        excerpt
+            .trim()
+            .split(/\s+/)
+            .filter((w) => w.length > 0).length,
+    );
+    let isExcerptValid = $derived(
+        wordCount >= MIN_WORDS && wordCount <= MAX_WORDS,
+    );
+    let wordsNeeded = $derived(Math.max(0, MIN_WORDS - wordCount));
+    let wordsOver = $derived(Math.max(0, wordCount - MAX_WORDS));
 
     $effect(() => {
         if (!browser) return;
@@ -53,6 +70,7 @@
                             excerpt = found.excerpt || "";
                             image = found.image || "";
                             featured = !!found.featured;
+                            isTrendingNews = !!found.isTrendingNews;
                             status = found.status || "draft";
                             content = found.content || "";
                             // Editor will bind to content automatically
@@ -189,6 +207,19 @@
             return;
         }
 
+        if (wordCount < MIN_WORDS) {
+            alert(
+                `Excerpt must be at least ${MIN_WORDS} words. You have ${wordCount} words.`,
+            );
+            return;
+        }
+        if (wordCount > MAX_WORDS) {
+            alert(
+                `Excerpt must be no more than ${MAX_WORDS} words. You have ${wordCount} words.`,
+            );
+            return;
+        }
+
         isSaving = true;
         try {
             const method = editingPostId ? "PUT" : "POST";
@@ -200,6 +231,7 @@
                 image,
                 status,
                 featured,
+                isTrendingNews,
             };
             if (editingPostId) payload.post_id = editingPostId;
             const resp = await fetch("/api/posts", {
@@ -301,9 +333,12 @@
                                     )}
                                     {@const displayName =
                                         cat?.display_name || catSlug}
+                                    {@const isGiant =
+                                        catSlug === "african-giant"}
                                     <span
                                         class="inline-flex items-center gap-1.5 px-3 py-1 bg-accent/10 text-accent rounded-full text-sm font-medium border border-accent/10"
                                     >
+                                        {#if isGiant}👑{/if}
                                         {displayName}
                                         <button
                                             type="button"
@@ -319,7 +354,7 @@
                                             >
                                                 <path
                                                     fill-rule="evenodd"
-                                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414 1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
                                                     clip-rule="evenodd"
                                                 ></path>
                                             </svg>
@@ -338,13 +373,14 @@
                                 {@const isSelected = isCategorySelected(
                                     cat.slug,
                                 )}
+                                {@const isGiant = cat.slug === "african-giant"}
                                 {#if !isSelected}
                                     <button
                                         type="button"
                                         onclick={() => toggleCategory(cat.slug)}
                                         class="px-3 py-1 border border-gray-200 bg-gray-50 rounded-lg text-sm text-gray-600 hover:bg-white hover:border-accent hover:text-accent hover:shadow-sm transition-all"
                                     >
-                                        + {cat.display_name}
+                                        {#if isGiant}👑{/if} + {cat.display_name}
                                     </button>
                                 {/if}
                             {/each}
@@ -426,19 +462,102 @@
             </div>
 
             <!-- Excerpt -->
-            <div>
-                <label
-                    for="excerpt"
-                    class="block text-sm font-semibold text-gray-700 mb-2"
-                    >Excerpt (Optional)</label
-                >
+            <!-- Excerpt -->
+            <div class="space-y-4">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <label
+                            for="excerpt"
+                            class="block text-sm font-semibold text-gray-700"
+                            >Excerpt / Description *</label
+                        >
+                        <p class="text-xs text-gray-500 mt-1">
+                            Brief summary that appears in previews
+                        </p>
+                    </div>
+
+                    <span
+                        class={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
+                            wordCount === 0
+                                ? "bg-gray-100 text-gray-500"
+                                : isExcerptValid
+                                  ? "bg-green-100 text-green-700"
+                                  : "bg-red-50 text-red-600"
+                        }`}
+                    >
+                        {wordCount} / {MIN_WORDS}-{MAX_WORDS} words
+                    </span>
+                </div>
+
                 <textarea
                     id="excerpt"
-                    rows="3"
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/50 text-gray-600 text-sm"
-                    placeholder="Brief summary for search results..."
+                    rows="5"
+                    class={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all text-sm leading-relaxed ${
+                        wordCount > 0 && !isExcerptValid
+                            ? "border-red-300 focus:border-red-500 focus:ring-red-200"
+                            : isExcerptValid
+                              ? "border-green-300 focus:border-green-500 focus:ring-green-200"
+                              : "border-gray-300 focus:ring-accent/50"
+                    }`}
+                    placeholder={`Write a compelling 2-3 sentence summary of your article. This appears in post previews, search results, and social media shares. (Minimum ${MIN_WORDS} words)`}
                     bind:value={excerpt}
+                    required
                 ></textarea>
+
+                <div class="min-h-[20px]">
+                    {#if wordCount === 0}
+                        <p class="text-xs text-gray-500">
+                            💡 Start writing your excerpt...
+                        </p>
+                    {:else if wordsNeeded > 0}
+                        <p class="text-xs text-red-600 font-medium">
+                            ⚠️ Add {wordsNeeded} more word{wordsNeeded !== 1
+                                ? "s"
+                                : ""} (minimum {MIN_WORDS})
+                        </p>
+                    {:else if wordsOver > 0}
+                        <p class="text-xs text-red-600 font-medium">
+                            ⚠️ Too long! Remove {wordsOver} word{wordsOver !== 1
+                                ? "s"
+                                : ""} (maximum {MAX_WORDS})
+                        </p>
+                    {:else}
+                        <p
+                            class="text-xs text-green-600 font-medium flex items-center gap-1"
+                        >
+                            <svg
+                                class="w-3 h-3"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                ><path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M5 13l4 4L19 7"
+                                ></path></svg
+                            >
+                            Perfect length!
+                        </p>
+                    {/if}
+                </div>
+
+                {#if excerpt}
+                    <div
+                        class="mt-4 p-4 bg-gray-50 border-l-4 border-yellow-400 rounded-r-lg"
+                    >
+                        <h4
+                            class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
+                        >
+                            Preview
+                        </h4>
+                        <p
+                            class="text-sm text-gray-800 leading-relaxed line-clamp-3 italic"
+                        >
+                            {excerpt}
+                        </p>
+                    </div>
+                {/if}
             </div>
 
             <div
@@ -454,6 +573,17 @@
                         <span
                             class="ml-2 text-gray-700 font-medium group-hover:text-gray-900"
                             >Featured Post</span
+                        >
+                    </label>
+                    <label class="flex items-center cursor-pointer group">
+                        <input
+                            type="checkbox"
+                            class="w-5 h-5 text-accent rounded border-gray-300 focus:ring-accent"
+                            bind:checked={isTrendingNews}
+                        />
+                        <span
+                            class="ml-2 text-gray-700 font-medium group-hover:text-gray-900"
+                            >Show in Trending News Section</span
                         >
                     </label>
                     <div class="flex items-center gap-2">

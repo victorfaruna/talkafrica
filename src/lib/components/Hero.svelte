@@ -60,12 +60,43 @@
                 </div>
                 <div class="swiper-slide">
                     <div
-                        class="h-full w-full bg-[url(/images/hero/ta-5.jpeg)] bg-cover bg-center"
+                        class="h-full w-full bg-[url(/images/hero/ta-14.jpg)] bg-cover bg-center"
                     ></div>
                 </div>
                 <div class="swiper-slide">
                     <div
-                        class="h-full w-full bg-[url(/images/hero/ta-6.jpeg)] bg-cover bg-center"
+                        class="h-full w-full bg-[url(/images/hero/ta-15.jpg)] bg-cover bg-center"
+                    ></div>
+                </div>
+                <div class="swiper-slide">
+                    <div
+                        class="h-full w-full bg-[url(/images/hero/ta-16.jpg)] bg-cover bg-center"
+                    ></div>
+                </div>
+                <div class="swiper-slide">
+                    <div
+                        class="h-full w-full bg-[url(/images/hero/ta-17.jpg)] bg-cover bg-center"
+                    ></div>
+                </div>
+                <!-- New images appended below -->
+                <div class="swiper-slide">
+                    <div
+                        class="h-full w-full bg-[url(/images/hero/ta-19.jpg)] bg-cover bg-center"
+                    ></div>
+                </div>
+                <div class="swiper-slide">
+                    <div
+                        class="h-full w-full bg-[url(/images/hero/ta-20.jpg)] bg-cover bg-center"
+                    ></div>
+                </div>
+                <div class="swiper-slide">
+                    <div
+                        class="h-full w-full bg-[url(/images/hero/ta-21.jpg)] bg-cover bg-center"
+                    ></div>
+                </div>
+                <div class="swiper-slide">
+                    <div
+                        class="h-full w-full bg-[url(/images/hero/ta-22.jpg)] bg-cover bg-center"
                     ></div>
                 </div>
             </div>

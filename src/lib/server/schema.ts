@@ -86,6 +86,7 @@ export const postTable = pgTable("posts", {
     image: varchar({ length: 512 }),
     status: varchar({ length: 32 }).notNull().default("draft"),
     featured: boolean("featured").notNull().default(false),
+    isTrendingNews: boolean("is_trending_news").notNull().default(false),
     deleted: boolean("deleted").notNull().default(false),
     views: integer("views").notNull().default(0),
     author: varchar({ length: 255 }).notNull().default("Admin"),

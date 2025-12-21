@@ -44,32 +44,28 @@
     const data = [
         {
             name: "ISAAC OLORUNMOWAJU",
-            image: "/images/placeholder.webp",
+            image: "/images/team/isaac-olorunmowaju.jpg",
             role: "",
         },
         {
             name: "Oluwagbemi Delight Adetunji",
-            image: "/images/placeholder.webp",
+            image: "/images/team/oluwagbemi-delight-adetunji.jpg",
             role: "",
         },
         {
             name: "Angel Tomi Olorunmonu",
-            image: "/images/placeholder.webp",
+            image: "/images/team/angel-tomi-olorunmonu.jpg",
             role: "",
         },
-        {
-            name: "Freeman David Nana",
-            image: "/images/placeholder.webp",
-            role: "",
-        },
+
         {
             name: "Victoria Ojima Abiodun",
-            image: "/images/placeholder.webp",
+            image: "/images/team/victoria-ojima-abiodun.jpg",
             role: "",
         },
         {
             name: "Fagbemi Janet okikiola",
-            image: "/images/placeholder.webp",
+            image: "/images/team/fagbemi-janet-okikiola.jpg",
             role: "",
         },
         {
@@ -78,16 +74,36 @@
             role: "",
         },
         {
+            name: "Aisha Deborah Egena-Aruwa",
+            image: "/images/team/aisha-deborah-egena-aruwa.jpg",
+            role: "",
+        },
+        {
             name: "Armstrong Ogundele",
-            image: "/images/placeholder.webp",
+            image: "/images/team/armstrong-ogundele.jpg",
             role: "",
         },
         {
             name: "Ipinymi korede precious",
-            image: "/images/placeholder.webp",
+            image: "/images/team/ipinymi-korede-precious.jpg",
             role: "",
         },
         { name: "Destiny Sunday", image: "/images/placeholder.webp", role: "" },
+        {
+            name: "Divine Micheal",
+            image: "/images/team/divine-micheal.jpg",
+            role: "",
+        },
+        {
+            name: "Azeema Aliu",
+            image: "/images/team/azeema-aliu.jpg",
+            role: "",
+        },
+        {
+            name: "Esther Ojoma Sule",
+            image: "/images/team/esther-ojoma-sule.jpg",
+            role: "",
+        },
     ];
 </script>
 
@@ -107,16 +123,18 @@
         <div class="swiper w-full" bind:this={swiperEl}>
             <div class="swiper-wrapper">
                 {#each data as item}
-                    <div class="swiper-slide">
-                        <div class="inner flex w-full flex-col gap-3">
-                            <img
-                                width="200"
-                                height="230"
-                                src={item.image}
-                                alt={item.name}
-                                class="w-full rounded-2xl object-cover"
-                            />
-                            <div>
+                    <div class="swiper-slide h-auto">
+                        <div class="inner flex w-full flex-col gap-3 h-full">
+                            <div
+                                class="w-full aspect-[3/4] overflow-hidden rounded-2xl"
+                            >
+                                <img
+                                    src={item.image}
+                                    alt={item.name}
+                                    class="h-full w-full object-cover object-center transition-transform duration-500 hover:scale-105"
+                                />
+                            </div>
+                            <div class="flex flex-col justify-start">
                                 <p
                                     class="text-[1.2rem] leading-none font-medium text-secondary/80"
                                 >

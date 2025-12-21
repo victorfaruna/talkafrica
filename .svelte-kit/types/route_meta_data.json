@@ -4,6 +4,7 @@
 	],
 	"/about": [],
 	"/admin": [
+		"src/routes/admin/+page.server.ts",
 		"src/routes/admin/+layout.server.ts",
 		"src/routes/admin/+layout.server.ts"
 	],
@@ -15,6 +16,9 @@
 	],
 	"/admin/posts/new": [
 		"src/routes/admin/+layout.server.ts"
+	],
+	"/african-giant": [
+		"src/routes/african-giant/+page.server.ts"
 	],
 	"/api/auth/login": [
 		"src/routes/api/auth/login/+server.ts"

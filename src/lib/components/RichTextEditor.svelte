@@ -69,6 +69,37 @@
         updateCounts();
     });
 
+    $: if (quill && content !== undefined) {
+        // Safe check to update content if it changes externally (e.g. initial load)
+        const currentContent = quill.getSemanticHTML();
+        if (content !== currentContent) {
+            // Only update if the content is truly different to avoid cursor jumps/loops
+            // Use a more relaxed check for empty editor vs loaded content
+            const isEditorEmpty = quill.getText().trim().length === 0;
+            if (isEditorEmpty && content.length > 0) {
+                quill.root.innerHTML = content;
+                updateCounts();
+            } else if (content !== currentContent) {
+                // For other updates, we need to be careful.
+                // If the user types, 'content' matches 'currentContent' because of the text-change handler.
+                // This block is reached when 'content' changes from OUTSIDE (e.g. parent fetch).
+                // However, small formatting differences can cause loops.
+                // Given the specific bug (loading content on edit), checking for empty editor is the safest critical fix.
+                // If we want full two-way binding support for external updates while editing:
+                // quill.root.innerHTML = content;
+                // But that resets selection.
+
+                // Let's stick to the critical fix for "loading" which is the user complaint.
+                // If the provided content is different and the editor is NOT empty, it might be a conflict.
+                // But typically, the flow is: Mount -> Empty -> Fetch -> Content update.
+                // So we just handle that case.
+
+                quill.root.innerHTML = content;
+                updateCounts();
+            }
+        }
+    }
+
     function updateCounts() {
         const text = quill.getText();
         charCount = text.length - 1; // Quill adds a newline

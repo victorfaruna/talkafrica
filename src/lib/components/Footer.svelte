@@ -2,6 +2,9 @@
     import { getCategoryHierarchy } from "$lib/categories";
 
     const { main_categories, subcategories } = getCategoryHierarchy();
+    const footerCategories = main_categories.filter(
+        (cat) => cat.slug !== "african-giant",
+    );
 </script>
 
 <footer class="bg-secondary/95 px-[var(--side-p)] py-16 text-primary">
@@ -106,7 +109,7 @@
             </div>
 
             <!-- Dynamic Categories -->
-            {#each main_categories as category}
+            {#each footerCategories as category}
                 <div>
                     <h4 class="mb-4 font-clash-grotesk text-lg font-semibold">
                         {category.display_name}

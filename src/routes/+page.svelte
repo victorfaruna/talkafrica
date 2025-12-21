@@ -8,21 +8,21 @@
     import Footer from "$lib/components/Footer.svelte";
     import Contact from "$lib/components/Contact.svelte";
     import AboutFounder from "$lib/components/AboutFounder.svelte";
+
+    import AfricanGiantOfWeek from "$lib/components/AfricanGiantOfWeek.svelte";
     export let data;
 </script>
 
 <div class="app-container w-full min-h-screen overflow-x-hidden flex flex-col">
     <Header />
     <Hero />
-    <Headlines
-        posts={data.featuredPosts.length
-            ? data.featuredPosts
-            : data.latestPosts}
-    />
+    <Headlines featured={data.featuredPosts} />
     <Latest posts={data.latestPosts} trendingPosts={data.trendingPosts} />
     <PopularBlogs posts={data.posts} />
+    <AfricanGiantOfWeek post={data.africanGiant} />
     <Donate />
     <AboutFounder />
+
     <Contact />
     <Footer />
 </div>

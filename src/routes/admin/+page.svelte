@@ -3,11 +3,13 @@
     import { browser } from "$app/environment";
     import { goto } from "$app/navigation";
 
+    export let data;
+
     // Admin state management
     let activeTab = "dashboard";
-    let posts: any[] = [];
+    let posts: any[] = data.posts || [];
     let users: any[] = [];
-    let stats = {
+    let stats = data.stats || {
         totalPosts: 0,
         totalUsers: 0,
         totalViews: 0,
@@ -20,83 +22,7 @@
 
     // Categories (unused here; managed in new post page)
 
-    onMount(async () => {
-        // Load initial data
-        await loadPosts();
-        loadStats();
-    });
-
-    async function loadPosts() {
-        try {
-            const response = await fetch("/api/posts");
-            const data = await response.json();
-
-            if (data.success) {
-                posts = data.posts;
-            } else {
-                console.error("Failed to load posts:", data.message);
-            }
-        } catch (error) {
-            console.error("Error loading posts:", error);
-        }
-    }
-
-    async function loadStats() {
-        try {
-            // Calculate stats from loaded posts
-            const totalViews = posts.reduce(
-                (sum, post) => sum + (post.views || 0),
-                0
-            );
-
-            let totalUsers = 0;
-            let totalComments = 0;
-
-            // Try to fetch real data from APIs with better error handling
-            try {
-                const [usersResponse, commentsResponse] = await Promise.all([
-                    fetch("/api/users").catch(() => null),
-                    fetch("/api/comments").catch(() => null),
-                ]);
-
-                if (usersResponse && usersResponse.ok) {
-                    const usersData = await usersResponse.json();
-                    totalUsers = usersData.totalUsers || 0;
-                }
-
-                if (commentsResponse && commentsResponse.ok) {
-                    const commentsData = await commentsResponse.json();
-                    totalComments = commentsData.totalComments || 0;
-                }
-            } catch (apiError) {
-                console.warn(
-                    "API calls failed, using fallback values:",
-                    apiError
-                );
-            }
-
-            stats = {
-                totalPosts: posts.length,
-                totalUsers: totalUsers,
-                totalViews: totalViews,
-                totalComments: totalComments,
-            };
-        } catch (error) {
-            console.error("Error loading stats:", error);
-            // Fallback to basic stats if everything fails
-            const totalViews = posts.reduce(
-                (sum, post) => sum + (post.views || 0),
-                0
-            );
-
-            stats = {
-                totalPosts: posts.length,
-                totalUsers: 0,
-                totalViews: totalViews,
-                totalComments: 0,
-            };
-        }
-    }
+    // onMount Removed - data is loaded server-side
 
     function editPost(post: any) {
         goto(`/admin/posts/new?post_id=${post.post_id}`);
@@ -143,7 +69,7 @@
             const data = await response.json();
             if (data.success) {
                 posts = posts.map((p) =>
-                    p.post_id === post.post_id ? { ...p, status: next } : p
+                    p.post_id === post.post_id ? { ...p, status: next } : p,
                 );
             }
         } catch (e) {
@@ -162,7 +88,7 @@
             const data = await response.json();
             if (data.success) {
                 posts = posts.map((p) =>
-                    p.post_id === post.post_id ? { ...p, featured: next } : p
+                    p.post_id === post.post_id ? { ...p, featured: next } : p,
                 );
             }
         } catch (e) {
@@ -174,7 +100,7 @@
     let searchTerm: string = "";
     $: filteredPosts = posts
         .filter((p) =>
-            filterStatus === "all" ? true : p.status === filterStatus
+            filterStatus === "all" ? true : p.status === filterStatus,
         )
         .filter((p) =>
             searchTerm
@@ -184,7 +110,7 @@
                   (p.excerpt || "")
                       .toLowerCase()
                       .includes(searchTerm.toLowerCase())
-                : true
+                : true,
         );
 
     // Post creation handled in the dedicated new/edit page
@@ -884,7 +810,7 @@
                                                     aria-label="Delete post"
                                                     on:click={() =>
                                                         confirmDelete(
-                                                            post.post_id
+                                                            post.post_id,
                                                         )}
                                                     class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                                                     title="Delete"

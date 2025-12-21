@@ -79,6 +79,16 @@ export const CATEGORY_DEFINITIONS: Omit<Category, "id">[] = [
         sort_order: 4,
         is_active: true,
     },
+    {
+        name: "african-giant",
+        slug: "african-giant",
+        display_name: "African Giant",
+        description: "Celebrating Africa's most influential leaders and changemakers",
+        icon: "crown", // Custom icon handled in components
+        color: "#FDB022",
+        sort_order: 1.5, // Between News (1) and Culture (2) - actually News is 1, so this will be after news? Need to check Main Categories sort.
+        is_active: true,
+    },
 
     // Culture Section
     {

@@ -76,7 +76,7 @@
 </script>
 
 <header
-    class="absolute top-0 right-0 left-0 z-[10] flex h-[100px] w-screen items-center justify-between gap-[1rem] bg-gradient-to-b from-secondary/60 to-transparent px-[var(--side-p)] text-primary"
+    class="absolute top-0 right-0 left-0 z-[999] flex h-[100px] w-screen items-center justify-between gap-[1rem] bg-gradient-to-b from-secondary/60 to-transparent px-[var(--side-p)] text-primary"
 >
     <div class="left part w-full">
         <button
@@ -105,7 +105,7 @@
             <li>
                 <a
                     href="/"
-                    class={`border-accent font-medium capitalize ${url.split("/")[1] === "" ? "border-b-2 pb-1" : ""} hh`}
+                    class={`border-accent font-medium capitalize whitespace-nowrap ${url.split("/")[1] === "" ? "border-b-2 pb-1" : ""} hh`}
                     >Home</a
                 >
             </li>
@@ -113,10 +113,13 @@
                 <li class="relative group">
                     <a
                         href={`/${category.slug}`}
-                        class={`border-accent font-medium capitalize ${category.slug === url.split("/")[1] ? "border-b-2 pb-1" : ""} hh flex items-center gap-1`}
+                        class={`border-accent font-medium capitalize whitespace-nowrap ${category.slug === url.split("/")[1] ? "border-b-2 pb-1" : ""} hh flex items-center gap-1`}
                         onmouseenter={() => handleMouseEnter(category.slug)}
                         onmouseleave={handleMouseLeave}
                     >
+                        {#if category.icon === "crown"}
+                            <span class="mr-0.5">👑</span>
+                        {/if}
                         {category.display_name}
                         {#if categoryHierarchy.subcategories[category.slug] && categoryHierarchy.subcategories[category.slug].length > 0}
                             <svg
@@ -138,8 +141,9 @@
                     <!-- Subcategories Dropdown -->
                     {#if categoryHierarchy.subcategories[category.slug] && categoryHierarchy.subcategories[category.slug].length > 0}
                         <div
-                            class="absolute top-full left-0 mt-1 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50"
+                            class="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-100 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[1000]"
                             role="menu"
+                            tabindex="-1"
                             onmouseenter={() => handleMouseEnter(category.slug)}
                             onmouseleave={handleMouseLeave}
                         >
@@ -147,7 +151,7 @@
                                 {#each categoryHierarchy.subcategories[category.slug] as subcategory}
                                     <a
                                         href={`/${subcategory.slug}`}
-                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-accent transition-colors"
+                                        class="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 hover:text-accent transition-colors"
                                     >
                                         {subcategory.display_name}
                                     </a>
@@ -160,7 +164,7 @@
                     <li>
                         <a
                             href="/about"
-                            class={`border-accent font-medium capitalize ${url.split("/")[1] === "about" ? "border-b-2 pb-1" : ""} hh`}
+                            class={`border-accent font-medium capitalize whitespace-nowrap ${url.split("/")[1] === "about" ? "border-b-2 pb-1" : ""} hh`}
                             >About Us</a
                         >
                     </li>

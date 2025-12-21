@@ -98,6 +98,7 @@ export const POST: RequestHandler = async ({ request }) => {
             image,
             status,
             featured,
+            isTrendingNews, // Extract new field
         } = body;
 
         if (!title || !content) {
@@ -120,6 +121,7 @@ export const POST: RequestHandler = async ({ request }) => {
                 image,
                 status: status ?? "draft",
                 featured: Boolean(featured),
+                isTrendingNews: Boolean(isTrendingNews), // Save to DB
             })
             .returning();
 
