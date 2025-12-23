@@ -244,7 +244,10 @@
                 await new Promise((resolve) => setTimeout(resolve, 500));
                 goto("/admin");
             } else {
-                alert(data.message || "Failed to create post");
+                alert(
+                    data.message + (data.error ? ": " + data.error : "") ||
+                        "Failed to create/update post",
+                );
             }
         } catch (error) {
             console.error("Save error:", error);

@@ -1,7 +1,7 @@
 import type { PageServerLoad } from "./$types";
 import { error } from "@sveltejs/kit";
 import { db } from "$lib/server/db";
-import { eq, and, ne, desc, inArray } from "drizzle-orm";
+import { eq, and, ne, desc, inArray, sql } from "drizzle-orm";
 import { postTable, postCategoriesTable } from "$lib/server/schema";
 
 export const load: PageServerLoad = async ({ params }) => {
@@ -14,8 +14,23 @@ export const load: PageServerLoad = async ({ params }) => {
                 and(eq(postTable.post_id, post_id), eq(postTable.deleted, false))
             );
 
+
         if (!post || post.status !== "published") {
             throw error(404, "Post not found");
+        }
+
+        // Increment views
+        try {
+            console.log(`Debug: Attempting to increment views for post ${post_id}`);
+            const result = await db
+                .update(postTable)
+                .set({ views: sql`${postTable.views} + 1` })
+                .where(eq(postTable.post_id, post_id))
+                .returning({ views: postTable.views }); // Returning to check new value
+            console.log("Debug: View increment result:", result);
+        } catch (e) {
+            console.error("Failed to increment views:", e);
+            // Non-critical error, continue loading page
         }
 
         // Fetch categories for this post
@@ -25,14 +40,14 @@ export const load: PageServerLoad = async ({ params }) => {
                 .select({ category_slug: postCategoriesTable.category_slug })
                 .from(postCategoriesTable)
                 .where(eq(postCategoriesTable.post_id, post_id));
-            
+
             categorySlugs = postCategories.map((pc) => pc.category_slug);
         } catch (err) {
             // If post_categories table doesn't exist or query fails, 
             // fall back to legacy category field
             console.warn("Failed to fetch post categories, falling back to legacy category field:", err);
         }
-        
+
         // Include legacy category if exists and not already in array
         if (post.category && !categorySlugs.includes(post.category)) {
             categorySlugs.push(post.category);
@@ -42,7 +57,7 @@ export const load: PageServerLoad = async ({ params }) => {
         let relatedPosts = [];
         if (categorySlugs.length > 0) {
             const relatedPostIdSet = new Set<string>();
-            
+
             // Try to get related posts from post_categories table
             try {
                 const relatedPostIds = await db
@@ -60,7 +75,7 @@ export const load: PageServerLoad = async ({ params }) => {
                             eq(postTable.deleted, false)
                         )
                     );
-                
+
                 relatedPostIds.forEach((p) => relatedPostIdSet.add(p.post_id));
             } catch (err) {
                 // If post_categories table doesn't exist, skip this query
@@ -142,19 +157,19 @@ export const load: PageServerLoad = async ({ params }) => {
         };
     } catch (err) {
         console.error("Error loading post:", err);
-        
+
         // If it's already a SvelteKit error, re-throw it
         if (err && typeof err === "object" && "status" in err) {
             throw err;
         }
-        
+
         const errorMessage = err instanceof Error ? err.message : "Unknown error";
-        
+
         // If it's a database connection error, provide a helpful message
         if (errorMessage.includes("DATABASE_URL") || errorMessage.includes("connection") || errorMessage.includes("ECONNREFUSED")) {
             throw error(500, "Database connection failed. Please check your DATABASE_URL environment variable.");
         }
-        
+
         throw error(500, `Failed to load post: ${errorMessage}`);
     }
 };

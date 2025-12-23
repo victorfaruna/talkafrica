@@ -81,7 +81,7 @@ export const postTable = pgTable("posts", {
         .notNull(),
     title: varchar({ length: 255 }).notNull(),
     content: text("content").notNull(),
-    excerpt: varchar({ length: 512 }),
+    excerpt: text("excerpt"),
     category: varchar({ length: 128 }), // Kept for backward compatibility, nullable
     image: varchar({ length: 512 }),
     status: varchar({ length: 32 }).notNull().default("draft"),
@@ -90,8 +90,8 @@ export const postTable = pgTable("posts", {
     deleted: boolean("deleted").notNull().default(false),
     views: integer("views").notNull().default(0),
     author: varchar({ length: 255 }).notNull().default("Admin"),
-    created_at: timestamp().notNull().defaultNow(),
-    updated_at: timestamp().notNull().defaultNow(),
+    created_at: timestamp("created_at").notNull().defaultNow(),
+    updated_at: timestamp("updated_at").notNull().defaultNow(),
 });
 
 // Junction table for many-to-many relationship between posts and categories

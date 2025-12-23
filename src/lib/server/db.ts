@@ -10,5 +10,8 @@ if (!DATABASE_URL) {
 }
 
 // const client = postgres(DATABASE_URL, { ssl: 'require', port: 5432 });
-const client = postgres(DATABASE_URL, { idle_timeout: 6000 });
+const client = postgres(DATABASE_URL, {
+    idle_timeout: 6000,
+    prepare: false
+});
 export const db = drizzle(client, { schema });

@@ -6,31 +6,46 @@ import { postTable, postCategoriesTable } from "$lib/server/schema";
 
 export const load: PageServerLoad = async () => {
     try {
-        const published = await db
+        const baseWhere = and(
+            eq(postTable.status, "published"),
+            eq(postTable.deleted, false)
+        );
+
+        // Execute queries sequentially to avoid connection pool exhaustion
+
+        // Featured posts
+        const featured = await db
             .select()
             .from(postTable)
-            .where(
-                and(eq(postTable.status, "published"), eq(postTable.deleted, false))
-            )
-            .orderBy(desc(postTable.created_at));
+            .where(and(baseWhere, eq(postTable.featured, true)))
+            .orderBy(desc(postTable.created_at))
+            .limit(4);
 
-        const featured = published.filter((p) => p.featured);
+        // Latest posts
+        const latest = await db
+            .select()
+            .from(postTable)
+            .where(baseWhere)
+            .orderBy(desc(postTable.created_at))
+            .limit(6);
 
-        // Get trending posts (most viewed, excluding featured posts)
+        // Popular posts (sorted by views)
+        const popular = await db
+            .select()
+            .from(postTable)
+            .where(baseWhere)
+            .orderBy(desc(postTable.views))
+            .limit(6);
+
+        // Trending posts
         const trending = await db
             .select()
             .from(postTable)
-            .where(
-                and(
-                    eq(postTable.status, "published"),
-                    eq(postTable.deleted, false),
-                    eq(postTable.isTrendingNews, true) // Filter by manual selection
-                )
-            )
-            .orderBy(desc(postTable.views), desc(postTable.created_at))
+            .where(and(baseWhere, eq(postTable.isTrendingNews, true)))
+            .orderBy(desc(postTable.created_at))
             .limit(5);
 
-        // Get African Giant of the Week
+        // African Giant of the Week
         const africanGiantPosts = await db
             .select({
                 id: postTable.id,
@@ -56,22 +71,25 @@ export const load: PageServerLoad = async () => {
             )
             .where(
                 and(
-                    eq(postTable.status, "published"),
-                    eq(postTable.deleted, false),
+                    baseWhere,
                     eq(postCategoriesTable.category_slug, "african-giant")
                 )
             )
             .orderBy(desc(postTable.created_at))
             .limit(1);
 
+        // Calculate Stats
+
+
         const africanGiant = africanGiantPosts[0] || null;
 
         return {
-            posts: published,
+            posts: popular, // Pass popular posts to the 'posts' prop used by PopularBlogs
             featuredPosts: featured,
-            latestPosts: published.slice(0, 6),
+            latestPosts: latest,
             trendingPosts: trending,
             africanGiant,
+
         };
     } catch (err) {
         console.error("Error loading posts:", err);

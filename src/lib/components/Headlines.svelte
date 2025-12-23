@@ -76,7 +76,7 @@
 
 <section
     id="headlines"
-    class="flex w-screen max-w-[1900px] mx-auto flex-col gap-[2rem] px-[var(--side-p)] pt-[4rem]"
+    class="flex w-screen max-w-[1900px] mx-auto flex-col gap-[2rem] px-[var(--side-p)] pt-[2rem]"
 >
     <!-- Grid Container with Fixed Height on Desktop -->
     <div class="flex flex-col lg:flex-row gap-2 w-full lg:h-[520px]">

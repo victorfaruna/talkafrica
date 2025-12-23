@@ -10,38 +10,68 @@ export const GET: RequestHandler = async ({ url }) => {
         const status = url.searchParams.get("status");
         const category = url.searchParams.get("category");
         const featured = url.searchParams.get("featured");
-        const includeDeleted =
-            url.searchParams.get("includeDeleted") === "true";
+        const limitParam = url.searchParams.get("limit");
+        const limit = limitParam ? parseInt(limitParam) : undefined;
+        const includeDeleted = url.searchParams.get("includeDeleted") === "true";
 
-        let results = await db
-            .select()
+        let query = db
+            .select({
+                id: postTable.id,
+                post_id: postTable.post_id,
+                title: postTable.title,
+                content: postTable.content,
+                excerpt: postTable.excerpt,
+                category: postTable.category,
+                image: postTable.image,
+                status: postTable.status,
+                featured: postTable.featured,
+                isTrendingNews: postTable.isTrendingNews, // Ensure this is selected
+                deleted: postTable.deleted,
+                views: postTable.views,
+                author: postTable.author,
+                created_at: postTable.created_at,
+                updated_at: postTable.updated_at,
+            })
             .from(postTable)
-            .where(includeDeleted ? undefined : eq(postTable.deleted, false))
-            .orderBy(desc(postTable.created_at));
+            .$dynamic(); // Enable dynamic query building
 
-        // Filter by status and featured
-        const filtered = results.filter((p) => {
-            if (status && p.status !== status) return false;
-            if (featured === "true" && !p.featured) return false;
-            return true;
-        });
+        const filters = [];
 
-        // If category filter is provided, filter by junction table
-        let finalPosts = filtered;
-        if (category) {
-            const postIdsWithCategory = await db
-                .select({ post_id: postCategoriesTable.post_id })
-                .from(postCategoriesTable)
-                .where(eq(postCategoriesTable.category_slug, category));
-
-            const postIdSet = new Set(
-                postIdsWithCategory.map((p) => p.post_id)
-            );
-            finalPosts = filtered.filter((p) => postIdSet.has(p.post_id));
+        if (!includeDeleted) {
+            filters.push(eq(postTable.deleted, false));
         }
 
-        // Fetch all categories for all posts in one query (optimized)
-        const postIds = finalPosts.map((p) => p.post_id);
+        if (status) {
+            filters.push(eq(postTable.status, status));
+        }
+
+        if (featured === "true") {
+            filters.push(eq(postTable.featured, true));
+        }
+
+        // Join with categories table if category filter is present
+        if (category) {
+            query = query.innerJoin(
+                postCategoriesTable,
+                eq(postTable.post_id, postCategoriesTable.post_id)
+            );
+            filters.push(eq(postCategoriesTable.category_slug, category));
+        }
+
+        if (filters.length > 0) {
+            query = query.where(and(...filters));
+        }
+
+        query = query.orderBy(desc(postTable.created_at));
+
+        if (limit) {
+            query = query.limit(limit);
+        }
+
+        const results = await query;
+
+        // Fetch all categories for the result posts to fully populate the response
+        const postIds = results.map((p) => p.post_id);
         let postCategoriesMap = new Map<string, string[]>();
 
         if (postIds.length > 0) {
@@ -53,7 +83,6 @@ export const GET: RequestHandler = async ({ url }) => {
                 .from(postCategoriesTable)
                 .where(inArray(postCategoriesTable.post_id, postIds));
 
-            // Group categories by post_id
             for (const pc of allPostCategories) {
                 if (!postCategoriesMap.has(pc.post_id)) {
                     postCategoriesMap.set(pc.post_id, []);
@@ -62,8 +91,7 @@ export const GET: RequestHandler = async ({ url }) => {
             }
         }
 
-        // Add categories to each post
-        const postsWithCategories = finalPosts.map((post) => ({
+        const postsWithCategories = results.map((post) => ({
             ...post,
             categories: postCategoriesMap.get(post.post_id) || [],
         }));
@@ -74,6 +102,7 @@ export const GET: RequestHandler = async ({ url }) => {
             total: postsWithCategories.length,
         });
     } catch (error) {
+        console.error("Error fetching posts:", error);
         return json(
             {
                 success: false,

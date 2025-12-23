@@ -1,16 +1,19 @@
 import { db } from '$lib/server/db';
 import { adminTable, commentsTable, postTable, usersTable } from '$lib/server/schema';
-import { count, desc, sum } from 'drizzle-orm';
+import { count, desc, sum, eq } from 'drizzle-orm';
 
 export const load = async () => {
     try {
-        const [postsCount] = await db.select({ count: count() }).from(postTable);
+        const [postsCount] = await db.select({ count: count() }).from(postTable).where(eq(postTable.deleted, false));
         const [usersCount] = await db.select({ count: count() }).from(usersTable);
         const [commentsCount] = await db.select({ count: count() }).from(commentsTable);
-        const [viewsSum] = await db.select({ total: sum(postTable.views) }).from(postTable);
+        const [viewsSum] = await db.select({ total: sum(postTable.views) }).from(postTable).where(eq(postTable.deleted, false));
 
-        const recentPosts = await db.select().from(postTable).orderBy(desc(postTable.created_at)).limit(5);
-        const allPosts = await db.select().from(postTable).orderBy(desc(postTable.created_at));
+        console.log("Debug Admin Stats - Views Sum View:", viewsSum);
+        console.log("Debug Admin Stats - Total Posts:", postsCount);
+
+        const recentPosts = await db.select().from(postTable).where(eq(postTable.deleted, false)).orderBy(desc(postTable.created_at)).limit(5);
+        const allPosts = await db.select().from(postTable).where(eq(postTable.deleted, false)).orderBy(desc(postTable.created_at));
 
         return {
             stats: {
