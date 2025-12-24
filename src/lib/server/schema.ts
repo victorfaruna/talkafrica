@@ -94,10 +94,18 @@ export const postTable = pgTable("posts", {
     updated_at: timestamp("updated_at").notNull().defaultNow(),
 });
 
+
 // Junction table for many-to-many relationship between posts and categories
 export const postCategoriesTable = pgTable("post_categories", {
     id: serial("id").primaryKey(),
     post_id: uuid("post_id").notNull(),
     category_slug: varchar({ length: 128 }).notNull(),
     created_at: timestamp().notNull().defaultNow(),
+});
+
+export const sessionsTable = pgTable("sessions", {
+    id: serial("id").primaryKey(),
+    session_id: varchar({ length: 255 }).notNull().unique(),
+    last_seen: timestamp("last_seen").notNull().defaultNow(),
+    created_at: timestamp("created_at").notNull().defaultNow(),
 });
