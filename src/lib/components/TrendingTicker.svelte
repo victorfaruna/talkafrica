@@ -38,10 +38,10 @@
 
 {#if posts.length > 0}
     <div
-        class="w-screen max-w-[1900px] mx-auto px-[var(--side-p)] mt-4 mb-2 z-10 relative"
+        class="w-screen max-w-[1900px] mx-auto px-[var(--side-p)] mt-6 mb-6 z-10 relative"
     >
         <div
-            class="w-full bg-white border border-gray-100 shadow-sm rounded-md flex items-center pr-2 lg:pr-4 overflow-hidden h-[50px] lg:h-[60px]"
+            class="w-full bg-white shadow-md rounded-xl flex items-center pr-2 lg:pr-4 overflow-hidden h-[50px] lg:h-[60px]"
             role="region"
             aria-label="Trending News Ticker"
             onmouseenter={stopAutoplay}
@@ -49,9 +49,15 @@
         >
             <!-- Label -->
             <div
-                class="bg-accent text-white px-4 lg:px-6 h-full flex items-center justify-center font-bold text-xs lg:text-sm shrink-0"
+                class="bg-black text-[var(--color-accent)] px-2 lg:px-6 h-full flex items-center justify-center font-black text-[9px] lg:text-sm shrink-0 transition-all duration-300 gap-1 lg:gap-2"
             >
-                <span class="tracking-widest uppercase">Trending Now</span>
+                <div class="animate-pulse lg:block hidden">⚡</div>
+                <div class="animate-pulse lg:hidden text-[10px]">⚡</div>
+                <span class="tracking-widest uppercase hidden sm:inline"
+                    >Trending Now</span
+                >
+                <span class="tracking-widest uppercase sm:hidden">Trending</span
+                >
             </div>
 
             <!-- Content Area -->
@@ -69,7 +75,7 @@
                     >
                         <a
                             href="/posts/{posts[currentIndex].post_id}"
-                            class="text-black hover:text-accent font-bold text-sm lg:text-base truncate w-full block transition-colors"
+                            class="text-gray-900 hover:text-[var(--color-accent)] font-semibold text-sm lg:text-base truncate w-full block transition-colors"
                         >
                             {posts[currentIndex].title}
                         </a>

@@ -4,6 +4,18 @@ import { eq, sql } from 'drizzle-orm';
 import { randomUUID } from 'crypto';
 
 export const handle = async ({ event, resolve }) => {
+    const path = event.url.pathname;
+
+    // Skip session tracking for static assets, internal paths, and API calls to avoid DB congestion
+    if (
+        path.startsWith('/_app/') ||
+        path.startsWith('/images/') ||
+        path.startsWith('/favicon') ||
+        path.includes('.')
+    ) {
+        return await resolve(event);
+    }
+
     let session_id = event.cookies.get('session_id');
 
     if (!session_id) {

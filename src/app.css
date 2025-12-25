@@ -9,6 +9,14 @@
 
 	--font-poppins: 'Poppins', sans-serif;
 	--font-clash-grotesk: 'ClashGrotesk', sans-serif;
+
+	--side-p: 1rem;
+}
+
+@media (min-width: 1024px) {
+	:root {
+		--side-p: 6rem;
+	}
 }
 
 body {
@@ -300,16 +308,18 @@ body {
 	content: '☐';
 	position: absolute;
 	left: 0;
-}/* NProgress Customization */
+}
+
+/* NProgress Customization */
 #nprogress .bar {
-    background: var(--color-accent) !important;
-    height: 3px !important;
+	background: var(--color-accent) !important;
+	height: 3px !important;
 }
 
 #nprogress .peg {
-    box-shadow: 0 0 10px var(--color-accent), 0 0 5px var(--color-accent) !important;
+	box-shadow: 0 0 10px var(--color-accent), 0 0 5px var(--color-accent) !important;
 }
 
 #nprogress .spinner {
-    display: none !important;
+	display: none !important;
 }

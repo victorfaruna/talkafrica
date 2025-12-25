@@ -79,7 +79,7 @@
     class="flex w-screen max-w-[1900px] mx-auto flex-col gap-[2rem] px-[var(--side-p)] pt-[2rem]"
 >
     <!-- Grid Container with Fixed Height on Desktop -->
-    <div class="flex flex-col lg:flex-row gap-2 w-full lg:h-[520px]">
+    <div class="flex flex-col lg:flex-row gap-4 w-full lg:h-[580px]">
         <!-- Left Column: Carousel (70%) -->
         <div class="w-full lg:w-[70%] h-[280px] lg:h-full relative group">
             <!-- Navigation removed as requested -->
@@ -87,7 +87,7 @@
             <swiper-container
                 bind:this={swiperEl}
                 init="false"
-                class="h-full w-full rounded-[8px] overflow-hidden block"
+                class="h-full w-full rounded-2xl overflow-hidden block shadow-lg"
             >
                 {#each featured as post}
                     <swiper-slide class="w-full h-full relative block">
@@ -111,13 +111,13 @@
                             >
                                 {#if post.category}
                                     <span
-                                        class="mb-3 inline-block rounded bg-white/20 px-2 py-1 text-xs backdrop-blur-sm"
+                                        class="mb-3 inline-block rounded bg-white/20 px-2 py-1 text-xs backdrop-blur-sm text-white"
                                     >
                                         {post.category}
                                     </span>
                                 {/if}
                                 <h3
-                                    class="text-xl lg:text-3xl font-bold leading-tight mb-2 drop-shadow-md"
+                                    class="text-xl lg:text-4xl font-black leading-tight mb-2 drop-shadow-md tracking-tight uppercase"
                                 >
                                     {post.title}
                                 </h3>
@@ -137,11 +137,11 @@
 
         <!-- Right Column: Sidebar Static Items (30%) -->
         <div
-            class="flex flex-row lg:flex-col gap-2 w-full flex-[1] lg:h-full overflow-hidden"
+            class="flex flex-row lg:flex-col gap-4 w-full flex-[1] lg:h-full overflow-hidden"
         >
             <!-- Top Box: activeIndex + 1 -->
             <div
-                class="relative w-full h-[160px] lg:h-auto lg:flex-1 overflow-hidden rounded-[8px]"
+                class="relative w-full h-[180px] lg:h-auto lg:flex-1 overflow-hidden rounded-2xl shadow-md"
             >
                 {#key (activeIndex + 1) % featured.length}
                     {@const s = featured[(activeIndex + 1) % featured.length]}
@@ -163,7 +163,7 @@
                         <div class="absolute bottom-0 p-3 text-white">
                             {#if s.category}
                                 <span
-                                    class="mb-2 inline-block rounded bg-white/20 px-2 py-0.5 text-[10px] backdrop-blur-sm"
+                                    class="mb-2 inline-block rounded bg-white/20 px-2 py-0.5 text-[10px] backdrop-blur-sm text-white"
                                 >
                                     {s.category}
                                 </span>
@@ -180,7 +180,7 @@
 
             <!-- Bottom Box: activeIndex + 2 -->
             <div
-                class="relative w-full h-[160px] lg:h-auto lg:flex-1 overflow-hidden rounded-[8px]"
+                class="relative w-full h-[180px] lg:h-auto lg:flex-1 overflow-hidden rounded-2xl shadow-md"
             >
                 {#key (activeIndex + 2) % featured.length}
                     {@const s = featured[(activeIndex + 2) % featured.length]}
@@ -206,7 +206,7 @@
                         <div class="absolute bottom-0 p-3 text-white">
                             {#if s.category}
                                 <span
-                                    class="mb-2 inline-block rounded bg-white/20 px-2 py-0.5 text-[10px] backdrop-blur-sm"
+                                    class="mb-2 inline-block rounded bg-white/20 px-2 py-0.5 text-[10px] backdrop-blur-sm text-white"
                                 >
                                     {s.category}
                                 </span>

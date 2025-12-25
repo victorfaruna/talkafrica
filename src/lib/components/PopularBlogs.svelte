@@ -15,12 +15,18 @@
 <section
     class="flex max-w-[1900px] mx-auto flex-col gap-[0.5rem] px-[var(--side-p)] py-[2rem] lg:py-[4rem]"
 >
-    <p class="section-title font-clash-grotesk text-[1.2rem] lg:text-[3rem]">
+    <h2
+        class="section-title font-clash-grotesk font-bold text-2xl lg:text-5xl mb-8 lg:mb-12 border-l-4 border-[var(--color-accent)] pl-4 lg:pl-6 leading-tight"
+    >
         Popular Blogs
-    </p>
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-x-[0.4rem] gap-y-[0.5rem]">
+    </h2>
+    <div
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8"
+    >
         {#if list.length === 0}
-            <div class="text-secondary/50">No popular posts yet.</div>
+            <div class="text-secondary/50 col-span-full text-center py-10">
+                No popular posts yet.
+            </div>
         {:else}
             {#each list as item}
                 <a
@@ -29,41 +35,43 @@
                     class="h-full block group"
                 >
                     <div
-                        class="flex w-full h-full flex-col gap-4 rounded-2xl px-2 py-4 shadow-lg shadow-secondary/5 transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-2xl bg-white justify-between"
+                        class="flex w-full h-full flex-col gap-4 rounded-2xl bg-white p-4 shadow-sm hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1 border border-transparent hover:border-gray-100 ring-1 ring-black/5"
                     >
                         <div
-                            class="overflow-hidden rounded-2xl h-[] lg:h-[250px] w-full"
+                            class="overflow-hidden rounded-xl aspect-[4/3] w-full relative"
                         >
                             <img
                                 src={item.image}
                                 alt={item.title}
-                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                             />
                         </div>
-                        <p
-                            class="pr-10 text-[0.8rem] lg:text-[1rem] leading-none font-medium text-secondary/80 line-clamp-2 flex-grow"
-                        >
-                            {item.title}
-                        </p>
-                        <button
-                            class="self-start mt-auto rounded-[0.5rem] border border-accent/50 px-5 py-2 text-accent transition-colors duration-300 group-hover:bg-accent group-hover:text-white"
-                            aria-label={`Read ${item.title}`}
-                        >
-                            Read More <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke-width="1.5"
-                                stroke="currentColor"
-                                class="size-6 inline"
+                        <div class="flex flex-col flex-grow gap-3">
+                            <h3
+                                class="text-lg lg:text-xl font-bold text-gray-900 line-clamp-2 group-hover:text-[var(--color-accent)] transition-colors"
                             >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3"
-                                />
-                            </svg>
-                        </button>
+                                {item.title}
+                            </h3>
+                            <button
+                                class="mt-auto self-start text-sm font-semibold text-[var(--color-accent)] flex items-center gap-2 group-hover:gap-3 transition-all"
+                            >
+                                Read Article
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke-width="2"
+                                    stroke="currentColor"
+                                    class="w-4 h-4"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+                                    />
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </a>
             {/each}
