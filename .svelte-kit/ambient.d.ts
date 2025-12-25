@@ -30,6 +30,7 @@ declare module '$env/static/private' {
 	export const SUPABASE_URL: string;
 	export const SUPABASE_ANON_KEY: string;
 	export const ALLUSERSPROFILE: string;
+	export const ANTIGRAVITY_AGENT: string;
 	export const ANTIGRAVITY_CLI_ALIAS: string;
 	export const APPDATA: string;
 	export const BUNDLED_DEBUGPY_PATH: string;
@@ -82,6 +83,7 @@ declare module '$env/static/private' {
 	export const OneDriveConsumer: string;
 	export const ORIGINAL_XDG_CURRENT_DESKTOP: string;
 	export const OS: string;
+	export const PAGER: string;
 	export const Path: string;
 	export const PATHEXT: string;
 	export const PROCESSOR_ARCHITECTURE: string;
@@ -150,6 +152,7 @@ declare module '$env/dynamic/private' {
 		SUPABASE_URL: string;
 		SUPABASE_ANON_KEY: string;
 		ALLUSERSPROFILE: string;
+		ANTIGRAVITY_AGENT: string;
 		ANTIGRAVITY_CLI_ALIAS: string;
 		APPDATA: string;
 		BUNDLED_DEBUGPY_PATH: string;
@@ -202,6 +205,7 @@ declare module '$env/dynamic/private' {
 		OneDriveConsumer: string;
 		ORIGINAL_XDG_CURRENT_DESKTOP: string;
 		OS: string;
+		PAGER: string;
 		Path: string;
 		PATHEXT: string;
 		PROCESSOR_ARCHITECTURE: string;
