@@ -2,19 +2,20 @@
     export let post: any = null;
 </script>
 
-<section class="african-giant-section my-16">
+<section class="african-giant-section py-8 md:my-16">
     <div class="container mx-auto px-4 max-w-7xl">
         <h2
-            class="text-center font-clash-grotesk text-4xl font-bold mb-10 text-gray-900 flex items-center justify-center gap-3"
+            class="text-center font-clash-grotesk text-2xl md:text-4xl font-bold mb-6 md:mb-10 text-gray-900 flex items-center justify-center gap-2 md:gap-3"
         >
-            <span class="text-3xl">👑</span> African Giant of the Week
+            <span class="text-xl md:text-3xl md:inline">👑</span> African Giant of
+            the Week
         </h2>
 
         {#if post}
             <div
-                class="giant-card max-w-5xl mx-auto grid md:grid-cols-2 gap-0 bg-white rounded-2xl overflow-hidden shadow-xl border border-yellow-100"
+                class="giant-card max-w-5xl mx-auto grid md:grid-cols-2 gap-0 bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-lg md:shadow-xl border border-yellow-100"
             >
-                <div class="relative h-64 md:h-auto min-h-[300px]">
+                <div class="relative h-56 md:h-auto md:min-h-[300px]">
                     <img
                         src={post.featured_image ||
                             post.image ||
@@ -27,34 +28,34 @@
                     ></div>
                 </div>
 
-                <div class="content p-8 md:p-12 flex flex-col justify-center">
-                    <div class="mb-4">
+                <div class="content p-5 md:p-12 flex flex-col justify-center">
+                    <div class="mb-3 md:mb-4">
                         <span
-                            class="badge inline-block bg-gradient-to-r from-yellow-400 to-yellow-600 text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-sm"
+                            class="badge inline-block bg-gradient-to-r from-yellow-400 to-yellow-600 text-white px-3 py-1 md:px-4 md:py-1.5 rounded-full text-xs md:text-sm font-bold shadow-sm"
                         >
                             African Giant
                         </span>
                     </div>
 
                     <h3
-                        class="font-clash-grotesk text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight"
+                        class="font-clash-grotesk text-xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 md:mb-4 leading-tight"
                     >
                         {post.title}
                     </h3>
 
                     <p
-                        class="text-gray-600 text-lg leading-relaxed mb-8 line-clamp-4"
+                        class="text-gray-600 text-sm md:text-lg leading-relaxed mb-5 md:mb-8 line-clamp-3 md:line-clamp-4"
                     >
                         {post.excerpt}
                     </p>
 
                     <a
                         href="/posts/{post.post_id}"
-                        class="read-more inline-flex items-center justify-center bg-yellow-500 hover:bg-yellow-600 text-white px-8 py-3 rounded-lg font-bold transition-all transform hover:-translate-y-1 hover:shadow-lg w-fit"
+                        class="read-more inline-flex items-center justify-center bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2.5 md:px-8 md:py-3 rounded-lg font-bold text-sm md:text-base transition-all transform hover:-translate-y-1 hover:shadow-lg w-fit"
                     >
                         Read Full Story
                         <svg
-                            class="w-5 h-5 ml-2"
+                            class="w-4 h-4 md:w-5 md:h-5 ml-2"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -70,25 +71,25 @@
             </div>
         {:else}
             <div
-                class="text-center p-12 bg-yellow-50 rounded-xl border border-yellow-100 max-w-4xl mx-auto"
+                class="text-center p-8 md:p-12 bg-yellow-50 rounded-xl border border-yellow-100 max-w-4xl mx-auto"
             >
-                <p class="text-xl text-yellow-800 font-medium">
+                <p class="text-lg md:text-xl text-yellow-800 font-medium">
                     Coming Soon: Calling all Giants!
                 </p>
-                <p class="text-gray-600 mt-2">
+                <p class="text-gray-600 mt-2 text-sm md:text-base">
                     No African Giant featured this week yet.
                 </p>
             </div>
         {/if}
 
-        <div class="text-center mt-8">
+        <div class="text-center mt-6 md:mt-8">
             <a
                 href="/african-giant"
-                class="view-all inline-flex items-center text-yellow-600 hover:text-yellow-700 font-bold text-lg hover:underline decoration-2 underline-offset-4 transition-all"
+                class="view-all inline-flex items-center text-yellow-600 hover:text-yellow-700 font-bold text-base md:text-lg hover:underline decoration-2 underline-offset-4 transition-all"
             >
                 View All African Giants
                 <svg
-                    class="w-5 h-5 ml-1"
+                    class="w-4 h-4 md:w-5 md:h-5 ml-1"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"

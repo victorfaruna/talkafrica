@@ -206,20 +206,20 @@
         <aside
             class="bg-white border-b border-gray-200 lg:border-b-0 lg:border-r lg:w-64 w-full lg:sticky lg:top-0 lg:self-start lg:max-h-[calc(100vh-80px)] lg:overflow-y-auto"
         >
-            <nav class="p-4">
+            <nav class="p-3 lg:p-4">
                 <ul
-                    class="flex gap-2 overflow-x-auto pb-1 lg:flex-col lg:space-y-1 lg:gap-0 lg:pb-0"
+                    class="grid grid-cols-2 gap-2 lg:flex lg:flex-col lg:space-y-1 lg:gap-0"
                 >
                     <li>
                         <button
-                            class="flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors flex-shrink-0 min-w-[150px] lg:w-full lg:min-w-0 {activeTab ===
+                            class="flex items-center justify-center lg:justify-start gap-2 lg:gap-3 px-3 py-3 lg:py-2 text-xs sm:text-sm rounded-lg transition-all w-full {activeTab ===
                             'dashboard'
-                                ? 'bg-accent text-white'
+                                ? 'bg-accent text-white shadow-sm'
                                 : 'text-gray-700 hover:bg-gray-100'}"
                             on:click={() => (activeTab = "dashboard")}
                         >
                             <svg
-                                class="w-5 h-5"
+                                class="w-4 h-4 lg:w-5 lg:h-5"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -231,19 +231,19 @@
                                     d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
                                 />
                             </svg>
-                            Dashboard
+                            <span>Dashboard</span>
                         </button>
                     </li>
                     <li>
                         <button
-                            class="flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors flex-shrink-0 min-w-[150px] lg:w-full lg:min-w-0 {activeTab ===
+                            class="flex items-center justify-center lg:justify-start gap-2 lg:gap-3 px-3 py-3 lg:py-2 text-xs sm:text-sm rounded-lg transition-all w-full {activeTab ===
                             'posts'
-                                ? 'bg-accent text-white'
+                                ? 'bg-accent text-white shadow-sm'
                                 : 'text-gray-700 hover:bg-gray-100'}"
                             on:click={() => (activeTab = "posts")}
                         >
                             <svg
-                                class="w-5 h-5"
+                                class="w-4 h-4 lg:w-5 lg:h-5"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -255,19 +255,19 @@
                                     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                                 />
                             </svg>
-                            Posts
+                            <span>Posts</span>
                         </button>
                     </li>
                     <li>
                         <button
-                            class="flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors flex-shrink-0 min-w-[150px] lg:w-full lg:min-w-0 {activeTab ===
+                            class="flex items-center justify-center lg:justify-start gap-2 lg:gap-3 px-3 py-3 lg:py-2 text-xs sm:text-sm rounded-lg transition-all w-full {activeTab ===
                             'users'
-                                ? 'bg-accent text-white'
+                                ? 'bg-accent text-white shadow-sm'
                                 : 'text-gray-700 hover:bg-gray-100'}"
                             on:click={() => (activeTab = "users")}
                         >
                             <svg
-                                class="w-5 h-5"
+                                class="w-4 h-4 lg:w-5 lg:h-5"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -279,19 +279,19 @@
                                     d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
                                 />
                             </svg>
-                            Users
+                            <span>Users</span>
                         </button>
                     </li>
                     <li>
                         <button
-                            class="flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors flex-shrink-0 min-w-[150px] lg:w-full lg:min-w-0 {activeTab ===
+                            class="flex items-center justify-center lg:justify-start gap-2 lg:gap-3 px-3 py-3 lg:py-2 text-xs sm:text-sm rounded-lg transition-all w-full {activeTab ===
                             'media'
-                                ? 'bg-accent text-white'
+                                ? 'bg-accent text-white shadow-sm'
                                 : 'text-gray-700 hover:bg-gray-100'}"
                             on:click={() => (activeTab = "media")}
                         >
                             <svg
-                                class="w-5 h-5"
+                                class="w-4 h-4 lg:w-5 lg:h-5"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -303,19 +303,19 @@
                                     d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                                 />
                             </svg>
-                            Media
+                            <span>Media</span>
                         </button>
                     </li>
-                    <li>
+                    <li class="col-span-2 lg:col-span-1">
                         <button
-                            class="flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors flex-shrink-0 min-w-[150px] lg:w-full lg:min-w-0 {activeTab ===
+                            class="flex items-center justify-center lg:justify-start gap-2 lg:gap-3 px-3 py-3 lg:py-2 text-xs sm:text-sm rounded-lg transition-all w-full {activeTab ===
                             'settings'
-                                ? 'bg-accent text-white'
+                                ? 'bg-accent text-white shadow-sm'
                                 : 'text-gray-700 hover:bg-gray-100'}"
                             on:click={() => (activeTab = "settings")}
                         >
                             <svg
-                                class="w-5 h-5"
+                                class="w-4 h-4 lg:w-5 lg:h-5"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -333,7 +333,7 @@
                                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                                 />
                             </svg>
-                            Settings
+                            <span>Settings</span>
                         </button>
                     </li>
                 </ul>
@@ -558,59 +558,65 @@
 
                     <!-- Recent Posts -->
                     <div class="bg-white rounded-xl border border-gray-200">
-                        <div class="px-6 py-4 border-b border-gray-200">
+                        <div
+                            class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200"
+                        >
                             <div class="flex items-center justify-between">
-                                <h3 class="text-lg font-semibold text-gray-900">
+                                <h3
+                                    class="text-base sm:text-lg font-semibold text-gray-900"
+                                >
                                     Recent Posts
                                 </h3>
                                 <button
                                     on:click={() => (activeTab = "posts")}
-                                    class="text-sm text-accent hover:text-accent/80 font-medium"
+                                    class="text-xs sm:text-sm text-accent hover:text-accent/80 font-medium"
                                 >
                                     View all
                                 </button>
                             </div>
                         </div>
-                        <div class="p-6">
-                            <div class="space-y-4">
+                        <div class="p-3 sm:p-6">
+                            <div class="space-y-2 sm:space-y-4">
                                 {#each posts.slice(0, 5) as post}
                                     <div
-                                        class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between py-3 border-b border-gray-100 last:border-0"
+                                        class="flex flex-col gap-2 py-2 sm:py-3 border-b border-gray-100 last:border-0"
                                     >
-                                        <div class="flex items-center gap-3">
+                                        <div class="flex items-start gap-2">
                                             <div
-                                                class="w-2 h-2 rounded-full {post.status ===
+                                                class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full mt-1 flex-shrink-0 {post.status ===
                                                 'published'
                                                     ? 'bg-green-500'
                                                     : 'bg-yellow-500'}"
                                             ></div>
-                                            <div>
+                                            <div class="flex-1 min-w-0">
                                                 <h4
-                                                    class="font-medium text-gray-900 text-sm"
+                                                    class="font-medium text-gray-900 text-xs sm:text-sm line-clamp-2"
                                                 >
                                                     {post.title}
                                                 </h4>
                                                 <div
-                                                    class="flex items-center gap-2 mt-1"
+                                                    class="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-1"
                                                 >
                                                     <span
-                                                        class="text-xs text-gray-500"
+                                                        class="text-[10px] sm:text-xs text-gray-600 bg-gray-50 px-1.5 py-0.5 rounded"
                                                         >{post.category}</span
                                                     >
                                                     <span
-                                                        class="text-xs text-gray-400"
+                                                        class="text-[10px] sm:text-xs text-gray-400"
                                                         >•</span
                                                     >
                                                     <span
-                                                        class="text-xs text-gray-500"
+                                                        class="text-[10px] sm:text-xs text-gray-500"
                                                         >{post.created_at}</span
                                                     >
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="flex items-center gap-3">
+                                        <div
+                                            class="flex items-center justify-between ml-3.5 sm:ml-0 sm:justify-end gap-2"
+                                        >
                                             <div
-                                                class="flex items-center gap-1 text-xs text-gray-500"
+                                                class="flex items-center gap-1 text-[10px] sm:text-xs text-gray-500"
                                             >
                                                 <svg
                                                     class="w-3 h-3"
@@ -636,11 +642,11 @@
                                             <button
                                                 aria-label="Edit post"
                                                 on:click={() => editPost(post)}
-                                                class="p-1 text-gray-400 hover:text-gray-600 transition-colors"
+                                                class="p-1.5 sm:p-1 text-gray-400 hover:text-gray-600 transition-colors rounded hover:bg-gray-50"
                                                 title="Edit post"
                                             >
                                                 <svg
-                                                    class="w-4 h-4"
+                                                    class="w-3.5 h-3.5 sm:w-4 sm:h-4"
                                                     fill="none"
                                                     stroke="currentColor"
                                                     viewBox="0 0 24 24"
@@ -663,19 +669,21 @@
             {:else if activeTab === "posts"}
                 <!-- Blog Posts Management -->
                 <div class="space-y-8">
-                    <div class="flex items-center justify-between">
+                    <div
+                        class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+                    >
                         <div>
                             <h2
-                                class="text-2xl font-semibold text-gray-900 mb-2"
+                                class="text-xl sm:text-2xl font-semibold text-gray-900 mb-2"
                             >
                                 Posts
                             </h2>
-                            <p class="text-gray-600">
+                            <p class="text-sm sm:text-base text-gray-600">
                                 Create and manage your blog posts
                             </p>
                         </div>
                         <a
-                            class="flex items-center gap-2 bg-accent text-white px-4 py-2 rounded-lg hover:bg-accent/90 transition-colors"
+                            class="flex items-center justify-center gap-2 bg-accent text-white px-4 py-2.5 rounded-lg hover:bg-accent/90 transition-colors w-full sm:w-auto"
                             href="/admin/posts/new"
                         >
                             <svg
@@ -698,13 +706,17 @@
                     <div class="grid grid-cols-1 gap-6">
                         <!-- Posts List -->
                         <div class="bg-white rounded-xl border border-gray-200">
-                            <div class="px-6 py-4 border-b border-gray-200">
-                                <h3 class="text-lg font-semibold text-gray-900">
+                            <div
+                                class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200"
+                            >
+                                <h3
+                                    class="text-base sm:text-lg font-semibold text-gray-900"
+                                >
                                     All Posts ({posts.length})
                                 </h3>
                             </div>
                             <div
-                                class="px-6 py-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center"
+                                class="px-4 sm:px-6 py-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center"
                             >
                                 <input
                                     aria-label="Search posts"
@@ -748,31 +760,31 @@
                             <div class="max-h-96 overflow-y-auto">
                                 {#each filteredPosts as post}
                                     <div
-                                        class="p-4 border-b border-gray-100 last:border-0"
+                                        class="p-3 sm:p-4 border-b border-gray-100 last:border-0"
                                     >
                                         <div
-                                            class="flex items-start justify-between"
+                                            class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3"
                                         >
                                             <div class="flex-1">
                                                 <h4
-                                                    class="font-medium text-secondary"
+                                                    class="font-medium text-secondary text-sm sm:text-base line-clamp-1"
                                                 >
                                                     {post.title}
                                                 </h4>
                                                 <p
-                                                    class="text-sm text-tertiary mt-1"
+                                                    class="text-xs sm:text-sm text-tertiary mt-1 line-clamp-2"
                                                 >
                                                     {post.excerpt}
                                                 </p>
                                                 <div
-                                                    class="flex items-center gap-2 mt-2"
+                                                    class="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-2"
                                                 >
                                                     <span
-                                                        class="text-xs bg-gray-100 px-2 py-1 rounded"
+                                                        class="text-[10px] sm:text-xs bg-gray-100 px-2 py-1 rounded"
                                                         >{post.category}</span
                                                     >
                                                     <span
-                                                        class="px-2 py-1 text-xs rounded-full {post.status ===
+                                                        class="px-2 py-1 text-[10px] sm:text-xs rounded-full {post.status ===
                                                         'published'
                                                             ? 'bg-green-100 text-green-800'
                                                             : 'bg-yellow-100 text-yellow-800'}"
@@ -781,13 +793,15 @@
                                                     </span>
                                                     {#if post.featured}
                                                         <span
-                                                            class="text-xs bg-accent/10 text-accent px-2 py-1 rounded"
+                                                            class="text-[10px] sm:text-xs bg-accent/10 text-accent px-2 py-1 rounded"
                                                             >Featured</span
                                                         >
                                                     {/if}
                                                 </div>
                                             </div>
-                                            <div class="flex gap-1 ml-4">
+                                            <div
+                                                class="flex flex-col sm:flex-row gap-2 sm:gap-1 sm:ml-4 w-full sm:w-auto"
+                                            >
                                                 <button
                                                     aria-label={post.status ===
                                                     "published"
@@ -795,7 +809,7 @@
                                                         : "Publish post"}
                                                     on:click={() =>
                                                         togglePublish(post)}
-                                                    class="px-2 py-1 text-xs rounded border {post.status ===
+                                                    class="px-3 py-2 text-xs rounded border w-full sm:w-auto {post.status ===
                                                     'published'
                                                         ? 'border-yellow-300 text-yellow-700'
                                                         : 'border-green-300 text-green-700'} hover:bg-gray-50"
@@ -814,7 +828,7 @@
                                                         : "Feature post"}
                                                     on:click={() =>
                                                         toggleFeatured(post)}
-                                                    class="px-2 py-1 text-xs rounded border {post.featured
+                                                    class="px-3 py-2 text-xs rounded border w-full sm:w-auto {post.featured
                                                         ? 'border-red-300 text-red-700'
                                                         : 'border-blue-300 text-blue-700'} hover:bg-gray-50"
                                                     title={post.featured
@@ -828,7 +842,7 @@
                                                     aria-label="Edit post"
                                                     on:click={() =>
                                                         editPost(post)}
-                                                    class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                                    class="p-2.5 sm:p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors w-full sm:w-auto flex items-center justify-center gap-2"
                                                     title="Edit"
                                                 >
                                                     <svg
@@ -844,6 +858,10 @@
                                                             d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                                                         />
                                                     </svg>
+                                                    <span
+                                                        class="sm:hidden text-xs font-medium text-gray-600"
+                                                        >Edit</span
+                                                    >
                                                 </button>
                                                 <button
                                                     aria-label="Delete post"
@@ -851,7 +869,7 @@
                                                         confirmDelete(
                                                             post.post_id,
                                                         )}
-                                                    class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                    class="p-2.5 sm:p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors w-full sm:w-auto flex items-center justify-center gap-2"
                                                     title="Delete"
                                                 >
                                                     <svg
@@ -867,6 +885,10 @@
                                                             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                                                         />
                                                     </svg>
+                                                    <span
+                                                        class="sm:hidden text-xs font-medium text-gray-600"
+                                                        >Delete</span
+                                                    >
                                                 </button>
                                             </div>
                                         </div>

@@ -271,19 +271,21 @@
 </svelte:head>
 
 <div class="min-h-screen bg-gray-50">
-    <div class="max-w-5xl mx-auto p-6">
-        <div class="mb-6 flex items-center justify-between">
-            <h1 class="text-2xl font-semibold text-gray-900">
+    <div class="max-w-5xl mx-auto p-3 sm:p-6">
+        <div
+            class="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+        >
+            <h1 class="text-xl sm:text-2xl font-semibold text-gray-900">
                 {editingPostId ? "Edit Post" : "Create New Post"}
             </h1>
             <button
-                class="text-sm text-gray-600 hover:text-gray-900"
+                class="text-sm text-gray-600 hover:text-gray-900 text-left sm:text-center"
                 onclick={cancel}>Back to Dashboard</button
             >
         </div>
 
         <div
-            class="bg-white rounded-xl border border-gray-200 p-8 space-y-8 shadow-sm"
+            class="bg-white rounded-xl border border-gray-200 p-4 sm:p-8 space-y-6 sm:space-y-8 shadow-sm"
         >
             <!-- Title Section -->
             <div>
@@ -563,10 +565,10 @@
                 {/if}
             </div>
 
-            <div
-                class="pt-6 border-t border-gray-100 flex items-center justify-between"
-            >
-                <div class="flex items-center gap-6">
+            <div class="pt-6 border-t border-gray-100 flex flex-col gap-4">
+                <div
+                    class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6"
+                >
                     <label class="flex items-center cursor-pointer group">
                         <input
                             type="checkbox"
@@ -574,7 +576,7 @@
                             bind:checked={featured}
                         />
                         <span
-                            class="ml-2 text-gray-700 font-medium group-hover:text-gray-900"
+                            class="ml-2 text-sm sm:text-base text-gray-700 font-medium group-hover:text-gray-900"
                             >Featured Post</span
                         >
                     </label>
@@ -585,12 +587,15 @@
                             bind:checked={isTrendingNews}
                         />
                         <span
-                            class="ml-2 text-gray-700 font-medium group-hover:text-gray-900"
-                            >Show in Trending News Section</span
+                            class="ml-2 text-sm sm:text-base text-gray-700 font-medium group-hover:text-gray-900"
+                            >Show in Trending News</span
                         >
                     </label>
                     <div class="flex items-center gap-2">
-                        <span class="text-gray-700 font-medium">Status:</span>
+                        <span
+                            class="text-sm sm:text-base text-gray-700 font-medium"
+                            >Status:</span
+                        >
                         <select
                             class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent text-sm"
                             bind:value={status}
@@ -601,13 +606,13 @@
                     </div>
                 </div>
 
-                <div class="flex gap-3">
+                <div class="flex flex-col sm:flex-row gap-3 sm:justify-end">
                     <button
-                        class="px-6 py-2.5 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors"
+                        class="px-6 py-2.5 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors w-full sm:w-auto"
                         onclick={cancel}>Cancel</button
                     >
                     <button
-                        class="px-6 py-2.5 bg-accent text-white font-medium rounded-lg hover:bg-accent/90 disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2 shadow-sm transition-all hover:shadow-md"
+                        class="px-6 py-2.5 bg-accent text-white font-medium rounded-lg hover:bg-accent/90 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm transition-all hover:shadow-md w-full sm:w-auto"
                         onclick={save}
                         disabled={isSaving}
                     >

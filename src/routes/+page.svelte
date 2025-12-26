@@ -65,6 +65,8 @@
 
     <PopularBlogs posts={data.posts} />
 
+    <AfricanGiantOfWeek post={data.africanGiant} />
+
     <!-- Politics -->
     <CategorySection
         category="politics"
@@ -80,8 +82,6 @@
         posts={categoriesData.economy}
         color="var(--color-accent)"
     />
-
-    <AfricanGiantOfWeek post={data.africanGiant} />
 
     <!-- African Giant (Top Stories) -->
     <CategorySection

@@ -35,7 +35,7 @@
     </div>
 
     <div
-        class="posts-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
+        class="posts-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8"
     >
         {#if posts && posts.length > 0}
             {#each posts.slice(0, 3) as post, index}
@@ -45,11 +45,16 @@
                         class="card-link h-full block group"
                         aria-label={`Read ${post.title}`}
                     >
+                        <!-- Mobile: Enhanced Horizontal Card with Category Accent | Desktop: Vertical Card -->
                         <div
-                            class="flex w-full h-full flex-col gap-4 rounded-2xl bg-white p-4 shadow-sm hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1 border border-transparent hover:border-gray-100 ring-1 ring-black/5"
+                            class="flex flex-row sm:flex-col w-full h-full gap-3 sm:gap-4 rounded-xl sm:rounded-2xl bg-white p-3 sm:p-4 shadow-md sm:shadow-sm hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1 border-l-4 sm:border-l-0 sm:border border-transparent hover:border-gray-100 ring-1 ring-black/5"
+                            style="border-left-color: {special
+                                ? '#ffd700'
+                                : color}"
                         >
+                            <!-- Image: Left on mobile (larger), Top on desktop -->
                             <div
-                                class="overflow-hidden rounded-xl aspect-[4/3] w-full relative"
+                                class="flex-shrink-0 w-[120px] sm:w-full aspect-square sm:aspect-[4/3] overflow-hidden rounded-lg sm:rounded-xl relative"
                             >
                                 <img
                                     src={post.image ||
@@ -60,10 +65,10 @@
                                 />
                                 {#if index === 0}
                                     <span
-                                        class="trending-badge absolute top-3 left-3 px-3 py-1.5 rounded-lg text-[10px] lg:text-xs font-semibold lowercase"
+                                        class="trending-badge absolute top-2 left-2 sm:top-3 sm:left-3 px-2 py-1 sm:px-3 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-semibold lowercase shadow-md"
                                         style="background: {special
-                                            ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.85), rgba(253, 176, 34, 0.85))'
-                                            : 'rgba(71, 85, 105, 0.5)'}; color: {special
+                                            ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.95), rgba(253, 176, 34, 0.95))'
+                                            : 'rgba(71, 85, 105, 0.85)'}; color: {special
                                             ? '#000'
                                             : 'white'}; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);"
                                     >
@@ -71,33 +76,35 @@
                                     </span>
                                 {/if}
                             </div>
+
+                            <!-- Content: Right on mobile with category badge, Bottom on desktop -->
                             <div
-                                class="card-content flex flex-col flex-grow gap-3"
+                                class="card-content flex flex-col flex-grow gap-2 sm:gap-3 justify-between min-w-0"
                             >
+                                <!-- Category Badge - visible on mobile only -->
+                                <span
+                                    class="category-badge sm:hidden inline-block self-start px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide"
+                                    style="background: {special
+                                        ? 'rgba(255, 215, 0, 0.15)'
+                                        : `${color}15`}; color: {special
+                                        ? '#fdb022'
+                                        : color}"
+                                >
+                                    {categoryName}
+                                </span>
+
                                 <h3
-                                    class="post-title text-lg lg:text-xl font-bold text-gray-900 line-clamp-2 group-hover:text-[var(--color-accent)] transition-colors"
+                                    class="post-title text-sm sm:text-lg lg:text-xl font-bold text-gray-900 line-clamp-2 leading-snug group-hover:transition-colors"
+                                    style="color: inherit"
+                                    class:group-hover:special-color={special}
                                 >
                                     {post.title}
                                 </h3>
                                 <button
-                                    class="read-more mt-auto self-start text-sm font-semibold flex items-center gap-2 group-hover:gap-3 transition-all"
+                                    class="read-more self-start text-xs sm:text-sm font-bold flex items-center gap-1 sm:gap-2 group-hover:gap-2 sm:group-hover:gap-3 transition-all"
                                     style="color: {special ? '#fdb022' : color}"
                                 >
-                                    Read Article
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke-width="2"
-                                        stroke="currentColor"
-                                        class="w-4 h-4"
-                                    >
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
-                                        />
-                                    </svg>
+                                    Read More →
                                 </button>
                             </div>
                         </div>

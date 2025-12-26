@@ -34,11 +34,13 @@
                     aria-label={`Read ${item.title}`}
                     class="h-full block group"
                 >
+                    <!-- Mobile: Horizontal Card | Desktop: Vertical Card -->
                     <div
-                        class="flex w-full h-full flex-col gap-4 rounded-2xl bg-white p-4 shadow-sm hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1 border border-transparent hover:border-gray-100 ring-1 ring-black/5"
+                        class="flex flex-row sm:flex-col w-full h-full gap-3 sm:gap-4 rounded-xl sm:rounded-2xl bg-white p-3 sm:p-4 shadow-sm hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1 border border-transparent hover:border-gray-100 ring-1 ring-black/5"
                     >
+                        <!-- Image: Left on mobile, Top on desktop -->
                         <div
-                            class="overflow-hidden rounded-xl aspect-[4/3] w-full relative"
+                            class="flex-shrink-0 w-[100px] sm:w-full aspect-square sm:aspect-[4/3] overflow-hidden rounded-lg sm:rounded-xl relative"
                         >
                             <img
                                 src={item.image}
@@ -46,14 +48,18 @@
                                 class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                             />
                         </div>
-                        <div class="flex flex-col flex-grow gap-3">
+
+                        <!-- Content: Right on mobile, Bottom on desktop -->
+                        <div
+                            class="flex flex-col flex-grow gap-2 sm:gap-3 justify-between min-w-0"
+                        >
                             <h3
-                                class="text-lg lg:text-xl font-bold text-gray-900 line-clamp-2 group-hover:text-[var(--color-accent)] transition-colors"
+                                class="text-sm sm:text-lg lg:text-xl font-bold text-gray-900 line-clamp-2 group-hover:text-[var(--color-accent)] transition-colors"
                             >
                                 {item.title}
                             </h3>
                             <button
-                                class="mt-auto self-start text-sm font-semibold text-[var(--color-accent)] flex items-center gap-2 group-hover:gap-3 transition-all"
+                                class="self-start text-xs sm:text-sm font-semibold text-[var(--color-accent)] flex items-center gap-1 sm:gap-2 group-hover:gap-2 sm:group-hover:gap-3 transition-all"
                             >
                                 Read Article
                                 <svg
@@ -62,7 +68,7 @@
                                     viewBox="0 0 24 24"
                                     stroke-width="2"
                                     stroke="currentColor"
-                                    class="w-4 h-4"
+                                    class="w-3 h-3 sm:w-4 sm:h-4"
                                 >
                                     <path
                                         stroke-linecap="round"

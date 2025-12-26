@@ -167,30 +167,60 @@
 			</div>
 		</div>
 
-		<!-- IMPACT STATS (Moved to bottom) -->
-		<div
-			class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto"
-		>
-			{#each stats as stat, i}
-				<div
-					class="group relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-4 text-center shadow-sm transition-all duration-300 hover:shadow-md hover:border-orange-100"
-				>
-					<div
-						class="text-3xl md:text-4xl font-bold text-gray-900 mb-1.5 font-clash-grotesk tracking-tight"
-					>
-						{stat.number}
-					</div>
-					<div
-						class="text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider"
-					>
-						{stat.label}
-					</div>
-					<!-- Subtle hover gradient -->
-					<div
-						class="absolute inset-0 bg-gradient-to-br from-orange-50/0 to-orange-50/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-					></div>
+		<!-- IMPACT STATS - Auto-scrolling horizontal on mobile, Grid on desktop -->
+		<div class="w-full overflow-hidden md:overflow-visible">
+			<!-- Mobile: Horizontal Auto-scroll (Compact Size) -->
+			<div class="md:hidden relative">
+				<div class="stats-scroll-container">
+					<!-- Duplicate stats for seamless infinite scroll -->
+					{#each [...stats, ...stats, ...stats] as stat}
+						<div
+							class="stat-card flex-shrink-0 w-[240px] group relative overflow-hidden rounded-xl border border-gray-100 bg-white p-4 text-center shadow-sm"
+						>
+							<div
+								class="text-2xl font-bold text-gray-900 mb-1.5 font-clash-grotesk tracking-tight"
+							>
+								{stat.number}
+							</div>
+							<div
+								class="text-xs font-medium text-gray-500 uppercase tracking-wider"
+							>
+								{stat.label}
+							</div>
+							<!-- Subtle gradient -->
+							<div
+								class="absolute inset-0 bg-gradient-to-br from-orange-50/0 to-orange-50/30 pointer-events-none"
+							></div>
+						</div>
+					{/each}
 				</div>
-			{/each}
+			</div>
+
+			<!-- Desktop: Grid Layout -->
+			<div
+				class="hidden md:grid grid-cols-3 gap-6 md:gap-8 max-w-4xl mx-auto"
+			>
+				{#each stats as stat}
+					<div
+						class="group relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-4 text-center shadow-sm transition-all duration-300 hover:shadow-md hover:border-orange-100"
+					>
+						<div
+							class="text-3xl md:text-4xl font-bold text-gray-900 mb-1.5 font-clash-grotesk tracking-tight"
+						>
+							{stat.number}
+						</div>
+						<div
+							class="text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider"
+						>
+							{stat.label}
+						</div>
+						<!-- Subtle hover gradient -->
+						<div
+							class="absolute inset-0 bg-gradient-to-br from-orange-50/0 to-orange-50/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+						></div>
+					</div>
+				{/each}
+			</div>
 		</div>
 	</div>
 </section>
@@ -210,5 +240,29 @@
 
 	.animate-fade-in-up {
 		animation: fadeInUp 0.6s ease-out forwards;
+	}
+
+	/* Infinite Horizontal Scroll for Stats */
+	@keyframes scroll {
+		0% {
+			transform: translateX(0);
+		}
+		100% {
+			transform: translateX(
+				-33.333%
+			); /* Move by 1/3 since we tripled the stats */
+		}
+	}
+
+	.stats-scroll-container {
+		display: flex;
+		gap: 0.75rem;
+		animation: scroll 8s linear infinite;
+		will-change: transform;
+	}
+
+	/* Pause on hover */
+	.stats-scroll-container:hover {
+		animation-play-state: paused;
 	}
 </style>
