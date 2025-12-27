@@ -3,6 +3,9 @@
     import { goto } from "$app/navigation";
     import RichTextEditor from "$lib/components/RichTextEditor.svelte";
 
+    // Get admin data from layout using Svelte 5 runes
+    const { data }: { data: any } = $props();
+
     let title = $state("");
     let category = $state(""); // Keep for backward compatibility if needed
     let selectedCategories = $state<string[]>([]);
@@ -232,6 +235,7 @@
                 status,
                 featured,
                 isTrendingNews,
+                author: data?.admin?.username || "Admin", // Use logged-in admin's username
             };
             if (editingPostId) payload.post_id = editingPostId;
             const resp = await fetch("/api/posts", {

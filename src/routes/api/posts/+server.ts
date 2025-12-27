@@ -128,7 +128,7 @@ export const GET: RequestHandler = async ({ url }) => {
 };
 
 // POST - Create new post
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, cookies }) => {
     try {
         const body = await request.json();
         const {
@@ -141,6 +141,7 @@ export const POST: RequestHandler = async ({ request }) => {
             status,
             featured,
             isTrendingNews, // Extract new field
+            author, // Get author from request body
         } = body;
 
         if (!title || !content) {
@@ -164,6 +165,7 @@ export const POST: RequestHandler = async ({ request }) => {
                 status: status ?? "draft",
                 featured: Boolean(featured),
                 isTrendingNews: Boolean(isTrendingNews), // Save to DB
+                author: author || "Admin", // Use provided author or default to "Admin"
             })
             .returning();
 

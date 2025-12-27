@@ -355,32 +355,35 @@
                         {#each categories as category}
                             <li>
                                 <div class="space-y-1">
-                                    <button
-                                        onclick={() =>
-                                            toggleCategory(category.slug)}
-                                        class={`w-full flex items-center justify-between px-4 py-3.5 rounded-xl font-medium transition-all duration-200 ${category.slug === url.split("/")[1] ? "bg-gradient-to-r from-accent to-orange-600 text-white shadow-md" : "text-gray-700 hover:bg-white hover:shadow-sm"}`}
-                                    >
-                                        <div class="flex items-center">
-                                            <div
-                                                class={`w-9 h-9 rounded-lg flex items-center justify-center mr-3 ${category.slug === url.split("/")[1] ? "bg-white/20" : "bg-orange-50"}`}
-                                            >
-                                                <svg
-                                                    class={`w-5 h-5 ${category.slug === url.split("/")[1] ? "text-white" : "text-accent"}`}
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    viewBox="0 0 24 24"
+                                    {#if categoryHierarchy.subcategories[category.slug] && categoryHierarchy.subcategories[category.slug].length > 0}
+                                        <!-- Category with subcategories - show button -->
+                                        <button
+                                            onclick={() =>
+                                                toggleCategory(category.slug)}
+                                            class={`w-full flex items-center justify-between px-4 py-3.5 rounded-xl font-medium transition-all duration-200 ${category.slug === url.split("/")[1] ? "bg-gradient-to-r from-accent to-orange-600 text-white shadow-md" : "text-gray-700 hover:bg-white hover:shadow-sm"}`}
+                                        >
+                                            <div class="flex items-center">
+                                                <div
+                                                    class={`w-9 h-9 rounded-lg flex items-center justify-center mr-3 ${category.slug === url.split("/")[1] ? "bg-white/20" : "bg-orange-50"}`}
                                                 >
-                                                    <path
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round"
-                                                        stroke-width="2"
-                                                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                                                    />
-                                                </svg>
+                                                    <svg
+                                                        class={`w-5 h-5 ${category.slug === url.split("/")[1] ? "text-white" : "text-accent"}`}
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path
+                                                            stroke-linecap="round"
+                                                            stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                                                        ></path>
+                                                    </svg>
+                                                </div>
+                                                <span
+                                                    >{category.display_name}</span
+                                                >
                                             </div>
-                                            <span>{category.display_name}</span>
-                                        </div>
-                                        {#if categoryHierarchy.subcategories[category.slug] && categoryHierarchy.subcategories[category.slug].length > 0}
                                             <svg
                                                 class="w-5 h-5 transition-transform duration-200 {expandedCategory ===
                                                 category.slug
@@ -395,10 +398,42 @@
                                                     stroke-linejoin="round"
                                                     stroke-width="2"
                                                     d="M19 9l-7 7-7-7"
-                                                />
+                                                ></path>
                                             </svg>
-                                        {/if}
-                                    </button>
+                                        </button>
+                                    {:else}
+                                        <!-- Category without subcategories - show link -->
+                                        <a
+                                            href={`/${category.slug}`}
+                                            class={`w-full flex items-center px-4 py-3.5 rounded-xl font-medium transition-all duration-200 ${category.slug === url.split("/")[1] ? "bg-gradient-to-r from-accent to-orange-600 text-white shadow-md" : "text-gray-700 hover:bg-white hover:shadow-sm"}`}
+                                            onclick={toggleMobileMenu}
+                                        >
+                                            <div
+                                                class={`w-9 h-9 rounded-lg flex items-center justify-center mr-3 ${category.slug === url.split("/")[1] ? "bg-white/20" : "bg-orange-50"}`}
+                                            >
+                                                {#if category.icon === "crown"}
+                                                    <span class="text-xl"
+                                                        >👑</span
+                                                    >
+                                                {:else}
+                                                    <svg
+                                                        class={`w-5 h-5 ${category.slug === url.split("/")[1] ? "text-white" : "text-accent"}`}
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path
+                                                            stroke-linecap="round"
+                                                            stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                                                        ></path>
+                                                    </svg>
+                                                {/if}
+                                            </div>
+                                            <span>{category.display_name}</span>
+                                        </a>
+                                    {/if}
 
                                     <!-- Subcategories with smooth animation -->
                                     {#if expandedCategory === category.slug && categoryHierarchy.subcategories[category.slug] && categoryHierarchy.subcategories[category.slug].length > 0}

@@ -39,10 +39,11 @@ export const load: LayoutServerLoad = async ({ cookies, url }) => {
         isLoginPage,
         admin: data
             ? {
-                  id: data[0].id,
-                  email: data[0].email,
-                  admin_id: data[0].admin_id,
-              }
+                id: data[0].id,
+                email: data[0].email,
+                username: data[0].username,
+                admin_id: data[0].admin_id,
+            }
             : undefined,
         authError: null,
     };

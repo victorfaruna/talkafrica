@@ -47,7 +47,7 @@
 			<div
 				class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 text-accent text-sm font-semibold mb-8 animate-fade-in-up"
 			>
-				<span class="text-base">💝</span> Support Our Mission
+				<span class="text-base">💝</span> Amplify African Voices
 			</div>
 
 			<!-- Main Heading -->
@@ -172,7 +172,7 @@
 			<!-- Mobile: Horizontal Auto-scroll (Compact Size) -->
 			<div class="md:hidden relative">
 				<div class="stats-scroll-container">
-					<!-- Duplicate stats for seamless infinite scroll -->
+					<!-- Triple stats for seamless infinite scroll -->
 					{#each [...stats, ...stats, ...stats] as stat}
 						<div
 							class="stat-card flex-shrink-0 w-[240px] group relative overflow-hidden rounded-xl border border-gray-100 bg-white p-4 text-center shadow-sm"
@@ -249,8 +249,8 @@
 		}
 		100% {
 			transform: translateX(
-				-33.333%
-			); /* Move by 1/3 since we tripled the stats */
+				calc(-240px * 3 - 0.75rem * 3)
+			); /* Move exactly 3 cards (240px each) + 3 gaps (0.75rem each) */
 		}
 	}
 

@@ -38,16 +38,8 @@
 <!-- Hero Section -->
 {#key currentUrl}
     <section
-        class="relative min-h-[50vh] sm:min-h-[60vh] flex items-center justify-center overflow-hidden"
+        class="relative min-h-[50vh] sm:min-h-[60vh] flex items-center justify-center overflow-hidden bg-gradient-to-b from-orange-600 via-orange-500 to-orange-600"
     >
-        <div
-            class="absolute inset-0 bg-cover bg-center bg-no-repeat"
-            style="background-image: url(/images/category/{data.category}.webp)"
-        ></div>
-        <div
-            class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/60"
-        ></div>
-
         <div
             class="relative z-10 text-center text-white px-4 sm:px-6 max-w-4xl mx-auto"
         >

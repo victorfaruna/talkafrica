@@ -1,6 +1,6 @@
 import type { PageServerLoad } from "./$types";
 import { db } from "$lib/server/db";
-import { eq, desc, and, inArray } from "drizzle-orm";
+import { eq, desc, and, or } from "drizzle-orm";
 import { postTable, postCategoriesTable } from "$lib/server/schema";
 
 export const load: PageServerLoad = async ({ url, depends }) => {
@@ -13,49 +13,47 @@ export const load: PageServerLoad = async ({ url, depends }) => {
     depends(`posts:${categorySlug}:${page}`);
 
     try {
-        // Get post IDs for the category
-        const postIdSet = new Set<string>();
+        const baseWhere = and(
+            eq(postTable.status, "published"),
+            eq(postTable.deleted, false)
+        );
 
-        try {
-            const postIdsWithCategory = await db
-                .select({ post_id: postCategoriesTable.post_id })
-                .from(postCategoriesTable)
-                .where(eq(postCategoriesTable.category_slug, categorySlug));
+        console.log('=== Fetching African Giant posts ===');
 
-            postIdsWithCategory.forEach((p) => postIdSet.add(p.post_id));
-        } catch (err) {
-            console.warn("Failed to fetch from post_categories:", err);
-        }
-
-        // Fallback/Legacy check
-        const legacyPosts = await db
-            .select({ post_id: postTable.post_id })
+        // Try fetching posts using BOTH methods: post_categories table AND legacy category field
+        // First, try the post_categories approach
+        const postsFromCategories = await db
+            .select({
+                post_id: postTable.post_id,
+                title: postTable.title,
+                excerpt: postTable.excerpt,
+                image: postTable.image,
+                category: postTable.category,
+                author: postTable.author,
+                views: postTable.views,
+                created_at: postTable.created_at,
+                slug: postTable.slug,
+                featured: postTable.featured,
+            })
             .from(postTable)
+            .innerJoin(
+                postCategoriesTable,
+                eq(postTable.post_id, postCategoriesTable.post_id)
+            )
             .where(
                 and(
-                    eq(postTable.category, categorySlug),
-                    eq(postTable.status, "published")
+                    baseWhere,
+                    eq(postCategoriesTable.category_slug, categorySlug)
                 )
-            );
-        legacyPosts.forEach((p) => postIdSet.add(p.post_id));
+            )
+            .orderBy(desc(postTable.created_at))
+            .limit(limit)
+            .offset(offset);
 
-        const postIdsArray = Array.from(postIdSet);
+        console.log(`Found ${postsFromCategories.length} posts from post_categories table`);
 
-        if (postIdsArray.length === 0) {
-            return {
-                posts: [],
-                pagination: {
-                    currentPage: 1,
-                    totalPages: 1,
-                    hasNextPage: false,
-                    hasPrevPage: false,
-                    totalPosts: 0,
-                }
-            };
-        }
-
-        // Fetch posts
-        const posts = await db
+        // Also try the legacy category field approach
+        const postsFromLegacy = await db
             .select({
                 post_id: postTable.post_id,
                 title: postTable.title,
@@ -71,38 +69,78 @@ export const load: PageServerLoad = async ({ url, depends }) => {
             .from(postTable)
             .where(
                 and(
-                    inArray(postTable.post_id, postIdsArray),
-                    eq(postTable.status, "published"),
-                    eq(postTable.deleted, false)
+                    baseWhere,
+                    eq(postTable.category, categorySlug)
                 )
             )
             .orderBy(desc(postTable.created_at))
             .limit(limit)
             .offset(offset);
 
-        // Count
-        const totalCount = await db
-            .select({ count: postTable.id })
+        console.log(`Found ${postsFromLegacy.length} posts from legacy category field`);
+
+        // Combine and deduplicate posts by post_id
+        const allPostsMap = new Map();
+        [...postsFromCategories, ...postsFromLegacy].forEach(post => {
+            if (!allPostsMap.has(post.post_id)) {
+                allPostsMap.set(post.post_id, post);
+            }
+        });
+
+        const posts = Array.from(allPostsMap.values())
+            .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+            .slice(0, limit);
+
+        console.log(`Total unique posts after deduplication: ${posts.length}`);
+
+        if (posts.length > 0) {
+            console.log('Post titles:', posts.map(p => p.title));
+        } else {
+            console.log('WARNING: No African Giant posts found!');
+        }
+
+        // Get total count
+        const totalFromCategories = await db
+            .select({ post_id: postTable.post_id })
+            .from(postTable)
+            .innerJoin(
+                postCategoriesTable,
+                eq(postTable.post_id, postCategoriesTable.post_id)
+            )
+            .where(
+                and(
+                    baseWhere,
+                    eq(postCategoriesTable.category_slug, categorySlug)
+                )
+            );
+
+        const totalFromLegacy = await db
+            .select({ post_id: postTable.post_id })
             .from(postTable)
             .where(
                 and(
-                    inArray(postTable.post_id, postIdsArray),
-                    eq(postTable.status, "published"),
-                    eq(postTable.deleted, false)
+                    baseWhere,
+                    eq(postTable.category, categorySlug)
                 )
             );
+
+        const totalMap = new Map();
+        [...totalFromCategories, ...totalFromLegacy].forEach(p => totalMap.set(p.post_id, true));
+        const totalCount = totalMap.size;
+        const totalPages = Math.ceil(totalCount / limit);
+
+        console.log(`Total count: ${totalCount}, Total pages: ${totalPages}`);
 
         return {
             posts,
             pagination: {
                 currentPage: page,
-                totalPages: Math.ceil(totalCount.length / limit),
-                hasNextPage: page < Math.ceil(totalCount.length / limit),
+                totalPages,
+                hasNextPage: page < totalPages,
                 hasPrevPage: page > 1,
-                totalPosts: totalCount.length,
-            }
+                totalPosts: totalCount,
+            },
         };
-
     } catch (error) {
         console.error("Error loading African Giant posts:", error);
         return {
@@ -113,7 +151,7 @@ export const load: PageServerLoad = async ({ url, depends }) => {
                 hasNextPage: false,
                 hasPrevPage: false,
                 totalPosts: 0,
-            }
+            },
         };
     }
 };
