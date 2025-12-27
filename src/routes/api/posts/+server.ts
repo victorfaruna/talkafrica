@@ -1,6 +1,6 @@
 import { json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
-import { and, desc, eq, inArray } from "drizzle-orm";
+import { and, desc, eq, inArray, like, or } from "drizzle-orm";
 import { db } from "$lib/server/db";
 import { postTable, postCategoriesTable } from "$lib/server/schema";
 
@@ -10,6 +10,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const status = url.searchParams.get("status");
         const category = url.searchParams.get("category");
         const featured = url.searchParams.get("featured");
+        const search = url.searchParams.get("search");
         const limitParam = url.searchParams.get("limit");
         const limit = limitParam ? parseInt(limitParam) : undefined;
         const includeDeleted = url.searchParams.get("includeDeleted") === "true";
@@ -47,6 +48,18 @@ export const GET: RequestHandler = async ({ url }) => {
 
         if (featured === "true") {
             filters.push(eq(postTable.featured, true));
+        }
+
+        // Add search filter if search parameter is present
+        if (search && search.trim().length > 0) {
+            const searchTerm = `%${search.trim()}%`;
+            filters.push(
+                or(
+                    like(postTable.title, searchTerm),
+                    like(postTable.content, searchTerm),
+                    like(postTable.excerpt, searchTerm)
+                )
+            );
         }
 
         // Join with categories table if category filter is present

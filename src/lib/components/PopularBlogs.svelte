@@ -5,7 +5,7 @@
         image?: string | null;
         excerpt?: string | null;
     }>;
-    $: list = (posts ?? []).slice(0, 6).map((p) => ({
+    $: list = (posts ?? []).slice(0, 8).map((p) => ({
         title: p.title,
         image: p.image ?? "/images/placeholder.webp",
         url: `/posts/${p.post_id}`,

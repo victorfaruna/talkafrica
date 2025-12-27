@@ -104,6 +104,11 @@
             image: "/images/team/esther-ojoma-sule.jpg",
             role: "",
         },
+        {
+            name: "Kehinde Samuel Oluwagbemiga",
+            image: "/images/team/kehinde-samuel-oluwagbemiga.jpg",
+            role: "",
+        },
     ];
 </script>
 

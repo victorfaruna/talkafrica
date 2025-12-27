@@ -35,7 +35,7 @@ export const load: PageServerLoad = async () => {
             .from(postTable)
             .where(baseWhere)
             .orderBy(desc(postTable.views))
-            .limit(6);
+            .limit(8);
 
         // Trending posts
         const trending = await db

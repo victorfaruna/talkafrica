@@ -656,7 +656,7 @@
                         <div class="divide-y divide-gray-100">
                             {#each searchResults as post}
                                 <a
-                                    href="/posts/{post.id}"
+                                    href="/posts/{post.post_id}"
                                     onclick={toggleSearchModal}
                                     class="block p-4 hover:bg-gray-50 transition-colors"
                                 >

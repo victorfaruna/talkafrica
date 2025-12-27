@@ -244,22 +244,26 @@
                         </svg>
                         <p class="text-[0.95rem] text-secondary/80">
                             <span class="font-semibold text-secondary"
-                                >International credentials</span
-                            > as an associate of the Metropolitan School of Business
-                            and Management, United Kingdom
+                                >International certification in Critical
+                                Thinking</span
+                            >, demonstrating global exposure to analytical and
+                            problem-solving skills from the Metropolitan School
+                            of Business and Management, United Kingdom
                         </p>
                     </div>
                 </div>
             </div>
 
             <!-- Contact CTAs -->
-            <div class="flex flex-wrap items-center gap-4">
+            <div
+                class="grid grid-cols-2 gap-3 md:flex md:flex-wrap md:items-center md:gap-4"
+            >
                 <a
                     href="#"
-                    class="cta-button-outline group flex items-center gap-2 rounded-xl border-2 border-accent/30 bg-white/50 backdrop-blur-sm px-6 py-3 text-[0.95rem] font-semibold text-accent shadow-md hover:bg-accent/5 hover:border-accent transition-all duration-300 hover:scale-105"
+                    class="cta-button-outline group flex items-center justify-center gap-2 rounded-xl border-2 border-accent bg-accent/10 backdrop-blur-sm px-4 md:px-6 py-3.5 md:py-3 text-[0.85rem] md:text-[0.95rem] font-semibold text-accent shadow-md hover:bg-accent hover:text-white transition-all duration-300 hover:scale-105"
                 >
                     <svg
-                        class="w-5 h-5 group-hover:scale-110 transition-transform"
+                        class="w-5 h-5 group-hover:scale-110 transition-transform flex-shrink-0"
                         fill="currentColor"
                         viewBox="0 0 24 24"
                     >
@@ -267,15 +271,16 @@
                             d="M22.675 0h-21.35C.597 0 0 .597 0 1.333v21.333C0 23.403.597 24 1.325 24h11.495v-9.294H9.691V11.01h3.129V8.41c0-3.1 1.893-4.788 4.66-4.788 1.325 0 2.463.102 2.795.148v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.764v2.315h3.587l-.467 3.696h-3.12V24h6.116C23.403 24 24 23.403 24 22.667V1.333C24 .597 23.403 0 22.675 0z"
                         />
                     </svg>
-                    <span>Connect on Facebook</span>
+                    <span class="hidden sm:inline">Connect on Facebook</span>
+                    <span class="inline sm:hidden">Facebook</span>
                 </a>
 
                 <a
                     href="mailto:talkafricanigeria@gmail.com"
-                    class="cta-button-outline group flex items-center gap-2 rounded-xl border-2 border-accent/30 bg-white/50 backdrop-blur-sm px-6 py-3 text-[0.95rem] font-semibold text-accent shadow-md hover:bg-accent/5 hover:border-accent transition-all duration-300 hover:scale-105"
+                    class="cta-button-outline group flex items-center justify-center gap-2 rounded-xl border-2 border-accent bg-accent/10 backdrop-blur-sm px-4 md:px-6 py-3.5 md:py-3 text-[0.85rem] md:text-[0.95rem] font-semibold text-accent shadow-md hover:bg-accent hover:text-white transition-all duration-300 hover:scale-105"
                 >
                     <svg
-                        class="w-5 h-5 group-hover:scale-110 transition-transform"
+                        class="w-5 h-5 group-hover:scale-110 transition-transform flex-shrink-0"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -287,7 +292,8 @@
                             d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                         />
                     </svg>
-                    <span>Send Email</span>
+                    <span class="hidden sm:inline">Send Email</span>
+                    <span class="inline sm:hidden">Email</span>
                 </a>
             </div>
         </div>
