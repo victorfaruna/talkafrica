@@ -1,37 +1,23 @@
 <script lang="ts">
-    import { onMount } from "svelte";
     import { fade, fly } from "svelte/transition";
     import Header from "$lib/components/Header.svelte";
     import Footer from "$lib/components/Footer.svelte";
 
-    let posts: any[] = [];
-    let loading = true;
-
-    async function loadPosts() {
-        try {
-            loading = true;
-            const response = await fetch(
-                `/api/posts?category=african-giant&status=published&limit=12`,
-            );
-            const data = await response.json();
-
-            if (data.success) {
-                posts = data.posts || [];
-            } else {
-                console.error("Failed to load posts:", data);
-                posts = [];
-            }
-        } catch (error) {
-            console.error("Error loading African Giant posts:", error);
-            posts = [];
-        } finally {
-            loading = false;
-        }
+    interface Props {
+        data: {
+            posts: any[];
+            pagination: {
+                currentPage: number;
+                totalPages: number;
+                hasNextPage: boolean;
+                hasPrevPage: boolean;
+                totalPosts: number;
+            };
+        };
     }
 
-    onMount(() => {
-        loadPosts();
-    });
+    let { data }: Props = $props();
+    let posts = $derived(data.posts || []);
 
     function formatDate(dateString: string) {
         const date = new Date(dateString);
@@ -102,25 +88,7 @@
 
     <!-- Main Content -->
     <main class="container mx-auto max-w-7xl px-4 py-16">
-        {#if loading}
-            <div
-                class="flex flex-col items-center justify-center py-32"
-                in:fade
-            >
-                <div class="relative">
-                    <div
-                        class="w-20 h-20 border-4 border-orange-200 border-t-orange-500 rounded-full animate-spin"
-                    ></div>
-                    <div
-                        class="absolute inset-0 w-20 h-20 border-4 border-transparent border-b-orange-300 rounded-full animate-spin"
-                        style="animation-duration: 1.5s; animation-direction: reverse;"
-                    ></div>
-                </div>
-                <p class="mt-8 text-lg text-gray-600 font-medium">
-                    Loading African Giants...
-                </p>
-            </div>
-        {:else if posts.length === 0}
+        {#if posts.length === 0}
             <!-- Enhanced Empty State -->
             <div class="max-w-2xl mx-auto" in:fade>
                 <div

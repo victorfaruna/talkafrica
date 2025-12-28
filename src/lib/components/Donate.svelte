@@ -47,14 +47,15 @@
 			<div
 				class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 text-accent text-sm font-semibold mb-8 animate-fade-in-up"
 			>
-				<span class="text-base">💝</span> Amplify African Voices
+				<span class="text-base">💝</span> Support Our Mission
 			</div>
 
 			<!-- Main Heading -->
 			<h2
 				class="mb-6 font-clash-grotesk text-4xl md:text-5xl font-bold text-gray-900 leading-tight"
 			>
-				Support <span class="text-accent">Independent Journalism</span>
+				<span class="text-gray-900">Amplify</span>
+				<span class="text-accent">African Voices</span>
 			</h2>
 
 			<!-- Description -->
