@@ -11,6 +11,7 @@ export const GET: RequestHandler = async ({ url }) => {
         const category = url.searchParams.get("category");
         const featured = url.searchParams.get("featured");
         const search = url.searchParams.get("search");
+        const postId = url.searchParams.get("post_id");
         const limitParam = url.searchParams.get("limit");
         const limit = limitParam ? parseInt(limitParam) : undefined;
         const includeDeleted = url.searchParams.get("includeDeleted") === "true";
@@ -48,6 +49,11 @@ export const GET: RequestHandler = async ({ url }) => {
 
         if (featured === "true") {
             filters.push(eq(postTable.featured, true));
+        }
+
+        // Add post_id filter for fetching a specific post
+        if (postId) {
+            filters.push(eq(postTable.post_id, postId));
         }
 
         // Add search filter if search parameter is present
@@ -131,6 +137,8 @@ export const GET: RequestHandler = async ({ url }) => {
 export const POST: RequestHandler = async ({ request, cookies }) => {
     try {
         const body = await request.json();
+        console.log("📝 POST /api/posts - Request body:", JSON.stringify(body, null, 2));
+
         const {
             title,
             content,
@@ -145,6 +153,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         } = body;
 
         if (!title || !content) {
+            console.error("❌ Validation failed: Title or content missing");
             return json(
                 { success: false, message: "Title and content are required" },
                 { status: 400 }
@@ -153,24 +162,31 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
         // Support both old single category and new categories array
         const categoryArray = categories || (category ? [category] : []);
+        console.log("📂 Categories to insert:", categoryArray);
+
+        const insertData = {
+            title,
+            content,
+            excerpt,
+            category: categoryArray[0] || null, // Keep for backward compatibility
+            image,
+            status: status ?? "draft",
+            featured: Boolean(featured),
+            isTrendingNews: Boolean(isTrendingNews), // Save to DB
+            author: author || "Admin", // Use provided author or default to "Admin"
+        };
+        console.log("💾 Inserting post with data:", JSON.stringify(insertData, null, 2));
 
         const [created] = await db
             .insert(postTable)
-            .values({
-                title,
-                content,
-                excerpt,
-                category: categoryArray[0] || null, // Keep for backward compatibility
-                image,
-                status: status ?? "draft",
-                featured: Boolean(featured),
-                isTrendingNews: Boolean(isTrendingNews), // Save to DB
-                author: author || "Admin", // Use provided author or default to "Admin"
-            })
+            .values(insertData)
             .returning();
+
+        console.log("✅ Post created successfully:", created.post_id);
 
         // Insert categories into junction table
         if (categoryArray.length > 0) {
+            console.log("🔗 Inserting categories into junction table...");
             await db.insert(postCategoriesTable).values(
                 categoryArray.map((catSlug: string) => ({
                     post_id: created.post_id,
@@ -179,21 +195,22 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
             );
         }
 
-        // Fetch categories for response
-        const postCategories = await db
-            .select({ category_slug: postCategoriesTable.category_slug })
-            .from(postCategoriesTable)
-            .where(eq(postCategoriesTable.post_id, created.post_id));
-
+        console.log("🎉 Post creation complete!");
         return json({
             success: true,
             message: "Post created successfully",
             post: {
                 ...created,
-                categories: postCategories.map((pc) => pc.category_slug),
+                categories: categoryArray, // Return categories directly from request instead of querying DB
             },
         });
     } catch (error) {
+        console.error("❌ Error creating post:", error);
+        console.error("Error details:", {
+            name: error instanceof Error ? error.name : "Unknown",
+            message: error instanceof Error ? error.message : "Unknown error",
+            stack: error instanceof Error ? error.stack : undefined
+        });
         return json(
             {
                 success: false,
@@ -253,18 +270,15 @@ export const PUT: RequestHandler = async ({ request }) => {
             );
         }
 
-        // Fetch categories for response
-        const postCategories = await db
-            .select({ category_slug: postCategoriesTable.category_slug })
-            .from(postCategoriesTable)
-            .where(eq(postCategoriesTable.post_id, post_id));
+        // Return categories directly from request instead of querying DB
+        const categoryArray = categories || (category ? [category] : []);
 
         return json({
             success: true,
             message: "Post updated successfully",
             post: {
                 ...updated,
-                categories: postCategories.map((pc) => pc.category_slug),
+                categories: categoryArray,
             },
         });
     } catch (error) {

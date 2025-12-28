@@ -9,9 +9,24 @@ if (!DATABASE_URL) {
     );
 }
 
-// const client = postgres(DATABASE_URL, { ssl: 'require', port: 5432 });
+// Enhanced connection configuration optimized for remote Supabase database
 const client = postgres(DATABASE_URL, {
-    idle_timeout: 6000,
-    prepare: false
+    // Connection pool settings
+    max: 10, // Maximum number of connections in the pool
+    idle_timeout: 30, // Close idle connections after 30 seconds
+    max_lifetime: 60 * 30, // Max connection lifetime: 30 minutes
+    connect_timeout: 30, // Increased to 30 seconds for remote connection
+
+    // Prevent prepared statement caching issues
+    prepare: false,
+
+    // Handle connection errors gracefully
+    onnotice: () => { }, // Suppress notices
+
+    // Transform undefined to null (common issue)
+    transform: {
+        undefined: null
+    }
 });
+
 export const db = drizzle(client, { schema });

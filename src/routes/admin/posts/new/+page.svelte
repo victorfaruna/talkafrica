@@ -55,29 +55,32 @@
             // If editing, load post and prefill
             if (editingPostId) {
                 try {
-                    const resp = await fetch("/api/posts");
+                    // Optimized: Fetch only the specific post by ID instead of all posts
+                    const resp = await fetch(
+                        `/api/posts?post_id=${editingPostId}`,
+                    );
                     const data = await resp.json();
-                    if (data.success && Array.isArray(data.posts)) {
-                        const found = data.posts.find(
-                            (p: any) => p.post_id === editingPostId,
-                        );
-                        if (found) {
-                            title = found.title || "";
-                            category = found.category || "";
-                            // Load categories array if available, otherwise use single category
-                            selectedCategories = found.categories
-                                ? [...found.categories]
-                                : found.category
-                                  ? [found.category]
-                                  : [];
-                            excerpt = found.excerpt || "";
-                            image = found.image || "";
-                            featured = !!found.featured;
-                            isTrendingNews = !!found.isTrendingNews;
-                            status = found.status || "draft";
-                            content = found.content || "";
-                            // Editor will bind to content automatically
-                        }
+                    if (
+                        data.success &&
+                        Array.isArray(data.posts) &&
+                        data.posts.length > 0
+                    ) {
+                        const found = data.posts[0]; // Backend returns array with single post
+                        title = found.title || "";
+                        category = found.category || "";
+                        // Load categories array if available, otherwise use single category
+                        selectedCategories = found.categories
+                            ? [...found.categories]
+                            : found.category
+                              ? [found.category]
+                              : [];
+                        excerpt = found.excerpt || "";
+                        image = found.image || "";
+                        featured = !!found.featured;
+                        isTrendingNews = !!found.isTrendingNews;
+                        status = found.status || "draft";
+                        content = found.content || "";
+                        // Editor will bind to content automatically
                     }
                 } catch (e) {
                     console.error("Failed to load post for editing", e);
@@ -243,13 +246,13 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),
             });
-            const data = await resp.json();
-            if (data.success) {
-                await new Promise((resolve) => setTimeout(resolve, 500));
+            const result = await resp.json(); // Fixed: renamed from 'data' to 'result' to avoid shadowing
+            if (result.success) {
                 goto("/admin");
             } else {
                 alert(
-                    data.message + (data.error ? ": " + data.error : "") ||
+                    result.message +
+                        (result.error ? ": " + result.error : "") ||
                         "Failed to create/update post",
                 );
             }
