@@ -109,3 +109,22 @@ export const sessionsTable = pgTable("sessions", {
     last_seen: timestamp("last_seen").notNull().defaultNow(),
     created_at: timestamp("created_at").notNull().defaultNow(),
 });
+
+export const videosTable = pgTable("videos", {
+    id: serial("id").primaryKey(),
+    video_id: uuid("video_id")
+        .default(sql`gen_random_uuid()`)
+        .unique()
+        .notNull(),
+    title: varchar({ length: 255 }).notNull(),
+    description: text("description"),
+    video_url: varchar({ length: 512 }).notNull(),
+    thumbnail_url: varchar({ length: 512 }).notNull(),
+    category: varchar({ length: 128 }).notNull(),
+    author: varchar({ length: 255 }).notNull().default("Admin"),
+    views: integer("views").notNull().default(0),
+    duration: varchar({ length: 32 }), // e.g. "5:23"
+    is_featured: boolean("is_featured").notNull().default(false),
+    created_at: timestamp("created_at").notNull().defaultNow(),
+    updated_at: timestamp("updated_at").notNull().defaultNow(),
+});

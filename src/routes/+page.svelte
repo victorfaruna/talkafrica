@@ -12,6 +12,7 @@
 
     import AfricanGiantOfWeek from "$lib/components/AfricanGiantOfWeek.svelte";
     import TrendingTicker from "$lib/components/TrendingTicker.svelte";
+    import PopularVideos from "$lib/components/PopularVideos.svelte";
     import { onMount } from "svelte";
 
     export let data;
@@ -64,6 +65,7 @@
     <Latest posts={data.latestPosts} trendingPosts={data.trendingPosts} />
 
     <PopularBlogs posts={data.posts} />
+    <PopularVideos videos={data.videos} />
 
     <AfricanGiantOfWeek post={data.africanGiant} />
 

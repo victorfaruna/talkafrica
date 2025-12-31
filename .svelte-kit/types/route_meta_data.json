@@ -17,6 +17,17 @@
 	"/admin/posts/new": [
 		"src/routes/admin/+layout.server.ts"
 	],
+	"/admin/videos": [
+		"src/routes/admin/videos/+page.server.ts",
+		"src/routes/admin/+layout.server.ts"
+	],
+	"/admin/videos/new": [
+		"src/routes/admin/+layout.server.ts"
+	],
+	"/admin/videos/[id]/edit": [
+		"src/routes/admin/videos/[id]/edit/+page.server.ts",
+		"src/routes/admin/+layout.server.ts"
+	],
 	"/african-giant": [
 		"src/routes/african-giant/+page.server.ts"
 	],
@@ -44,15 +55,27 @@
 	"/api/test-supabase": [
 		"src/routes/api/test-supabase/+server.ts"
 	],
+	"/api/upload-video": [
+		"src/routes/api/upload-video/+server.ts"
+	],
 	"/api/upload": [
 		"src/routes/api/upload/+server.ts"
 	],
 	"/api/users": [
 		"src/routes/api/users/+server.ts"
 	],
+	"/api/videos": [
+		"src/routes/api/videos/+server.ts"
+	],
+	"/api/videos/[id]": [
+		"src/routes/api/videos/[id]/+server.ts"
+	],
 	"/donate": [],
 	"/posts/[post_id]": [
 		"src/routes/posts/[post_id]/+page.server.ts"
+	],
+	"/videos": [
+		"src/routes/videos/+page.server.ts"
 	],
 	"/[category]": [
 		"src/routes/[category]/+page.server.ts"

@@ -3,6 +3,7 @@ import { error } from "@sveltejs/kit";
 import { db } from "$lib/server/db";
 import { desc, eq, and } from "drizzle-orm";
 import { postTable, postCategoriesTable } from "$lib/server/schema";
+import { getVideos } from "$lib/server/videos";
 
 export const load: PageServerLoad = async () => {
     try {
@@ -12,6 +13,9 @@ export const load: PageServerLoad = async () => {
         );
 
         // Execute queries sequentially to avoid connection pool exhaustion
+
+        // Videos
+        const videos = await getVideos(5);
 
         // Featured posts
         const featured = await db
@@ -93,7 +97,7 @@ export const load: PageServerLoad = async () => {
             latestPosts: latest,
             trendingPosts: trending,
             africanGiant,
-
+            videos,
         };
     } catch (err) {
         console.error("Error loading posts:", err);

@@ -22,6 +22,13 @@
       "when": 1766505124661,
       "tag": "0002_brainy_songbird",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1767206791965,
+      "tag": "0003_lethal_dazzler",
+      "breakpoints": true
     }
   ]
 }

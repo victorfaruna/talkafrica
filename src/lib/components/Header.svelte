@@ -270,44 +270,35 @@
 <!-- Mobile Menu -->
 {#if mobileMenuOpen}
     <div class="fixed inset-0 z-[1000] lg:hidden">
-        <!-- Backdrop with blur effect -->
+        <!-- Backdrop -->
         <div
-            class="fixed inset-0 bg-black/60 backdrop-blur-sm"
+            class="fixed inset-0 bg-black/20 backdrop-blur-sm transition-opacity duration-300"
             onclick={toggleMobileMenu}
             role="button"
             tabindex="0"
             onkeydown={(e) => e.key === "Enter" && toggleMobileMenu()}
+            transition:fade={{ duration: 300 }}
         ></div>
 
-        <!-- Menu Panel with slide-in animation -->
+        <!-- Floating Panel -->
         <div
-            class="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-white shadow-2xl transform transition-all duration-300 ease-out"
-            class:translate-x-0={mobileMenuOpen}
-            class:translate-x-full={!mobileMenuOpen}
+            class="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-white/20 backdrop-blur-lg shadow-2xl border-l border-white/50 flex flex-col overflow-hidden"
+            transition:fly={{
+                x: 20,
+                duration: 500,
+                opacity: 0,
+                easing: quintOut,
+            }}
         >
-            <!-- Header with logo and close button -->
-            <div
-                class="flex items-center justify-between p-5 border-b border-gray-200"
-            >
-                <div class="flex items-center space-x-3">
-                    <div
-                        class="w-10 h-10 rounded-xl flex items-center justify-center"
-                    >
-                        <img
-                            src="/images/logo.webp"
-                            alt="Talk Africa"
-                            class="size-8 inline-block object-fit"
-                        />
-                    </div>
-                    <h2 class="text-xl font-bold text-gray-900">TalkAfrica</h2>
-                </div>
+            <!-- Decorative Header (Traffic Lights) & Close -->
+            <div class="flex items-center justify-end px-6 pt-6 pb-2 shrink-0">
+                <!-- Close Button -->
                 <button
                     onclick={toggleMobileMenu}
-                    class="p-2 rounded-full hover:bg-gray-100 transition-all duration-200 group"
-                    aria-label="Close mobile menu"
+                    class="p-2 -mr-2 rounded-full hover:bg-white/10 text-white hover:text-white transition-colors drop-shadow-md"
                 >
                     <svg
-                        class="w-6 h-6 text-gray-600 group-hover:text-gray-900 transition-all duration-200"
+                        class="w-6 h-6"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -322,21 +313,53 @@
                 </button>
             </div>
 
-            <!-- Navigation -->
-            <nav class="flex-1 overflow-y-auto">
-                <div class="p-5">
-                    <ul class="space-y-2">
-                        <li>
-                            <a
-                                href="/"
-                                class={`flex items-center px-4 py-3.5 rounded-xl font-medium transition-all duration-200 ${url.split("/")[1] === "" ? "bg-gradient-to-r from-accent to-orange-600 text-white shadow-md" : "text-gray-700 hover:bg-white hover:shadow-sm"}`}
-                                onclick={toggleMobileMenu}
+            <!-- Profile/Logo Section -->
+            <div
+                class="px-6 py-6 flex flex-col items-center border-b border-gray-100/50 shrink-0"
+            >
+                <div
+                    class="w-20 h-20 rounded-[1.5rem] bg-white shadow-lg shadow-orange-500/10 flex items-center justify-center mb-4 transform hover:scale-105 transition-transform duration-300"
+                >
+                    <img
+                        src="/images/logo.webp"
+                        alt="Talk Africa"
+                        class="size-12 object-contain"
+                    />
+                </div>
+                <h2 class="text-lg font-bold text-white drop-shadow-md">
+                    TalkAfrica
+                </h2>
+                <p
+                    class="text-xs text-white/80 font-medium tracking-wide mt-1 drop-shadow-md"
+                >
+                    African News & Lifestyle
+                </p>
+            </div>
+
+            <!-- Scrollable Navigation -->
+            <div class="flex-1 overflow-y-auto px-4 py-6 scrollbar-hide">
+                <div
+                    class="mb-4 px-2 text-[10px] font-extrabold text-white/60 uppercase tracking-widest drop-shadow-md"
+                >
+                    Menu
+                </div>
+
+                <ul class="space-y-3">
+                    <!-- Home Item -->
+                    <li in:fly={{ y: 20, duration: 400, delay: 100 }}>
+                        <a
+                            href="/"
+                            class={`flex items-center px-5 py-4 rounded-[1.25rem] font-medium transition-all duration-300 group relative overflow-hidden ${url.split("/")[1] === "" ? "bg-accent text-white shadow-lg shadow-orange-500/30" : "bg-transparent text-white hover:bg-white/10 drop-shadow-md"}`}
+                            onclick={toggleMobileMenu}
+                        >
+                            <span
+                                class="relative z-10 flex items-center w-full"
                             >
-                                <div
-                                    class={`w-9 h-9 rounded-lg flex items-center justify-center mr-3 ${url.split("/")[1] === "" ? "bg-white/20" : "bg-orange-50"}`}
+                                <span
+                                    class={`mr-4 ${url.split("/")[1] === "" ? "text-white" : "text-white group-hover:text-accent drop-shadow-md"}`}
                                 >
                                     <svg
-                                        class={`w-5 h-5 ${url.split("/")[1] === "" ? "text-white" : "text-accent"}`}
+                                        class="w-5 h-5"
                                         fill="none"
                                         stroke="currentColor"
                                         viewBox="0 0 24 24"
@@ -348,76 +371,42 @@
                                             d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
                                         />
                                     </svg>
-                                </div>
+                                </span>
                                 Home
-                            </a>
-                        </li>
-                        {#each categories as category}
-                            <li>
-                                <div class="space-y-1">
-                                    {#if categoryHierarchy.subcategories[category.slug] && categoryHierarchy.subcategories[category.slug].length > 0}
-                                        <!-- Category with subcategories - show button -->
-                                        <button
-                                            onclick={() =>
-                                                toggleCategory(category.slug)}
-                                            class={`w-full flex items-center justify-between px-4 py-3.5 rounded-xl font-medium transition-all duration-200 ${category.slug === url.split("/")[1] ? "bg-gradient-to-r from-accent to-orange-600 text-white shadow-md" : "text-gray-700 hover:bg-white hover:shadow-sm"}`}
-                                        >
-                                            <div class="flex items-center">
-                                                <div
-                                                    class={`w-9 h-9 rounded-lg flex items-center justify-center mr-3 ${category.slug === url.split("/")[1] ? "bg-white/20" : "bg-orange-50"}`}
-                                                >
-                                                    <svg
-                                                        class={`w-5 h-5 ${category.slug === url.split("/")[1] ? "text-white" : "text-accent"}`}
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        viewBox="0 0 24 24"
-                                                    >
-                                                        <path
-                                                            stroke-linecap="round"
-                                                            stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                                                        ></path>
-                                                    </svg>
-                                                </div>
-                                                <span
-                                                    >{category.display_name}</span
-                                                >
-                                            </div>
-                                            <svg
-                                                class="w-5 h-5 transition-transform duration-200 {expandedCategory ===
-                                                category.slug
-                                                    ? 'rotate-180'
-                                                    : ''}"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                            >
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    stroke-width="2"
-                                                    d="M19 9l-7 7-7-7"
-                                                ></path>
-                                            </svg>
-                                        </button>
-                                    {:else}
-                                        <!-- Category without subcategories - show link -->
-                                        <a
-                                            href={`/${category.slug}`}
-                                            class={`w-full flex items-center px-4 py-3.5 rounded-xl font-medium transition-all duration-200 ${category.slug === url.split("/")[1] ? "bg-gradient-to-r from-accent to-orange-600 text-white shadow-md" : "text-gray-700 hover:bg-white hover:shadow-sm"}`}
-                                            onclick={toggleMobileMenu}
-                                        >
-                                            <div
-                                                class={`w-9 h-9 rounded-lg flex items-center justify-center mr-3 ${category.slug === url.split("/")[1] ? "bg-white/20" : "bg-orange-50"}`}
+                                {#if url.split("/")[1] === ""}
+                                    <span
+                                        class="ml-auto w-1.5 h-1.5 bg-white rounded-full"
+                                    ></span>
+                                {/if}
+                            </span>
+                        </a>
+                    </li>
+
+                    {#each categories as category, i}
+                        <li
+                            in:fly={{
+                                y: 20,
+                                duration: 400,
+                                delay: 150 + i * 50,
+                            }}
+                        >
+                            <div class="group">
+                                {#if categoryHierarchy.subcategories[category.slug] && categoryHierarchy.subcategories[category.slug].length > 0}
+                                    <!-- Category Header Button -->
+                                    <button
+                                        onclick={() =>
+                                            toggleCategory(category.slug)}
+                                        class={`w-full flex items-center justify-between px-5 py-4 rounded-[1.25rem] font-medium transition-all duration-300 ${category.slug === url.split("/")[1] ? "bg-accent text-white shadow-lg shadow-orange-500/30" : "bg-transparent text-white hover:bg-white/10 drop-shadow-md"}`}
+                                    >
+                                        <div class="flex items-center">
+                                            <span
+                                                class={`mr-4 ${category.slug === url.split("/")[1] ? "text-white" : "text-white group-hover:text-accent drop-shadow-md"}`}
                                             >
                                                 {#if category.icon === "crown"}
-                                                    <span class="text-xl"
-                                                        >👑</span
-                                                    >
+                                                    <span>👑</span>
                                                 {:else}
                                                     <svg
-                                                        class={`w-5 h-5 ${category.slug === url.split("/")[1] ? "text-white" : "text-accent"}`}
+                                                        class="w-5 h-5"
                                                         fill="none"
                                                         stroke="currentColor"
                                                         viewBox="0 0 24 24"
@@ -430,150 +419,185 @@
                                                         ></path>
                                                     </svg>
                                                 {/if}
-                                            </div>
-                                            <span>{category.display_name}</span>
-                                        </a>
-                                    {/if}
-
-                                    <!-- Subcategories with smooth animation -->
-                                    {#if expandedCategory === category.slug && categoryHierarchy.subcategories[category.slug] && categoryHierarchy.subcategories[category.slug].length > 0}
-                                        <div
-                                            class="ml-10 space-y-1 overflow-hidden transition-all duration-300"
-                                        >
-                                            {#each categoryHierarchy.subcategories[category.slug] as subcategory}
-                                                <a
-                                                    href={`/${subcategory.slug}`}
-                                                    class="flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-white hover:text-gray-900 transition-all duration-200 rounded-lg group"
-                                                    onclick={toggleMobileMenu}
-                                                >
-                                                    <div
-                                                        class="w-1.5 h-1.5 bg-accent/60 rounded-full mr-3 group-hover:bg-accent transition-colors"
-                                                    ></div>
-                                                    {subcategory.display_name}
-                                                </a>
-                                            {/each}
+                                            </span>
+                                            {category.display_name}
                                         </div>
-                                    {/if}
-                                </div>
-                            </li>
-                            {#if category.slug === "entertainment"}
-                                <li>
+                                        <svg
+                                            class={`w-4 h-4 transition-transform duration-300 ${expandedCategory === category.slug ? "rotate-180" : ""} ${category.slug === url.split("/")[1] ? "text-white/70" : "text-white"}`}
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M19 9l-7 7-7-7"
+                                            />
+                                        </svg>
+                                    </button>
+                                {:else}
                                     <a
-                                        href="/about"
-                                        class={`flex items-center px-4 py-3.5 rounded-xl font-medium transition-all duration-200 ${url.split("/")[1] === "about" ? "bg-gradient-to-r from-accent to-orange-600 text-white shadow-md" : "text-gray-700 hover:bg-white hover:shadow-sm"}`}
+                                        href={`/${category.slug}`}
+                                        class={`flex items-center px-5 py-4 rounded-[1.25rem] font-medium transition-all duration-300 ${category.slug === url.split("/")[1] ? "bg-accent text-white shadow-lg shadow-orange-500/30" : "bg-transparent text-white hover:bg-white/10 drop-shadow-md"}`}
                                         onclick={toggleMobileMenu}
                                     >
-                                        <div
-                                            class={`w-9 h-9 rounded-lg flex items-center justify-center mr-3 ${url.split("/")[1] === "about" ? "bg-white/20" : "bg-orange-50"}`}
-                                        >
-                                            <svg
-                                                class={`w-5 h-5 ${url.split("/")[1] === "about" ? "text-white" : "text-accent"}`}
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
+                                        <div class="flex items-center w-full">
+                                            <span
+                                                class={`mr-4 ${category.slug === url.split("/")[1] ? "text-white" : "text-white group-hover:text-accent drop-shadow-md"}`}
                                             >
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    stroke-width="2"
-                                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                                />
-                                            </svg>
+                                                {#if category.icon === "crown"}
+                                                    <span>👑</span>
+                                                {:else}
+                                                    <svg
+                                                        class="w-5 h-5"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path
+                                                            stroke-linecap="round"
+                                                            stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                                                        ></path>
+                                                    </svg>
+                                                {/if}
+                                            </span>
+                                            {category.display_name}
+                                            {#if category.slug === url.split("/")[1]}
+                                                <span
+                                                    class="ml-auto w-1.5 h-1.5 bg-white rounded-full"
+                                                ></span>
+                                            {/if}
                                         </div>
-                                        About Us
                                     </a>
-                                </li>
-                            {/if}
-                        {/each}
-                    </ul>
-                </div>
+                                {/if}
 
-                <!-- Social Links Section -->
-                <div class="p-5 border-t border-gray-200 bg-white">
-                    <div
-                        class="bg-gradient-to-br from-orange-50 to-white rounded-xl p-5 border border-orange-100"
-                    >
-                        <h3
-                            class="text-base font-semibold text-gray-900 mb-4 flex items-center"
-                        >
-                            <div
-                                class="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center mr-2"
-                            >
-                                <svg
-                                    class="w-4 h-4 text-accent"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-                                    />
-                                </svg>
+                                <!-- Subcategories -->
+                                {#if expandedCategory === category.slug && categoryHierarchy.subcategories[category.slug] && categoryHierarchy.subcategories[category.slug].length > 0}
+                                    <div
+                                        class="mt-2 ml-4 pl-4 border-l-2 border-gray-100 space-y-1"
+                                        transition:slide={{
+                                            duration: 300,
+                                            easing: quintOut,
+                                        }}
+                                    >
+                                        {#each categoryHierarchy.subcategories[category.slug] as subcategory}
+                                            <a
+                                                href={`/${subcategory.slug}`}
+                                                class="flex items-center px-4 py-3 rounded-xl text-sm font-medium text-white hover:text-accent hover:bg-white/10 transition-all duration-200 drop-shadow-md"
+                                                onclick={toggleMobileMenu}
+                                            >
+                                                {subcategory.display_name}
+                                            </a>
+                                        {/each}
+                                    </div>
+                                {/if}
                             </div>
-                            Follow Us
-                        </h3>
-                        <div class="flex gap-3 justify-center">
-                            <a
-                                aria-label="Facebook"
-                                href="https://www.facebook.com/share/1ENaqeVP7r/?mibextid=wwXIfr"
-                                target="_blank"
-                                class="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-500 hover:to-blue-600 transition-all duration-300 hover:scale-105 hover:shadow-md group"
+                        </li>
+                        {#if category.slug === "entertainment"}
+                            <li
+                                in:fly={{
+                                    y: 20,
+                                    duration: 400,
+                                    delay: 150 + (i + 1) * 50,
+                                }}
                             >
-                                <svg
-                                    width="20"
-                                    height="20"
-                                    viewBox="0 0 24 24"
-                                    fill="currentColor"
-                                    class="group-hover:scale-110 transition-transform"
+                                <a
+                                    href="/about"
+                                    class={`flex items-center px-5 py-4 rounded-[1.25rem] font-medium transition-all duration-300 group ${url.split("/")[1] === "about" ? "bg-accent text-white shadow-lg shadow-orange-500/30" : "bg-transparent text-white hover:bg-white/10 drop-shadow-md"}`}
+                                    onclick={toggleMobileMenu}
                                 >
-                                    <path
-                                        d="M22 12C22 6.47717 17.5229 2.00002 12 2.00002C6.47715 2.00002 2 6.47717 2 12C2 16.9913 5.65686 21.1283 10.4375 21.8785V14.8906H7.89844V12H10.4375V9.7969C10.4375 7.29065 11.9304 5.90627 14.2146 5.90627C15.3087 5.90627 16.4531 6.10159 16.4531 6.10159V8.56252H15.1921C13.9499 8.56252 13.5625 9.33336 13.5625 10.1242V12H16.3359L15.8926 14.8906H13.5625V21.8785C18.3431 21.1283 22 16.9913 22 12Z"
-                                    />
-                                </svg>
-                            </a>
-                            <a
-                                aria-label="Instagram"
-                                href="https://www.instagram.com/talkafrica_ng?igsh=MWc2N2U0cW5wbmRlbw%3D%3D&utm_source=qr"
-                                target="_blank"
-                                class="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 text-white rounded-lg hover:from-purple-400 hover:via-pink-400 hover:to-orange-400 transition-all duration-300 hover:scale-105 hover:shadow-md group"
+                                    <span
+                                        class={`mr-4 ${url.split("/")[1] === "about" ? "text-white" : "text-white group-hover:text-accent drop-shadow-md"}`}
+                                    >
+                                        <svg
+                                            class="w-5 h-5"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                            />
+                                        </svg>
+                                    </span>
+                                    About Us
+                                    {#if url.split("/")[1] === "about"}
+                                        <span
+                                            class="ml-auto w-1.5 h-1.5 bg-white rounded-full"
+                                        ></span>
+                                    {/if}
+                                </a>
+                            </li>
+                        {/if}
+                    {/each}
+                </ul>
+
+                <!-- Connect Card -->
+                <div
+                    class="mt-8 mb-4 bg-white/60 backdrop-blur-sm rounded-[1.5rem] p-5 shadow-sm border border-white/50"
+                >
+                    <div class="flex items-center justify-between mb-4">
+                        <span
+                            class="text-[10px] font-extrabold text-white/60 uppercase tracking-widest drop-shadow-md"
+                            >Connect</span
+                        >
+                    </div>
+
+                    <div class="flex justify-between gap-2">
+                        <a
+                            href="https://www.facebook.com/share/1ENaqeVP7r/?mibextid=wwXIfr"
+                            target="_blank"
+                            class="flex-1 h-10 flex items-center justify-center rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-300"
+                            aria-label="Facebook"
+                        >
+                            <svg
+                                class="w-5 h-5"
+                                fill="currentColor"
+                                viewBox="0 0 24 24"
+                                ><path
+                                    d="M22 12C22 6.47717 17.5229 2.00002 12 2.00002C6.47715 2.00002 2 6.47717 2 12C2 16.9913 5.65686 21.1283 10.4375 21.8785V14.8906H7.89844V12H10.4375V9.7969C10.4375 7.29065 11.9304 5.90627 14.2146 5.90627C15.3087 5.90627 16.4531 6.10159 16.4531 6.10159V8.56252H15.1921C13.9499 8.56252 13.5625 9.33336 13.5625 10.1242V12H16.3359L15.8926 14.8906H13.5625V21.8785C18.3431 21.1283 22 16.9913 22 12Z"
+                                /></svg
                             >
-                                <svg
-                                    width="20"
-                                    height="20"
-                                    viewBox="0 0 24 24"
-                                    fill="currentColor"
-                                    class="group-hover:scale-110 transition-transform"
-                                >
-                                    <path
-                                        d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.919-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"
-                                    />
-                                </svg>
-                            </a>
-                            <a
-                                href="https://youtube.com/@talkafricang?si=yXdrZeI_Cm3s7DEh"
-                                target="_blank"
-                                aria-label="YouTube"
-                                class="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 text-white rounded-lg hover:from-red-500 hover:to-red-600 transition-all duration-300 hover:scale-105 hover:shadow-md group"
+                        </a>
+                        <a
+                            href="https://www.instagram.com/talkafrica_ng?igsh=MWc2N2U0cW5wbmRlbw%3D%3D&utm_source=qr"
+                            target="_blank"
+                            class="flex-1 h-10 flex items-center justify-center rounded-xl bg-pink-50 text-pink-600 hover:bg-pink-600 hover:text-white transition-all duration-300"
+                            aria-label="Instagram"
+                        >
+                            <svg
+                                class="w-5 h-5"
+                                fill="currentColor"
+                                viewBox="0 0 24 24"
+                                ><path
+                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.919-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"
+                                /></svg
                             >
-                                <svg
-                                    width="20"
-                                    height="20"
-                                    viewBox="0 0 24 24"
-                                    fill="currentColor"
-                                    class="group-hover:scale-110 transition-transform"
-                                >
-                                    <path
-                                        d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"
-                                    />
-                                </svg>
-                            </a>
-                        </div>
+                        </a>
+                        <a
+                            href="https://youtube.com/@talkafricang?si=yXdrZeI_Cm3s7DEh"
+                            target="_blank"
+                            class="flex-1 h-10 flex items-center justify-center rounded-xl bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-300"
+                            aria-label="YouTube"
+                        >
+                            <svg
+                                class="w-5 h-5"
+                                fill="currentColor"
+                                viewBox="0 0 24 24"
+                                ><path
+                                    d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"
+                                /></svg
+                            >
+                        </a>
                     </div>
                 </div>
-            </nav>
+            </div>
         </div>
     </div>
 {/if}
@@ -583,7 +607,7 @@
     <div class="fixed inset-0 z-50">
         <!-- Backdrop -->
         <div
-            class="fixed inset-0 bg-black/60 backdrop-blur-sm"
+            class="fixed inset-0 bg-black/60 backdrop-blur-[2px]"
             onclick={toggleSearchModal}
             role="button"
             tabindex="0"
