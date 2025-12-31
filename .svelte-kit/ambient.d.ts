@@ -27,8 +27,9 @@
  */
 declare module '$env/static/private' {
 	export const DATABASE_URL: string;
-	export const SUPABASE_URL: string;
-	export const SUPABASE_ANON_KEY: string;
+	export const CLOUDINARY_CLOUD_NAME: string;
+	export const CLOUDINARY_API_KEY: string;
+	export const CLOUDINARY_API_SECRET: string;
 	export const ALLUSERSPROFILE: string;
 	export const ANTIGRAVITY_CLI_ALIAS: string;
 	export const APPDATA: string;
@@ -147,8 +148,9 @@ declare module '$env/static/public' {
 declare module '$env/dynamic/private' {
 	export const env: {
 		DATABASE_URL: string;
-		SUPABASE_URL: string;
-		SUPABASE_ANON_KEY: string;
+		CLOUDINARY_CLOUD_NAME: string;
+		CLOUDINARY_API_KEY: string;
+		CLOUDINARY_API_SECRET: string;
 		ALLUSERSPROFILE: string;
 		ANTIGRAVITY_CLI_ALIAS: string;
 		APPDATA: string;

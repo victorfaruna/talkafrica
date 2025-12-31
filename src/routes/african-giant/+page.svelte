@@ -164,7 +164,7 @@
                             >
                                 <img
                                     src={posts[0].image ||
-                                        "/images/placeholder.jpg"}
+                                        "/images/placeholder.webp"}
                                     alt={posts[0].title}
                                     class="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
                                 />
@@ -330,7 +330,7 @@
                                 >
                                     <img
                                         src={post.image ||
-                                            "/images/placeholder.jpg"}
+                                            "/images/placeholder.webp"}
                                         alt={post.title}
                                         class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                                     />

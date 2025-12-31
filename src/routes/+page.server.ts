@@ -41,7 +41,11 @@ export const load: PageServerLoad = async () => {
         const trending = await db
             .select()
             .from(postTable)
-            .where(and(baseWhere, eq(postTable.isTrendingNews, true)))
+            .where(and(
+                eq(postTable.status, "published"),
+                eq(postTable.deleted, false),
+                eq(postTable.isTrendingNews, true)
+            ))
             .orderBy(desc(postTable.created_at))
             .limit(5);
 

@@ -19,7 +19,7 @@
                     <img
                         src={post.featured_image ||
                             post.image ||
-                            "/images/placeholder.jpg"}
+                            "/images/placeholder.webp"}
                         alt={post.title}
                         class="absolute inset-0 w-full h-full object-cover"
                     />

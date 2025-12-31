@@ -1,6 +1,6 @@
 import { json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
-import { supabase } from "$lib/supabase";
+import { cloudinary } from "$lib/server/cloudinary";
 
 // Image file signatures (magic numbers) for validation
 const IMAGE_SIGNATURES = {
@@ -155,31 +155,37 @@ function validateFileExtension(filename: string): boolean {
     return ALLOWED_EXTENSIONS.includes(extension);
 }
 
-// Function to upload file to Supabase Storage
-async function uploadToSupabase(
+// Function to upload file to Cloudinary
+async function uploadToCloudinary(
     file: File,
     filename: string
-): Promise<{ url: string; path: string }> {
-    const { data, error } = await supabase.storage
-        .from("images")
-        .upload(filename, file, {
-            cacheControl: "3600",
-            upsert: false,
+): Promise<{ url: string; publicId: string }> {
+    try {
+        // Convert file to base64 for Cloudinary upload
+        const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        const base64Data = buffer.toString("base64");
+        const dataUri = `data:${file.type};base64,${base64Data}`;
+
+        // Upload to Cloudinary
+        const result = await cloudinary.uploader.upload(dataUri, {
+            folder: "talkafrica",
+            public_id: filename.split(".")[0], // Use filename without extension
+            resource_type: "image",
+            transformation: [
+                { quality: "auto", fetch_format: "auto" }, // Automatic format and quality optimization
+            ],
         });
 
-    if (error) {
-        throw new Error(`Failed to upload to Supabase: ${error.message}`);
+        return {
+            url: result.secure_url,
+            publicId: result.public_id,
+        };
+    } catch (error) {
+        throw new Error(
+            `Failed to upload to Cloudinary: ${error instanceof Error ? error.message : "Unknown error"}`
+        );
     }
-
-    // Get the public URL
-    const { data: urlData } = supabase.storage
-        .from("images")
-        .getPublicUrl(data.path);
-
-    return {
-        url: urlData.publicUrl,
-        path: data.path,
-    };
 }
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -197,7 +203,7 @@ export const POST: RequestHandler = async ({ request }) => {
             );
         }
 
-        // Validate file size (10MB limit - increased for better support)
+        // Validate file size (10MB limit)
         const maxSize = 10 * 1024 * 1024; // 10MB
         if (file.size > maxSize) {
             return json(
@@ -258,15 +264,15 @@ export const POST: RequestHandler = async ({ request }) => {
             detectedType === "jpeg" ? "jpg" : detectedType || originalExtension;
         const filename = `${timestamp}.${finalExtension}`;
 
-        // Upload to Supabase Storage
-        const { url, path } = await uploadToSupabase(file, filename);
+        // Upload to Cloudinary
+        const { url, publicId } = await uploadToCloudinary(file, filename);
 
         return json({
             success: true,
             message: "File uploaded successfully",
             url: url,
             filename: filename,
-            path: path,
+            publicId: publicId,
             detectedType: detectedType,
             fileSize: file.size,
         });
@@ -276,7 +282,7 @@ export const POST: RequestHandler = async ({ request }) => {
         // More specific error handling
         let errorMessage = "Failed to upload file";
         if (error instanceof Error) {
-            if (error.message.includes("Failed to upload to Supabase")) {
+            if (error.message.includes("Failed to upload to Cloudinary")) {
                 errorMessage = error.message;
             } else if (error.message.includes("Invalid image file")) {
                 errorMessage = error.message;
