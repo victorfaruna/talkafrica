@@ -54,7 +54,7 @@ export const load: PageServerLoad = async ({ params }) => {
         }
 
         // Fetch related posts (same categories, excluding current post)
-        let relatedPosts = [];
+        let relatedPosts: any[] = [];
         if (categorySlugs.length > 0) {
             const relatedPostIdSet = new Set<string>();
 

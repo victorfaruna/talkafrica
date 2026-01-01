@@ -1,5 +1,7 @@
 <script lang="ts">
     import { page } from "$app/state";
+    import { fade, fly, slide } from "svelte/transition";
+    import { quintOut } from "svelte/easing";
     const url = $derived(page.url.pathname);
 
     import {
@@ -16,7 +18,7 @@
     let expandedCategory = $state<string | null>(null);
     let searchModalOpen = $state(false);
     let searchQuery = $state("");
-    let searchResults = $state([]);
+    let searchResults = $state<any[]>([]);
     let isSearching = $state(false);
 
     function handleMouseEnter(categorySlug: string) {
@@ -70,8 +72,8 @@
         searchQuery = target.value;
 
         // Debounce search
-        clearTimeout(window.searchTimeout);
-        window.searchTimeout = setTimeout(performSearch, 300);
+        clearTimeout((window as any).searchTimeout);
+        (window as any).searchTimeout = setTimeout(performSearch, 300);
     }
 </script>
 

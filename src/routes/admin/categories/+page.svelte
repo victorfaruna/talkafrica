@@ -1,11 +1,11 @@
 <script lang="ts">
     import { onMount } from "svelte";
 
-    let categories = $state([]);
+    let categories = $state<any[]>([]);
     let loading = $state(true);
     let error = $state("");
     let showAddForm = $state(false);
-    let editingCategory = $state(null);
+    let editingCategory = $state<any>(null);
 
     // Form data
     let formData = $state({
@@ -28,7 +28,7 @@
         try {
             loading = true;
             const response = await fetch(
-                "/api/categories?includeInactive=true"
+                "/api/categories?includeInactive=true",
             );
             const data = await response.json();
 
@@ -61,7 +61,7 @@
         showAddForm = true;
     }
 
-    function startEdit(category) {
+    function startEdit(category: any) {
         editingCategory = category;
         formData = {
             name: category.name,
@@ -104,10 +104,10 @@
         }
     }
 
-    async function deleteCategory(category) {
+    async function deleteCategory(category: any) {
         if (
             !confirm(
-                `Are you sure you want to delete "${category.display_name}"?`
+                `Are you sure you want to delete "${category.display_name}"?`,
             )
         ) {
             return;
@@ -240,7 +240,7 @@
                                         ? categories.find(
                                               (c) =>
                                                   c.category_id ===
-                                                  category.parent_id
+                                                  category.parent_id,
                                           )?.display_name || "Unknown"
                                         : "Main Category"}
                                 </td>

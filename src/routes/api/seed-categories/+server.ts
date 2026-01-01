@@ -27,7 +27,7 @@ export const POST: RequestHandler = async () => {
         return json(
             {
                 success: false,
-                error: error.message,
+                error: (error as any).message,
             },
             { status: 500 }
         );

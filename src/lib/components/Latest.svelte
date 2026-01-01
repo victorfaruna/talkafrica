@@ -1,4 +1,4 @@
-<script lang="ts">
+<script context="module" lang="ts">
     export type Post = {
         post_id: string;
         title: string;
@@ -6,6 +6,9 @@
         image?: string | null;
         views?: number | null;
     };
+</script>
+
+<script lang="ts">
     export let posts: Post[];
     export let trendingPosts: Post[] = [];
 

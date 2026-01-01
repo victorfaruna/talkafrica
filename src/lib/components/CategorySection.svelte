@@ -1,7 +1,7 @@
-<script>
+<script lang="ts">
     export let category = "politics";
     export let categoryName = "Politics";
-    export let posts = [];
+    export let posts: any[] = [];
     export let color = "#16a34a";
     export let special = false;
 </script>

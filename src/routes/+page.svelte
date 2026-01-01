@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import Header from "$lib/components/Header.svelte";
     import Headlines from "$lib/components/Headlines.svelte";
     import Hero from "$lib/components/Hero.svelte";
@@ -17,7 +17,7 @@
 
     export let data;
 
-    let categoriesData = {
+    let categoriesData: any = {
         politics: [],
         economy: [],
         health: [],

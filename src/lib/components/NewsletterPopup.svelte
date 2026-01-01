@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { onMount } from "svelte";
     import { browser } from "$app/environment";
     import { page } from "$app/stores";
@@ -44,7 +44,7 @@
         }
     }
 
-    function handleBackdropClick(event) {
+    function handleBackdropClick(event: any) {
         if (event.target === event.currentTarget) {
             closePopup();
         }

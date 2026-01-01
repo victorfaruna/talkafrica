@@ -10,13 +10,16 @@ export const GET: RequestHandler = async ({ url }) => {
         const includeInactive =
             url.searchParams.get("includeInactive") === "true";
 
-        let query = db.select().from(categoriesTable);
-
+        const conditions = [];
         if (!includeInactive) {
-            query = query.where(eq(categoriesTable.is_active, true));
+            conditions.push(eq(categoriesTable.is_active, true));
         }
 
-        const categories = await query.orderBy(categoriesTable.sort_order);
+        const categories = await db
+            .select()
+            .from(categoriesTable)
+            .where(and(...conditions))
+            .orderBy(categoriesTable.sort_order);
 
         return json({
             success: true,
@@ -28,7 +31,7 @@ export const GET: RequestHandler = async ({ url }) => {
             {
                 success: false,
                 message: "Failed to fetch categories",
-                error: error.message,
+                error: (error as any).message,
             },
             { status: 500 }
         );
@@ -65,7 +68,7 @@ export const POST: RequestHandler = async ({ request }) => {
             {
                 success: false,
                 message: "Failed to create category",
-                error: error.message,
+                error: (error as any).message,
             },
             { status: 500 }
         );
@@ -114,7 +117,7 @@ export const PUT: RequestHandler = async ({ request }) => {
             {
                 success: false,
                 message: "Failed to update category",
-                error: error.message,
+                error: (error as any).message,
             },
             { status: 500 }
         );
@@ -178,7 +181,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
             {
                 success: false,
                 message: "Failed to delete category",
-                error: error.message,
+                error: (error as any).message,
             },
             { status: 500 }
         );
