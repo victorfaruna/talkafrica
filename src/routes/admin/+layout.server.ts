@@ -12,7 +12,7 @@ const getAdmin = async (adminId: string) => {
             .where(eq(adminTable.admin_id, adminId as string))
             .limit(1);
 
-        return data;
+        return data.length > 0 ? data[0] : null;
     } catch (error) {
         console.error("Error loading admin:", error);
         return null;
@@ -23,7 +23,7 @@ export const load: LayoutServerLoad = async ({ cookies, url }) => {
     const adminId = cookies.get("admin");
     const data = await getAdmin(adminId as string);
 
-    const isAuthenticated = !!data;
+    const isAuthenticated = !!data; // data is now unique item or null
     const isLoginPage = url.pathname === "/admin/login";
 
     if (!isAuthenticated && !isLoginPage) {
@@ -39,10 +39,10 @@ export const load: LayoutServerLoad = async ({ cookies, url }) => {
         isLoginPage,
         admin: data
             ? {
-                id: data[0].id,
-                email: data[0].email,
-                username: data[0].username,
-                admin_id: data[0].admin_id,
+                id: data.id,
+                email: data.email,
+                username: data.username,
+                admin_id: data.admin_id,
             }
             : undefined,
         authError: null,
