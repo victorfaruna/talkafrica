@@ -46,6 +46,9 @@
 	"/api/donate": [
 		"src/routes/api/donate/+server.ts"
 	],
+	"/api/newsletter/subscribe": [
+		"src/routes/api/newsletter/subscribe/+server.ts"
+	],
 	"/api/posts": [
 		"src/routes/api/posts/+server.ts"
 	],

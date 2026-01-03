@@ -84,14 +84,14 @@
             role: "",
         },
         {
-            name: "Ipinymi korede precious",
+            name: "Ipinyomi korede precious",
             image: "/images/team/ipinymi-korede-precious.jpg",
             role: "",
         },
         { name: "Destiny Sunday", image: "/images/placeholder.webp", role: "" },
         {
-            name: "Divine Micheal",
-            image: "/images/team/divine-micheal.jpg",
+            name: "Ikeun Divine Micheal",
+            image: "/images/team/divine-micheal-update.jpg",
             role: "",
         },
         {
@@ -107,6 +107,11 @@
         {
             name: "Kehinde Samuel Oluwagbemiga",
             image: "/images/team/kehinde-samuel-oluwagbemiga.jpg",
+            role: "",
+        },
+        {
+            name: "Akinbusola Godwin olaoluwa",
+            image: "/images/team/akinbusola-godwin-olaoluwa.jpg",
             role: "",
         },
     ];

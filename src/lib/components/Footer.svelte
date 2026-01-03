@@ -5,6 +5,32 @@
     const footerCategories = main_categories.filter(
         (cat) => cat.slug !== "african-giant",
     );
+
+    let email = "";
+    let isSubmitting = false;
+
+    async function handleSubmit() {
+        if (!email.trim()) return;
+        isSubmitting = true;
+
+        try {
+            const response = await fetch("/api/newsletter/subscribe", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email }),
+            });
+
+            if (!response.ok) throw new Error("Failed to subscribe");
+
+            email = "";
+            alert("Successfully subscribed to newsletter!");
+        } catch (error) {
+            console.error("Newsletter error:", error);
+            alert("Failed to subscribe. Please try again.");
+        } finally {
+            isSubmitting = false;
+        }
+    }
 </script>
 
 <footer class="bg-secondary/95 px-[var(--side-p)] py-12 md:py-16 text-primary">
@@ -161,17 +187,24 @@
                 <p class="mb-4 text-sm text-primary/70 leading-relaxed">
                     Get the latest African news delivered to your inbox.
                 </p>
-                <form class="flex flex-col gap-3 md:flex-row md:gap-2">
+                <form
+                    on:submit|preventDefault={handleSubmit}
+                    class="flex flex-col gap-3 md:flex-row md:gap-2"
+                >
                     <input
                         type="email"
+                        bind:value={email}
                         placeholder="Enter your email"
-                        class="flex-1 rounded-lg md:rounded-md border border-tertiary/20 bg-primary/10 px-4 py-3 md:py-2 text-sm text-primary placeholder-tertiary/60 focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none transition-all"
+                        required
+                        disabled={isSubmitting}
+                        class="flex-1 rounded-lg md:rounded-md border border-tertiary/20 bg-primary/10 px-4 py-3 md:py-2 text-sm text-primary placeholder-tertiary/60 focus:border-accent focus:ring-2 focus:ring-accent/20 focus:outline-none transition-all disabled:opacity-50"
                     />
                     <button
                         type="submit"
-                        class="cursor-pointer rounded-lg md:rounded-md border border-accent bg-transparent px-6 py-3 md:py-2 font-medium text-accent hover:bg-accent/10 transition-all duration-300"
+                        disabled={isSubmitting}
+                        class="cursor-pointer rounded-lg md:rounded-md border border-accent bg-transparent px-6 py-3 md:py-2 font-medium text-accent hover:bg-accent/10 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Subscribe
+                        {isSubmitting ? "..." : "Subscribe"}
                     </button>
                 </form>
             </div>

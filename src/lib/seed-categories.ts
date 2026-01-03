@@ -36,7 +36,7 @@ export async function seedCategories() {
         return { success: true, count: CATEGORY_DEFINITIONS.length };
     } catch (error) {
         console.error("❌ Error seeding categories:", error);
-        return { success: false, error: error.message };
+        return { success: false, error: (error as any).message };
     }
 }
 

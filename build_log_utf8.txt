@@ -1,0 +1,365 @@
+﻿
+> website@0.0.1 build
+> vite build
+
+[36mvite v7.1.7 [32mbuilding SSR bundle for production...[36m[39m
+transforming...
+npm : 8:40:19 PM [vite-plugin-svelte] 
+src/routes/admin/categories/+page.svelte:309:24 A form 
+label must be associated with a control
+At line:1 char:1
++ npm run build > build_log.txt 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (8:40:19 PM [ 
+   vit... with a control:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+https://svelte.dev/e/a11y_label_has_associated_control
+307:                 <div class="grid grid-cols-1 
+md:grid-cols-2 gap-4">
+308:                     <div>
+309:                         <label
+                                    ^
+310:                             class="block text-sm 
+font-medium text-gray-700 mb-1"
+311:                         >
+8:40:19 PM [vite-plugin-svelte] 
+src/routes/admin/categories/+page.svelte:324:24 A form 
+label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control
+322: 
+323:                     <div>
+324:                         <label
+                                    ^
+325:                             class="block text-sm 
+font-medium text-gray-700 mb-1"
+326:                         >
+8:40:19 PM [vite-plugin-svelte] 
+src/routes/admin/categories/+page.svelte:339:20 A form 
+label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control
+337: 
+338:                 <div>
+339:                     <label class="block text-sm 
+font-medium text-gray-700 mb-1">
+                                 ^
+340:                         Display Name *
+341:                     </label>
+8:40:19 PM [vite-plugin-svelte] 
+src/routes/admin/categories/+page.svelte:351:20 A form 
+label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control
+349: 
+350:                 <div>
+351:                     <label class="block text-sm 
+font-medium text-gray-700 mb-1">
+                                 ^
+352:                         Description
+353:                     </label>
+8:40:19 PM [vite-plugin-svelte] 
+src/routes/admin/categories/+page.svelte:363:24 A form 
+label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control
+361:                 <div class="grid grid-cols-1 
+md:grid-cols-2 gap-4">
+362:                     <div>
+363:                         <label
+                                    ^
+364:                             class="block text-sm 
+font-medium text-gray-700 mb-1"
+365:                         >
+8:40:19 PM [vite-plugin-svelte] 
+src/routes/admin/categories/+page.svelte:382:24 A form 
+label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control
+380: 
+381:                     <div>
+382:                         <label
+                                    ^
+383:                             class="block text-sm 
+font-medium text-gray-700 mb-1"
+384:                         >
+8:40:19 PM [vite-plugin-svelte] 
+src/routes/admin/categories/+page.svelte:397:24 A form 
+label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control
+395:                 <div class="grid grid-cols-1 
+md:grid-cols-2 gap-4">
+396:                     <div>
+397:                         <label
+                                    ^
+398:                             class="block text-sm 
+font-medium text-gray-700 mb-1"
+399:                         >
+8:40:19 PM [vite-plugin-svelte] 
+src/routes/admin/categories/+page.svelte:411:24 A form 
+label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control
+409: 
+410:                     <div>
+411:                         <label
+                                    ^
+412:                             class="block text-sm 
+font-medium text-gray-700 mb-1"
+413:                         >
+8:40:19 PM [vite-plugin-svelte] 
+src/routes/admin/categories/+page.svelte:437:20 A form 
+label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control
+435:                         class="mr-2"
+436:                     />
+437:                     <label class="text-sm 
+font-medium text-gray-700">
+                                 ^
+438:                         Active
+439:                     </label>
+8:40:19 PM [vite-plugin-svelte] 
+src/routes/admin/posts/new/+page.svelte:315:16 A form 
+label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control
+313:             <!-- Editor Section -->
+314:             <div>
+315:                 <label class="block text-sm 
+font-semibold text-gray-700 mb-2"
+                      ^
+316:                     >Content *</label
+317:                 >
+8:40:19 PM [vite-plugin-svelte] 
+src/routes/admin/posts/new/+page.svelte:329:20 A form 
+label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control
+327:                 <!-- Categories -->
+328:                 <div>
+329:                     <label
+                          ^
+330:                         class="block text-sm 
+font-semibold text-gray-700 mb-2"
+331:                         >Categories</label
+8:40:20 PM [vite-plugin-svelte] 
+src/routes/admin/videos/new/+page.svelte:126:24 A form 
+label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control
+124:                     <!-- Video Upload -->
+125:                     <div>
+126:                         <label
+                              ^
+127:                             class="block text-sm 
+font-medium text-gray-700 mb-2"
+128:                             >Video Upload *</label
+8:40:20 PM [vite-plugin-svelte] 
+src/routes/admin/videos/new/+page.svelte:184:24 A form 
+label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control
+182:                     <!-- Thumbnail Upload -->
+183:                     <div>
+184:                         <label
+                              ^
+185:                             class="block text-sm 
+font-medium text-gray-700 mb-2"
+186:                             >Thumbnail Image *</label
+8:40:20 PM [vite-plugin-svelte] 
+src/routes/admin/videos/new/+page.svelte:235:24 A form 
+label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control
+233:                     <!-- Title -->
+234:                     <div>
+235:                         <label
+                              ^
+236:                             class="block text-sm 
+font-medium text-gray-700 mb-1"
+237:                             >Title *</label
+8:40:20 PM [vite-plugin-svelte] 
+src/routes/admin/videos/new/+page.svelte:248:24 A form 
+label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control
+246:                     <!-- Description -->
+247:                     <div>
+248:                         <label
+                              ^
+249:                             class="block text-sm 
+font-medium text-gray-700 mb-1"
+250:                             >Description *</label
+8:40:20 PM [vite-plugin-svelte] 
+src/routes/admin/videos/new/+page.svelte:262:28 A form 
+label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control
+260:                         <!-- Category -->
+261:                         <div>
+262:                             <label
+                                  ^
+263:                                 class="block text-sm 
+font-medium text-gray-700 mb-1"
+264:                                 >Category *</label
+8:40:20 PM [vite-plugin-svelte] 
+src/routes/admin/videos/new/+page.svelte:278:28 A form 
+label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control
+276:                         <!-- Author -->
+277:                         <div>
+278:                             <label
+                                  ^
+279:                                 class="block text-sm 
+font-medium text-gray-700 mb-1"
+280:                                 >Author</label
+8:40:20 PM [vite-plugin-svelte] 
+src/routes/admin/videos/[id]/edit/+page.svelte:146:24 A 
+form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control
+144:                     <!-- Video Upload -->
+145:                     <div>
+146:                         <label
+                              ^
+147:                             class="block text-sm 
+font-medium text-gray-700 mb-2"
+148:                             >Video</label
+8:40:20 PM [vite-plugin-svelte] 
+src/routes/admin/videos/[id]/edit/+page.svelte:216:24 A 
+form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control
+214:                     <!-- Thumbnail Upload -->
+215:                     <div>
+216:                         <label
+                              ^
+217:                             class="block text-sm 
+font-medium text-gray-700 mb-2"
+218:                             >Thumbnail</label
+8:40:20 PM [vite-plugin-svelte] 
+src/routes/admin/videos/[id]/edit/+page.svelte:277:24 A 
+form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control
+275:                     <!-- Title -->
+276:                     <div>
+277:                         <label
+                              ^
+278:                             class="block text-sm 
+font-medium text-gray-700 mb-1"
+279:                             >Title *</label
+8:40:20 PM [vite-plugin-svelte] 
+src/routes/admin/videos/[id]/edit/+page.svelte:290:24 A 
+form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control
+288:                     <!-- Description -->
+289:                     <div>
+290:                         <label
+                              ^
+291:                             class="block text-sm 
+font-medium text-gray-700 mb-1"
+292:                             >Description *</label
+8:40:20 PM [vite-plugin-svelte] 
+src/routes/admin/videos/[id]/edit/+page.svelte:304:28 A 
+form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control
+302:                         <!-- Category -->
+303:                         <div>
+304:                             <label
+                                  ^
+305:                                 class="block text-sm 
+font-medium text-gray-700 mb-1"
+306:                                 >Category *</label
+8:40:20 PM [vite-plugin-svelte] 
+src/routes/admin/videos/[id]/edit/+page.svelte:320:28 A 
+form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control
+318:                         <!-- Author -->
+319:                         <div>
+320:                             <label
+                                  ^
+321:                                 class="block text-sm 
+font-medium text-gray-700 mb-1"
+322:                                 >Author</label
+8:40:21 PM [vite-plugin-svelte] 
+src/lib/components/Header.svelte:298:16 Buttons and links 
+should either contain text or have an `aria-label` or 
+`aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label
+296:             <div class="flex items-center 
+justify-end px-6 pt-6 pb-2 shrink-0">
+297:                 <!-- Close Button -->
+298:                 <button
+                            ^
+299:                     onclick={toggleMobileMenu}
+300:                     class="p-2 -mr-2 rounded-full 
+hover:bg-white/10 text-white hover:text-white 
+transition-colors drop-shadow-md"
+8:40:21 PM [vite-plugin-svelte] 
+src/lib/components/Header.svelte:650:28 Avoid using 
+autofocus
+https://svelte.dev/e/a11y_autofocus
+648:                             
+oninput={handleSearchInput}
+649:                             class="w-full pl-12 pr-4 
+py-4 text-lg border-0 focus:ring-0 focus:outline-none 
+bg-transparent placeholder-gray-500"
+650:                             autofocus
+                                          ^
+651:                         />
+652:                         {#if searchQuery}
+8:40:29 PM [vite-plugin-svelte] 
+src/lib/components/Header.svelte:653:28 Buttons and links 
+should either contain text or have an `aria-label` or 
+`aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label
+651:                         />
+652:                         {#if searchQuery}
+653:                             <button
+                                        ^
+654:                                 onclick={() => 
+(searchQuery = "")}
+655:                                 class="absolute 
+inset-y-0 right-0 pr-4 flex items-center"
+8:40:33 PM [vite-plugin-svelte] 
+src/lib/components/Headlines.svelte:228:4 Unused CSS 
+selector ".item"
+https://svelte.dev/e/css_unused_selector
+226: 
+227: <style>
+228:     .item {
+              ^
+229:         @apply rounded-[8px];
+230:     }
+[32mΓ£ô[39m 274 modules transformed.
+[31mΓ£ù[39m Build failed in 16.40s
+[31merror during build:
+[31msrc/lib/supabase.ts (3:9): "SUPABASE_URL" is not 
+exported by " virtual:env/static/private", imported by 
+"src/lib/supabase.ts".[31m
+file: [36mC:/Users/USER/Desktop/talkafrica/src/lib/supaba
+se.ts:3:9[31m
+[33m
+1: import { createClient } from "@supabase/supabase-js";
+2: // @ts-ignore
+3: import { SUPABASE_URL, SUPABASE_ANON_KEY } from 
+"$env/static/private";
+            ^
+4: 
+5: // Validate environment variables
+[31m
+    at getRollupError (file:///C:/Users/USER/Desktop/talka
+frica/node_modules/rollup/dist/es/shared/parseAst.js:401:4
+1)
+    at error (file:///C:/Users/USER/Desktop/talkafrica/nod
+e_modules/rollup/dist/es/shared/parseAst.js:397:42)
+    at Module.error (file:///C:/Users/USER/Desktop/talkafr
+ica/node_modules/rollup/dist/es/shared/node-entry.js:16938
+:16)
+    at Module.traceVariable (file:///C:/Users/USER/Desktop
+/talkafrica/node_modules/rollup/dist/es/shared/node-entry.
+js:17390:29)
+    at ModuleScope.findVariable (file:///C:/Users/USER/Des
+ktop/talkafrica/node_modules/rollup/dist/es/shared/node-en
+try.js:15060:39)
+    at Identifier.bind (file:///C:/Users/USER/Desktop/talk
+africa/node_modules/rollup/dist/es/shared/node-entry.js:54
+13:40)
+    at UnaryExpression.bind (file:///C:/Users/USER/Desktop
+/talkafrica/node_modules/rollup/dist/es/shared/node-entry.
+js:2804:23)
+    at LogicalExpression.bind (file:///C:/Users/USER/Deskt
+op/talkafrica/node_modules/rollup/dist/es/shared/node-entr
+y.js:2804:23)
+    at IfStatement.bind (file:///C:/Users/USER/Desktop/tal
+kafrica/node_modules/rollup/dist/es/shared/node-entry.js:2
+804:23)
+    at Program.bind (file:///C:/Users/USER/Desktop/talkafr
+ica/node_modules/rollup/dist/es/shared/node-entry.js:2800:
+28)[39m

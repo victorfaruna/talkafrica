@@ -32,7 +32,7 @@ export const load: PageServerLoad = async ({ url, depends }) => {
                 author: postTable.author,
                 views: postTable.views,
                 created_at: postTable.created_at,
-                slug: postTable.slug,
+
                 featured: postTable.featured,
             })
             .from(postTable)
@@ -63,7 +63,7 @@ export const load: PageServerLoad = async ({ url, depends }) => {
                 author: postTable.author,
                 views: postTable.views,
                 created_at: postTable.created_at,
-                slug: postTable.slug,
+
                 featured: postTable.featured,
             })
             .from(postTable)

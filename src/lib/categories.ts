@@ -18,8 +18,8 @@ export interface Category {
 }
 
 export interface CategoryHierarchy {
-    main_categories: Category[];
-    subcategories: { [parentId: string]: Category[] };
+    main_categories: Omit<Category, "id">[];
+    subcategories: { [parentId: string]: Omit<Category, "id">[] };
 }
 
 // Centralized category definitions

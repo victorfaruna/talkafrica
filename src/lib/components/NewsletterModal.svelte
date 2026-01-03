@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount } from "svelte";
 
 	let isVisible = false;
-	let email = '';
+	let email = "";
 	let isSubmitting = false;
 
 	// Show modal after a delay (e.g., 3 seconds)
@@ -23,20 +23,29 @@
 
 		isSubmitting = true;
 
-		// Simulate API call
-		await new Promise((resolve) => setTimeout(resolve, 1000));
+		try {
+			const response = await fetch("/api/newsletter/subscribe", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ email }),
+			});
 
-		// Reset form and close modal
-		email = '';
-		isSubmitting = false;
-		isVisible = false;
+			if (!response.ok) throw new Error("Failed to subscribe");
 
-		// You can add actual newsletter subscription logic here
-		console.log('Newsletter subscription:', email);
+			// Reset form and close modal
+			email = "";
+			isVisible = false;
+			alert("Successfully subscribed to newsletter!");
+		} catch (error) {
+			console.error("Newsletter error:", error);
+			alert("Failed to subscribe. Please try again.");
+		} finally {
+			isSubmitting = false;
+		}
 	}
 
 	function handleKeydown(event: KeyboardEvent) {
-		if (event.key === 'Escape') {
+		if (event.key === "Escape") {
 			closeModal();
 		}
 	}
@@ -51,7 +60,7 @@
 		on:click={closeModal}
 		role="button"
 		tabindex="0"
-		on:keydown={(e) => e.key === 'Enter' && closeModal()}
+		on:keydown={(e) => e.key === "Enter" && closeModal()}
 		aria-label="Close modal"
 	>
 		<!-- Modal Content -->
@@ -68,7 +77,12 @@
 				on:click={closeModal}
 				aria-label="Close modal"
 			>
-				<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+				<svg
+					class="h-6 w-6"
+					fill="none"
+					stroke="currentColor"
+					viewBox="0 0 24 24"
+				>
 					<path
 						stroke-linecap="round"
 						stroke-linejoin="round"
@@ -81,13 +95,19 @@
 			<!-- Content -->
 			<div class="text-center text-white">
 				<!-- Headline -->
-				<h2 id="modal-title" class="mb-2 text-xl leading-tight font-semibold">
+				<h2
+					id="modal-title"
+					class="mb-2 text-xl leading-tight font-semibold"
+				>
 					Get the news in front line by subscribe
 				</h2>
 				<p class="mb-6 text-sm text-gray-300">✍️ our latest updates</p>
 
 				<!-- Form -->
-				<form on:submit|preventDefault={handleSubmit} class="flex gap-2">
+				<form
+					on:submit|preventDefault={handleSubmit}
+					class="flex gap-2"
+				>
 					<input
 						type="email"
 						bind:value={email}
@@ -101,7 +121,7 @@
 						class="rounded-lg bg-red-600 px-6 py-3 text-sm font-semibold text-white uppercase transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
 						disabled={isSubmitting || !email.trim()}
 					>
-						{isSubmitting ? 'Subscribing...' : 'Subscribe Now'}
+						{isSubmitting ? "Subscribing..." : "Subscribe Now"}
 					</button>
 				</form>
 			</div>

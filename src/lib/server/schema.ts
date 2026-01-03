@@ -128,3 +128,9 @@ export const videosTable = pgTable("videos", {
     created_at: timestamp("created_at").notNull().defaultNow(),
     updated_at: timestamp("updated_at").notNull().defaultNow(),
 });
+
+export const newsletterSubscribersTable = pgTable("newsletter_subscribers", {
+    id: serial("id").primaryKey(),
+    email: varchar({ length: 255 }).unique().notNull(),
+    created_at: timestamp("created_at").notNull().defaultNow(),
+});
