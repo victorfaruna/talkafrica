@@ -55,9 +55,6 @@
 	"/api/seed-categories": [
 		"src/routes/api/seed-categories/+server.ts"
 	],
-	"/api/test-supabase": [
-		"src/routes/api/test-supabase/+server.ts"
-	],
 	"/api/upload-video": [
 		"src/routes/api/upload-video/+server.ts"
 	],
