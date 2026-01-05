@@ -1,7 +1,7 @@
 // Test file to verify Supabase connection
 // This can be removed after testing
 
-import { supabase } from "./supabase";
+import { supabase } from "./supabaseClient";
 
 export async function testSupabaseConnection() {
     try {
