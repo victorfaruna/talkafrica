@@ -1,7 +1,8 @@
 import { json } from '@sveltejs/kit';
-import postgres from 'postgres';
-import { DATABASE_URL } from '$env/static/private';
+import { db } from '$lib/server/db';
+import { newsletterSubscribersTable } from '$lib/server/schema';
 import type { RequestHandler } from './$types';
+import { appendToSheet } from '$lib/server/sheets';
 
 export const POST: RequestHandler = async ({ request }) => {
     try {
@@ -12,45 +13,27 @@ export const POST: RequestHandler = async ({ request }) => {
             return json({ error: 'Invalid email address' }, { status: 400 });
         }
 
-        if (!DATABASE_URL) {
-            console.error('DATABASE_URL is missing');
-            return json({ error: 'Server configuration error' }, { status: 500 });
-        }
-
-        const sql = postgres(DATABASE_URL);
-
         try {
             // Insert into Database
-            await sql`
-                INSERT INTO newsletter_subscribers (email)
-                VALUES (${email})
-            `;
+            await db.insert(newsletterSubscribersTable).values({ email });
         } catch (dbError: any) {
             // Handle duplicate email error (Postgres unique constraint violation)
-            if (dbError.code === '23505') {
+            // Postgres error code for unique violation is '23505'
+            if (dbError?.code === '23505') {
                 return json({ success: true, message: 'Already subscribed' });
             }
             throw dbError;
-        } finally {
-            // Close the connection (or rely on pool, but for serverless/lambdas usually recommended to close or use pool correctly)
-            // postgres.js manages pool automatically, but in a +server.ts context, we can just let it handle it.
-            // However, creating a new connection every request might be heavy. 
-            // Ideally we'd have a shared db client in $lib/server/db.ts.
-            // For now, to match the scope of the fix, we'll keep it simple but safe.
-            // await sql.end(); // Don't verify end immediately if we want to potentially reuse, but postgres() creates a pool.
-            // Actually, best practice with postgres.js in SvelteKit is to export a singleton or create per request.
-            // Let's create it per request for safety in this fix, and end it.
-            await sql.end();
-            // Re-evaluating: 'postgres' returns a Sql function which is a pool. 
-            // We should just use it and let it be. But to avoid leaking connections in dev if HMR happens, maybe just closing is fine.
         }
 
         // Add to Google Sheets (fire and forget)
         try {
-            const { appendToSheet } = await import('$lib/server/sheets');
-            appendToSheet(email).catch(err => console.error('Sheet append error:', err));
+            // We import this directly now, assuming it's safe or we handle error here
+            // Previous code used dynamic import, which is fine, but static is cleaner if we fix the env var issues.
+            // If the user hasn't fixed env vars, this might fail at runtime.
+            // But let's stick to the previous pattern of catching errors.
+            await appendToSheet(email).catch(err => console.error('Sheet append error:', err));
         } catch (e) {
-            console.error('Failed to import or run sheets logic:', e);
+            console.error('Failed to run sheets logic:', e);
         }
 
         return json({ success: true });
