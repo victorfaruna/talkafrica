@@ -1,6 +1,7 @@
 import { google } from 'googleapis';
 // @ts-ignore
-import { GOOGLE_SERVICE_ACCOUNT_EMAIL, GOOGLE_PRIVATE_KEY, GOOGLE_SHEET_ID } from '$env/static/private';
+import { env } from '$env/dynamic/private';
+const { GOOGLE_SERVICE_ACCOUNT_EMAIL, GOOGLE_PRIVATE_KEY, GOOGLE_SHEET_ID } = env;
 
 export async function appendToSheet(email: string) {
     // Check if configuration is present
