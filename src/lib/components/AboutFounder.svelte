@@ -297,7 +297,7 @@
                 </a>
 
                 <a
-                    href="mailto:talkafricanigeria@gmail.com"
+                    href="mailto:talkafricang@gmail.com"
                     class="cta-button-outline group flex items-center justify-center gap-2 rounded-xl border-2 border-accent bg-accent/10 backdrop-blur-sm px-4 md:px-6 py-3.5 md:py-3 text-[0.85rem] md:text-[0.95rem] font-semibold text-accent shadow-md hover:bg-accent hover:text-white transition-all duration-300 hover:scale-105"
                 >
                     <svg

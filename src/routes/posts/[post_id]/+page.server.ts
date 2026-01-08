@@ -2,14 +2,32 @@ import type { PageServerLoad } from "./$types";
 import { error } from "@sveltejs/kit";
 import { db } from "$lib/server/db";
 import { eq, and, ne, desc, inArray, sql } from "drizzle-orm";
-import { postTable, postCategoriesTable } from "$lib/server/schema";
+import { postTable, postCategoriesTable, dailyStatsTable, adminTable } from "$lib/server/schema";
 
 export const load: PageServerLoad = async ({ params }) => {
     try {
         const { post_id } = params;
         const [post] = await db
-            .select()
+            .select({
+                post_id: postTable.post_id,
+                title: postTable.title,
+                content: postTable.content,
+                excerpt: postTable.excerpt,
+                image: postTable.image,
+                category: postTable.category,
+                // Dynamic author fetch
+                author: sql<string>`coalesce(${adminTable.username}, ${postTable.author})`,
+                status: postTable.status,
+                featured: postTable.featured,
+                isTrendingNews: postTable.isTrendingNews,
+                deleted: postTable.deleted,
+                views: postTable.views,
+                author_id: postTable.author_id,
+                created_at: postTable.created_at,
+                updated_at: postTable.updated_at,
+            })
             .from(postTable)
+            .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
             .where(
                 and(eq(postTable.post_id, post_id), eq(postTable.deleted, false))
             );
@@ -28,6 +46,18 @@ export const load: PageServerLoad = async ({ params }) => {
                 .where(eq(postTable.post_id, post_id))
                 .returning({ views: postTable.views }); // Returning to check new value
             console.log("Debug: View increment result:", result);
+
+            // Increment daily stats
+            await db
+                .insert(dailyStatsTable)
+                .values({
+                    date: sql`CURRENT_DATE`,
+                    views: 1,
+                })
+                .onConflictDoUpdate({
+                    target: dailyStatsTable.date,
+                    set: { views: sql`${dailyStatsTable.views} + 1` },
+                });
         } catch (e) {
             console.error("Failed to increment views:", e);
             // Non-critical error, continue loading page

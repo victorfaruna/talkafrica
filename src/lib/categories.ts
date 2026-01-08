@@ -89,6 +89,16 @@ export const CATEGORY_DEFINITIONS: Omit<Category, "id">[] = [
         sort_order: 1.5, // Between News (1) and Culture (2) - actually News is 1, so this will be after news? Need to check Main Categories sort.
         is_active: true,
     },
+    {
+        name: "africans-on-the-table",
+        slug: "africans-on-the-table",
+        display_name: "Africans on the Table",
+        description: "A space where African voices lead the conversation, owning our stories, shaping narratives, and influencing the future from our own table.",
+        icon: "users",
+        color: "#F7941D",
+        sort_order: 1.6,
+        is_active: true,
+    },
 
     // Culture Section
     {

@@ -1,6 +1,6 @@
 import { db } from '$lib/server/db';
-import { adminTable, commentsTable, postTable, usersTable, sessionsTable } from '$lib/server/schema';
-import { count, desc, sum, eq, gt } from 'drizzle-orm';
+import { adminTable, commentsTable, postTable, usersTable, sessionsTable, dailyStatsTable } from '$lib/server/schema';
+import { count, desc, sum, eq, gt, sql } from 'drizzle-orm';
 
 export const load = async () => {
     try {
@@ -9,6 +9,19 @@ export const load = async () => {
         const [adminsCount] = await db.select({ count: count() }).from(adminTable);
         const [commentsCount] = await db.select({ count: count() }).from(commentsTable);
         const [viewsSum] = await db.select({ total: sum(postTable.views) }).from(postTable).where(eq(postTable.deleted, false));
+
+        // Fetch daily stats for today
+        let viewsToday = 0;
+        try {
+            const [dailyStats] = await db.select({ views: dailyStatsTable.views })
+                .from(dailyStatsTable)
+                .where(eq(dailyStatsTable.date, sql`CURRENT_DATE`));
+            if (dailyStats) {
+                viewsToday = dailyStats.views;
+            }
+        } catch (err) {
+            console.warn("Failed to fetch daily stats:", err);
+        }
 
         // Count online users (active in last 5 minutes)
         // Count online users (active in last 5 minutes)
@@ -32,9 +45,11 @@ export const load = async () => {
         return {
             stats: {
                 totalPosts: postsCount?.count ?? 0,
-                totalUsers: (usersCount?.count ?? 0) + (adminsCount?.count ?? 0),
+                totalAdmins: adminsCount?.count ?? 0,
+                totalUsers: usersCount?.count ?? 0,
                 totalComments: commentsCount?.count ?? 0,
                 totalViews: Number(viewsSum?.total) ?? 0,
+                viewsToday: viewsToday,
                 onlineUsers: onlineUsersCount?.count ?? 0
             },
             recentPosts: recentPosts,

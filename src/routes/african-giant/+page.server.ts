@@ -1,7 +1,7 @@
 import type { PageServerLoad } from "./$types";
 import { db } from "$lib/server/db";
-import { eq, desc, and, or } from "drizzle-orm";
-import { postTable, postCategoriesTable } from "$lib/server/schema";
+import { eq, desc, and, or, sql } from "drizzle-orm";
+import { postTable, postCategoriesTable, adminTable } from "$lib/server/schema";
 
 export const load: PageServerLoad = async ({ url, depends }) => {
     const categorySlug = "african-giant";
@@ -29,13 +29,15 @@ export const load: PageServerLoad = async ({ url, depends }) => {
                 excerpt: postTable.excerpt,
                 image: postTable.image,
                 category: postTable.category,
-                author: postTable.author,
+                // Dynamically fetch author from admin table, fallback to static author field
+                author: sql<string>`coalesce(${adminTable.username}, ${postTable.author})`,
                 views: postTable.views,
                 created_at: postTable.created_at,
 
                 featured: postTable.featured,
             })
             .from(postTable)
+            .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
             .innerJoin(
                 postCategoriesTable,
                 eq(postTable.post_id, postCategoriesTable.post_id)
@@ -60,13 +62,14 @@ export const load: PageServerLoad = async ({ url, depends }) => {
                 excerpt: postTable.excerpt,
                 image: postTable.image,
                 category: postTable.category,
-                author: postTable.author,
+                author: sql<string>`coalesce(${adminTable.username}, ${postTable.author})`,
                 views: postTable.views,
                 created_at: postTable.created_at,
 
                 featured: postTable.featured,
             })
             .from(postTable)
+            .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
             .where(
                 and(
                     baseWhere,

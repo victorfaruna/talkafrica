@@ -5,9 +5,10 @@ import type { RequestHandler } from "./$types";
 export const GET: RequestHandler = async ({ url }) => {
     const limit = Number(url.searchParams.get("limit")) || 10;
     const offset = Number(url.searchParams.get("offset")) || 0;
+    const category = url.searchParams.get("category") || undefined;
 
     try {
-        const videos = await getVideos(limit, offset);
+        const videos = await getVideos(limit, offset, category);
         return json({ videos });
     } catch (error) {
         console.error("Error fetching videos:", error);

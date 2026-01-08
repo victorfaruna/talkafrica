@@ -8,6 +8,7 @@ import {
     timestamp,
     uuid,
     varchar,
+    date,
 } from "drizzle-orm/pg-core";
 
 export const adminTable = pgTable("admin", {
@@ -90,6 +91,7 @@ export const postTable = pgTable("posts", {
     deleted: boolean("deleted").notNull().default(false),
     views: integer("views").notNull().default(0),
     author: varchar({ length: 255 }).notNull().default("Admin"),
+    author_id: uuid("author_id"), // Nullable initially for backfill
     created_at: timestamp("created_at").notNull().defaultNow(),
     updated_at: timestamp("updated_at").notNull().defaultNow(),
 });
@@ -133,4 +135,11 @@ export const newsletterSubscribersTable = pgTable("newsletter_subscribers", {
     id: serial("id").primaryKey(),
     email: varchar({ length: 255 }).unique().notNull(),
     created_at: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const dailyStatsTable = pgTable("daily_stats", {
+    id: serial("id").primaryKey(),
+    date: date("date").notNull().unique(),
+    views: integer("views").notNull().default(0),
+    updated_at: timestamp("updated_at").notNull().defaultNow(),
 });

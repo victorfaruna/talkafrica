@@ -238,7 +238,9 @@
                 status,
                 featured,
                 isTrendingNews,
+
                 author: data?.admin?.username || "Admin", // Use logged-in admin's username
+                author_id: data?.admin?.admin_id, // Pass admin_id for dynamic linking
             };
             if (editingPostId) payload.post_id = editingPostId;
             const resp = await fetch("/api/posts", {

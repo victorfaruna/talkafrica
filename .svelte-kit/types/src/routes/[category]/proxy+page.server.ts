@@ -1,5 +1,6 @@
 // @ts-nocheck
 import type { PageServerLoad } from "./$types";
+import { error } from "@sveltejs/kit";
 import { db } from "$lib/server/db";
 import { eq, desc, and, inArray } from "drizzle-orm";
 import { postTable, postCategoriesTable } from "$lib/server/schema";
@@ -17,22 +18,19 @@ export const load = async ({ params, url, depends }: Parameters<PageServerLoad>[
 
     // Validate category using the centralized category system
     if (!categoryParam || !categoryExists(categoryParam)) {
-        return {
-            status: 404,
-            error: new Error("Category not found"),
-        } as any;
+        error(404, "Category not found");
     }
 
     try {
         // First, get post IDs that have this category
         const postIdSet = new Set<string>();
-        
+
         try {
             const postIdsWithCategory = await db
                 .select({ post_id: postCategoriesTable.post_id })
                 .from(postCategoriesTable)
                 .where(eq(postCategoriesTable.category_slug, categoryParam));
-            
+
             postIdsWithCategory.forEach((p) => postIdSet.add(p.post_id));
         } catch (err) {
             // If post_categories table doesn't exist, fall back to legacy category field

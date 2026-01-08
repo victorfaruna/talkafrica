@@ -173,7 +173,8 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
             status: status ?? "draft",
             featured: Boolean(featured),
             isTrendingNews: Boolean(isTrendingNews), // Save to DB
-            author: author || "Admin", // Use provided author or default to "Admin"
+            author: author || "Admin", // Legacy field, kept for now
+            author_id: body.author_id || null, // New field
         };
         console.log("💾 Inserting post with data:", JSON.stringify(insertData, null, 2));
 

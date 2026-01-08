@@ -28,10 +28,12 @@
     let users: any[] = [];
     let stats = data.stats || {
         totalPosts: 0,
-        totalUsers: 0,
+        totalAdmins: 0,
         totalViews: 0,
         totalComments: 0,
+        viewsToday: 0,
         onlineUsers: 0,
+        totalUsers: 0,
     };
 
     // Posts management state
@@ -228,7 +230,13 @@
                                                 stroke-linecap="round"
                                                 stroke-linejoin="round"
                                                 stroke-width="2"
-                                                d="M5.636 18.364a9 9 0 010-12.728m12.728 0a9 9 0 010 12.728m-9.9-2.829a5 5 0 010-7.07m7.072 0a5 5 0 010 7.07M13 12a1 1 0 11-2 0 1 1 0 012 0z"
+                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                            />
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                                             />
                                         </svg>
                                     </div>
@@ -237,12 +245,12 @@
                                     <p
                                         class="text-sm font-medium text-gray-600"
                                     >
-                                        Online Users
+                                        Views Today
                                     </p>
                                     <p
                                         class="text-2xl font-semibold text-gray-900"
                                     >
-                                        {stats.onlineUsers}
+                                        {stats.viewsToday}
                                     </p>
                                 </div>
                             </div>
@@ -275,12 +283,12 @@
                                     <p
                                         class="text-sm font-medium text-gray-600"
                                     >
-                                        Total Users
+                                        Total Admins
                                     </p>
                                     <p
                                         class="text-2xl font-semibold text-gray-900"
                                     >
-                                        {stats.totalUsers}
+                                        {stats.totalAdmins}
                                     </p>
                                 </div>
                             </div>

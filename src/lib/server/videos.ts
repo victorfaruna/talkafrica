@@ -2,13 +2,19 @@ import { db } from "./db";
 import { videosTable } from "./schema";
 import { desc, eq, sql } from "drizzle-orm";
 
-export async function getVideos(limit = 10, offset = 0) {
-    return await db
+export async function getVideos(limit = 10, offset = 0, category?: string) {
+    let query = db
         .select()
         .from(videosTable)
         .orderBy(desc(videosTable.created_at))
         .limit(limit)
         .offset(offset);
+
+    if (category) {
+        query = query.where(eq(videosTable.category, category));
+    }
+
+    return await query;
 }
 
 export async function getVideoById(id: string) {

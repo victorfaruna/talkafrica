@@ -90,7 +90,7 @@
         },
         { name: "Destiny Sunday", image: "/images/placeholder.webp", role: "" },
         {
-            name: "Ikeun Divine Micheal",
+            name: "Ikeun Divine Michael",
             image: "/images/team/divine-micheal-update.jpg",
             role: "",
         },
@@ -112,6 +112,11 @@
         {
             name: "Akinbusola Godwin olaoluwa",
             image: "/images/team/akinbusola-godwin-olaoluwa.jpg",
+            role: "",
+        },
+        {
+            name: "Ajayi Korede",
+            image: "/images/placeholder.webp",
             role: "",
         },
     ];

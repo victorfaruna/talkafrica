@@ -9,6 +9,7 @@
     import Contact from "$lib/components/Contact.svelte";
     import AboutFounder from "$lib/components/AboutFounder.svelte";
     import CategorySection from "$lib/components/CategorySection.svelte";
+    import AfricansOnTheTable from "$lib/components/AfricansOnTheTable.svelte";
 
     import AfricanGiantOfWeek from "$lib/components/AfricanGiantOfWeek.svelte";
     import TrendingTicker from "$lib/components/TrendingTicker.svelte";
@@ -26,7 +27,10 @@
         sports: [],
         entertainment: [],
         "african-giant": [],
+        "africans-on-the-table": [],
     };
+
+    let africansOnTheTableVideos: any[] = [];
 
     onMount(async () => {
         const categories = [
@@ -38,6 +42,7 @@
             "sports",
             "entertainment",
             "african-giant",
+            "africans-on-the-table",
         ];
 
         // Fetch in parallel for better performance
@@ -54,6 +59,19 @@
                 categoriesData[categories[index]] = result.value.posts;
             }
         });
+
+        // Fetch videos for Africans on the Table
+        try {
+            const videoRes = await fetch(
+                `/api/videos?category=africans-on-the-table&limit=2`,
+            );
+            if (videoRes.ok) {
+                const videoData = await videoRes.json();
+                africansOnTheTableVideos = videoData.videos;
+            }
+        } catch (error) {
+            console.error("Error fetching videos:", error);
+        }
     });
 </script>
 
@@ -68,6 +86,12 @@
     <PopularVideos videos={data.videos} />
 
     <AfricanGiantOfWeek post={data.africanGiant} />
+
+    <!-- Africans on the Table -->
+    <AfricansOnTheTable
+        posts={categoriesData["africans-on-the-table"]}
+        videos={africansOnTheTableVideos}
+    />
 
     <!-- Politics -->
     <CategorySection

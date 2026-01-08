@@ -1,8 +1,8 @@
 import type { PageServerLoad } from "./$types";
 import { error } from "@sveltejs/kit";
 import { db } from "$lib/server/db";
-import { desc, eq, and } from "drizzle-orm";
-import { postTable, postCategoriesTable } from "$lib/server/schema";
+import { desc, eq, and, sql } from "drizzle-orm";
+import { postTable, postCategoriesTable, adminTable } from "$lib/server/schema";
 import { getVideos } from "$lib/server/videos";
 
 export const load: PageServerLoad = async () => {
@@ -19,32 +19,100 @@ export const load: PageServerLoad = async () => {
 
         // Featured posts
         const featured = await db
-            .select()
+            .select({
+                post_id: postTable.post_id,
+                title: postTable.title,
+                content: postTable.content,
+                excerpt: postTable.excerpt,
+                image: postTable.image,
+                category: postTable.category,
+                author: sql<string>`coalesce(${adminTable.username}, ${postTable.author})`,
+                status: postTable.status,
+                featured: postTable.featured,
+                isTrendingNews: postTable.isTrendingNews,
+                deleted: postTable.deleted,
+                views: postTable.views,
+                author_id: postTable.author_id,
+                created_at: postTable.created_at,
+                updated_at: postTable.updated_at,
+            })
             .from(postTable)
+            .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
             .where(and(baseWhere, eq(postTable.featured, true)))
             .orderBy(desc(postTable.created_at))
             .limit(4);
 
         // Latest posts
         const latest = await db
-            .select()
+            .select({
+                post_id: postTable.post_id,
+                title: postTable.title,
+                content: postTable.content,
+                excerpt: postTable.excerpt,
+                image: postTable.image,
+                category: postTable.category,
+                author: sql<string>`coalesce(${adminTable.username}, ${postTable.author})`,
+                status: postTable.status,
+                featured: postTable.featured,
+                isTrendingNews: postTable.isTrendingNews,
+                deleted: postTable.deleted,
+                views: postTable.views,
+                author_id: postTable.author_id,
+                created_at: postTable.created_at,
+                updated_at: postTable.updated_at,
+            })
             .from(postTable)
+            .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
             .where(baseWhere)
             .orderBy(desc(postTable.created_at))
             .limit(6);
 
         // Popular posts (sorted by views)
         const popular = await db
-            .select()
+            .select({
+                post_id: postTable.post_id,
+                title: postTable.title,
+                content: postTable.content,
+                excerpt: postTable.excerpt,
+                image: postTable.image,
+                category: postTable.category,
+                author: sql<string>`coalesce(${adminTable.username}, ${postTable.author})`,
+                status: postTable.status,
+                featured: postTable.featured,
+                isTrendingNews: postTable.isTrendingNews,
+                deleted: postTable.deleted,
+                views: postTable.views,
+                author_id: postTable.author_id,
+                created_at: postTable.created_at,
+                updated_at: postTable.updated_at,
+            })
             .from(postTable)
+            .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
             .where(baseWhere)
             .orderBy(desc(postTable.views))
             .limit(8);
 
         // Trending posts
         const trending = await db
-            .select()
+            .select({
+                post_id: postTable.post_id,
+                title: postTable.title,
+                content: postTable.content,
+                excerpt: postTable.excerpt,
+                image: postTable.image,
+                category: postTable.category,
+                author: sql<string>`coalesce(${adminTable.username}, ${postTable.author})`,
+                status: postTable.status,
+                featured: postTable.featured,
+                isTrendingNews: postTable.isTrendingNews,
+                deleted: postTable.deleted,
+                views: postTable.views,
+                author_id: postTable.author_id,
+                created_at: postTable.created_at,
+                updated_at: postTable.updated_at,
+            })
             .from(postTable)
+            .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
             .where(and(
                 eq(postTable.status, "published"),
                 eq(postTable.deleted, false),
@@ -68,11 +136,12 @@ export const load: PageServerLoad = async () => {
                 isTrendingNews: postTable.isTrendingNews,
                 deleted: postTable.deleted,
                 views: postTable.views,
-                author: postTable.author,
+                author: sql<string>`coalesce(${adminTable.username}, ${postTable.author})`,
                 created_at: postTable.created_at,
                 updated_at: postTable.updated_at,
             })
             .from(postTable)
+            .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
             .innerJoin(
                 postCategoriesTable,
                 eq(postTable.post_id, postCategoriesTable.post_id)
