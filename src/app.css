@@ -43,7 +43,7 @@ body {
 	max-width: 100%;
 	overflow-wrap: break-word;
 	word-wrap: break-word;
-	word-break: break-word;
+	word-break: normal;
 }
 
 /* Article Typography */

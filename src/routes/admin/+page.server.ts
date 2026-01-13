@@ -4,43 +4,56 @@ import { count, desc, sum, eq, gt, sql } from 'drizzle-orm';
 
 export const load = async () => {
     try {
-        const [postsCount] = await db.select({ count: count() }).from(postTable).where(eq(postTable.deleted, false));
-        const [usersCount] = await db.select({ count: count() }).from(usersTable);
-        const [adminsCount] = await db.select({ count: count() }).from(adminTable);
-        const [commentsCount] = await db.select({ count: count() }).from(commentsTable);
-        const [viewsSum] = await db.select({ total: sum(postTable.views) }).from(postTable).where(eq(postTable.deleted, false));
+        // 1. Fetch all independent stats concurrently
+        const [
+            postsCountResult,
+            usersCountResult,
+            adminsCountResult,
+            commentsCountResult,
+            viewsSumResult,
+            dailyStatsResult,
+            onlineUsersResult,
+            recentPosts,
+            allPosts
+        ] = await Promise.all([
+            db.select({ count: count() }).from(postTable).where(eq(postTable.deleted, false)),
+            db.select({ count: count() }).from(usersTable),
+            db.select({ count: count() }).from(adminTable),
+            db.select({ count: count() }).from(commentsTable),
+            db.select({ total: sum(postTable.views) }).from(postTable).where(eq(postTable.deleted, false)),
+            db.select({ views: dailyStatsTable.views }).from(dailyStatsTable).where(eq(dailyStatsTable.date, sql`CURRENT_DATE`)),
+            db.select({ count: count() }).from(sessionsTable).where(gt(sessionsTable.last_seen, new Date(Date.now() - 5 * 60 * 1000))),
 
-        // Fetch daily stats for today
-        let viewsToday = 0;
-        try {
-            const [dailyStats] = await db.select({ views: dailyStatsTable.views })
-                .from(dailyStatsTable)
-                .where(eq(dailyStatsTable.date, sql`CURRENT_DATE`));
-            if (dailyStats) {
-                viewsToday = dailyStats.views;
-            }
-        } catch (err) {
-            console.warn("Failed to fetch daily stats:", err);
-        }
+            // Recent posts (full details for maybe a widget?) - limiting to 5 is fine
+            db.select().from(postTable).where(eq(postTable.deleted, false)).orderBy(desc(postTable.created_at)).limit(5),
 
-        // Count online users (active in last 5 minutes)
-        // Count online users (active in last 5 minutes)
-        let onlineUsersCount = { count: 0 };
-        try {
-            const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
-            const [result] = await db.select({ count: count() })
-                .from(sessionsTable)
-                .where(gt(sessionsTable.last_seen, fiveMinutesAgo));
-            if (result) onlineUsersCount = result;
-        } catch (err) {
-            console.warn("Failed to fetch online users count (table might be missing):", err);
-        }
+            // All posts list - optimize to NOT fetch 'content'
+            db.select({
+                post_id: postTable.post_id,
+                title: postTable.title,
+                // content: postTable.content, // OMIT large content
+                category: postTable.category,
+                image: postTable.image,
+                status: postTable.status,
+                featured: postTable.featured,
+                views: postTable.views,
+                author: postTable.author,
+                created_at: postTable.created_at,
+                updated_at: postTable.updated_at,
+            }).from(postTable).where(eq(postTable.deleted, false)).orderBy(desc(postTable.created_at)).limit(50)
+        ]);
+
+        const postsCount = postsCountResult[0];
+        const usersCount = usersCountResult[0];
+        const adminsCount = adminsCountResult[0];
+        const commentsCount = commentsCountResult[0];
+        const viewsSum = viewsSumResult[0];
+
+        const viewsToday = dailyStatsResult[0]?.views ?? 0;
+        const onlineUsersCount = onlineUsersResult[0] ?? { count: 0 };
 
         console.log("Debug Admin Stats - Views Sum View:", viewsSum);
         console.log("Debug Admin Stats - Online Users:", onlineUsersCount);
-
-        const recentPosts = await db.select().from(postTable).where(eq(postTable.deleted, false)).orderBy(desc(postTable.created_at)).limit(5);
-        const allPosts = await db.select().from(postTable).where(eq(postTable.deleted, false)).orderBy(desc(postTable.created_at));
 
         return {
             stats: {

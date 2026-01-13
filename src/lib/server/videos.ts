@@ -3,18 +3,26 @@ import { videosTable } from "./schema";
 import { desc, eq, sql } from "drizzle-orm";
 
 export async function getVideos(limit = 10, offset = 0, category?: string) {
-    let query = db
-        .select()
-        .from(videosTable)
-        .orderBy(desc(videosTable.created_at))
-        .limit(limit)
-        .offset(offset);
+    console.log(`[getVideos] Fetching videos with limit=${limit}, offset=${offset}, category=${category}`);
+    try {
+        let query = db
+            .select()
+            .from(videosTable)
+            .orderBy(desc(videosTable.created_at))
+            .limit(limit)
+            .offset(offset);
 
-    if (category) {
-        query = query.where(eq(videosTable.category, category));
+        if (category) {
+            query = query.where(eq(videosTable.category, category));
+        }
+
+        const result = await query;
+        console.log(`[getVideos] Success. Found ${result.length} videos.`);
+        return result;
+    } catch (err) {
+        console.error("[getVideos] Error executing query:", err);
+        throw err;
     }
-
-    return await query;
 }
 
 export async function getVideoById(id: string) {

@@ -2,13 +2,13 @@
     import { goto } from "$app/navigation";
     import axios from "axios";
 
-    let username = "";
-    let password = "";
-    let error = "";
-    let loading = false;
+    let login = $state("");
+    let password = $state("");
+    let error = $state("");
+    let loading = $state(false);
 
     async function handleLogin() {
-        if (!username || !password) {
+        if (!login || !password) {
             error = "Please fill in all fields";
             return;
         }
@@ -18,7 +18,7 @@
 
         try {
             const response = await axios.post("/api/auth/login", {
-                username,
+                login,
                 password,
             });
             const data = response.data;
@@ -28,8 +28,13 @@
             } else {
                 error = data.message || "Login failed";
             }
-        } catch (err) {
-            error = "Login failed. Please try again.";
+        } catch (err: any) {
+            if (err.response?.data?.message) {
+                error = err.response.data.message;
+            } else {
+                error = "Login failed. Please try again.";
+            }
+            console.error("Login error details:", err);
         } finally {
             loading = false;
         }
@@ -53,7 +58,13 @@
             </p>
         </div>
 
-        <form on:submit|preventDefault={handleLogin} class="space-y-6">
+        <form
+            onsubmit={(e) => {
+                e.preventDefault();
+                handleLogin();
+            }}
+            class="space-y-6"
+        >
             {#if error}
                 <div
                     class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg"
@@ -64,16 +75,16 @@
 
             <div>
                 <label
-                    for="username"
+                    for="login"
                     class="block text-sm font-medium text-secondary mb-2"
-                    >Username</label
+                    >Email or Username</label
                 >
                 <input
-                    id="username"
+                    id="login"
                     type="text"
-                    bind:value={username}
+                    bind:value={login}
                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                    placeholder="Enter your username"
+                    placeholder="Enter your email or username"
                     disabled={loading}
                     required
                 />
@@ -113,7 +124,7 @@
 
         <div class="mt-8 p-4 bg-gray-50 rounded-lg">
             <p class="text-xs text-tertiary text-center">
-                Use your Supabase email and password credentials.
+                Please enter your assigned admin credentials.
             </p>
         </div>
     </div>

@@ -116,7 +116,12 @@
         },
         {
             name: "Ajayi Korede",
-            image: "/images/placeholder.webp",
+            image: "/images/team/ajayi-korede.jpg",
+            role: "",
+        },
+        {
+            name: "Oreoluwa Omojola",
+            image: "/images/team/oreoluwa-omojola.jpg",
             role: "",
         },
     ];

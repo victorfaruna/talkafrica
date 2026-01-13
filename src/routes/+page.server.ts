@@ -15,7 +15,16 @@ export const load: PageServerLoad = async () => {
         // Execute queries sequentially to avoid connection pool exhaustion
 
         // Videos
-        const videos = await getVideos(5);
+        let videos = [];
+        try {
+            console.log("[PageLoad] Calling getVideos...");
+            videos = await getVideos(5);
+        } catch (videoError) {
+            console.error("[PageLoad] Failed to load videos:", videoError);
+            // Don't crash the whole page if videos fail? 
+            // For debugging, we re-throw, but maybe we should allow partial load later.
+            throw videoError;
+        }
 
         // Featured posts
         const featured = await db
@@ -166,7 +175,7 @@ export const load: PageServerLoad = async () => {
             latestPosts: latest,
             trendingPosts: trending,
             africanGiant,
-            videos,
+
         };
     } catch (err) {
         console.error("Error loading posts:", err);

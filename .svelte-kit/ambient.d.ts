@@ -33,6 +33,8 @@ declare module '$env/static/private' {
 	export const GOOGLE_SERVICE_ACCOUNT_EMAIL: string;
 	export const GOOGLE_PRIVATE_KEY: string;
 	export const GOOGLE_SHEET_ID: string;
+	export const SUPABASE_URL: string;
+	export const SUPABASE_ANON_KEY: string;
 	export const ALLUSERSPROFILE: string;
 	export const ANTIGRAVITY_CLI_ALIAS: string;
 	export const APPDATA: string;
@@ -157,6 +159,8 @@ declare module '$env/dynamic/private' {
 		GOOGLE_SERVICE_ACCOUNT_EMAIL: string;
 		GOOGLE_PRIVATE_KEY: string;
 		GOOGLE_SHEET_ID: string;
+		SUPABASE_URL: string;
+		SUPABASE_ANON_KEY: string;
 		ALLUSERSPROFILE: string;
 		ANTIGRAVITY_CLI_ALIAS: string;
 		APPDATA: string;

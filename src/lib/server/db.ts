@@ -18,7 +18,7 @@ const client = postgres(DATABASE_URL, {
     connect_timeout: 30, // Increased to 30 seconds for remote connection
 
     // Prevent prepared statement caching issues
-    prepare: false,
+    // prepare: false, // Reverting this as it seems to cause issues
 
     // Handle connection errors gracefully
     onnotice: () => { }, // Suppress notices

@@ -4,7 +4,7 @@ import { db } from "$lib/server/db";
 import { eq, and, ne, desc, inArray, sql } from "drizzle-orm";
 import { postTable, postCategoriesTable, dailyStatsTable, adminTable } from "$lib/server/schema";
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load: PageServerLoad = async ({ params, cookies }) => {
     try {
         const { post_id } = params;
         const [post] = await db
@@ -37,30 +37,49 @@ export const load: PageServerLoad = async ({ params }) => {
             throw error(404, "Post not found");
         }
 
-        // Increment views
-        try {
-            console.log(`Debug: Attempting to increment views for post ${post_id}`);
-            const result = await db
-                .update(postTable)
-                .set({ views: sql`${postTable.views} + 1` })
-                .where(eq(postTable.post_id, post_id))
-                .returning({ views: postTable.views }); // Returning to check new value
-            console.log("Debug: View increment result:", result);
+        // Increment views (Unique per user/post/day check)
+        const viewedCookie = cookies.get('viewed_posts') || '';
+        const viewedPostIds = viewedCookie.split(',');
 
-            // Increment daily stats
-            await db
-                .insert(dailyStatsTable)
-                .values({
-                    date: sql`CURRENT_DATE`,
-                    views: 1,
-                })
-                .onConflictDoUpdate({
-                    target: dailyStatsTable.date,
-                    set: { views: sql`${dailyStatsTable.views} + 1` },
+        // If this specific post hasn't been viewed by this user yet
+        if (!viewedPostIds.includes(post_id)) {
+            try {
+                console.log(`Debug: Incrementing unique views for post ${post_id}`);
+
+                // 1. Increment total post views
+                await db
+                    .update(postTable)
+                    .set({ views: sql`${postTable.views} + 1` })
+                    .where(eq(postTable.post_id, post_id));
+
+                // 2. Increment daily stats
+                await db
+                    .insert(dailyStatsTable)
+                    .values({
+                        date: sql`CURRENT_DATE`,
+                        views: 1,
+                    })
+                    .onConflictDoUpdate({
+                        target: dailyStatsTable.date,
+                        set: { views: sql`${dailyStatsTable.views} + 1` },
+                    });
+
+                // Update cookie list
+                viewedPostIds.push(post_id);
+                // Keep cookie size reasonable (last 50 posts)
+                if (viewedPostIds.length > 50) viewedPostIds.shift();
+
+                cookies.set('viewed_posts', viewedPostIds.join(','), {
+                    path: '/',
+                    httpOnly: true,
+                    maxAge: 60 * 60 * 24, // 1 day
+                    sameSite: 'lax'
                 });
-        } catch (e) {
-            console.error("Failed to increment views:", e);
-            // Non-critical error, continue loading page
+            } catch (e) {
+                console.error("Failed to increment views:", e);
+            }
+        } else {
+            console.log("Debug: Skipping view increment (already viewed this post)");
         }
 
         // Fetch categories for this post
