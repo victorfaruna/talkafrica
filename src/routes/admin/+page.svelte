@@ -174,6 +174,7 @@
                     <div
                         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
                     >
+                        <!-- 1. Total Posts -->
                         <div
                             class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-md transition-shadow"
                         >
@@ -212,6 +213,46 @@
                             </div>
                         </div>
 
+                        <!-- 2. Online Users -->
+                        <div
+                            class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-md transition-shadow"
+                        >
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    <div
+                                        class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center"
+                                    >
+                                        <svg
+                                            class="w-6 h-6 text-indigo-600"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
+                                            />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <p
+                                        class="text-sm font-medium text-gray-600"
+                                    >
+                                        Online Users
+                                    </p>
+                                    <p
+                                        class="text-2xl font-semibold text-gray-900"
+                                    >
+                                        {stats.onlineUsers}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Views Today -->
                         <div
                             class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-md transition-shadow"
                         >
@@ -245,7 +286,7 @@
                                     <p
                                         class="text-sm font-medium text-gray-600"
                                     >
-                                        Views Today
+                                        Total Views Today
                                     </p>
                                     <p
                                         class="text-2xl font-semibold text-gray-900"
@@ -256,44 +297,7 @@
                             </div>
                         </div>
 
-                        <div
-                            class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-md transition-shadow"
-                        >
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0">
-                                    <div
-                                        class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center"
-                                    >
-                                        <svg
-                                            class="w-6 h-6 text-green-600"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
-                                            />
-                                        </svg>
-                                    </div>
-                                </div>
-                                <div class="ml-4">
-                                    <p
-                                        class="text-sm font-medium text-gray-600"
-                                    >
-                                        Total Admins
-                                    </p>
-                                    <p
-                                        class="text-2xl font-semibold text-gray-900"
-                                    >
-                                        {stats.totalAdmins}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
+                        <!-- 4. Total Views -->
                         <div
                             class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-md transition-shadow"
                         >
@@ -338,6 +342,46 @@
                             </div>
                         </div>
 
+                        <!-- 5. Total Admins -->
+                        <div
+                            class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-md transition-shadow"
+                        >
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    <div
+                                        class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center"
+                                    >
+                                        <svg
+                                            class="w-6 h-6 text-green-600"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
+                                            />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <p
+                                        class="text-sm font-medium text-gray-600"
+                                    >
+                                        Total Admins
+                                    </p>
+                                    <p
+                                        class="text-2xl font-semibold text-gray-900"
+                                    >
+                                        {stats.totalAdmins}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 6. Comments -->
                         <div
                             class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-md transition-shadow"
                         >
@@ -374,45 +418,6 @@
                                             class="text-lg text-gray-400 font-normal italic"
                                             >Coming Soon</span
                                         >
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Online Users Card -->
-                        <div
-                            class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-md transition-shadow"
-                        >
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0">
-                                    <div
-                                        class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center"
-                                    >
-                                        <svg
-                                            class="w-6 h-6 text-indigo-600"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
-                                            />
-                                        </svg>
-                                    </div>
-                                </div>
-                                <div class="ml-4">
-                                    <p
-                                        class="text-sm font-medium text-gray-600"
-                                    >
-                                        Online Users
-                                    </p>
-                                    <p
-                                        class="text-2xl font-semibold text-gray-900"
-                                    >
-                                        {stats.onlineUsers}
                                     </p>
                                 </div>
                             </div>

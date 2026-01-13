@@ -24,17 +24,14 @@
 
         // Define premium toolbar options
         const toolbarOptions = [
-            [{ header: [1, 2, 3, 4, 5, 6, false] }],
-            [{ font: [] }],
-            ["bold", "italic", "underline", "strike"], // toggled buttons
-            [{ color: [] }, { background: [] }], // dropdown with defaults from theme
-            [{ align: [] }],
-            [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
-            [{ indent: "-1" }, { indent: "+1" }], // outdent/indent
-            [{ script: "sub" }, { script: "super" }], // superscript/subscript
+            [{ header: [1, 2, 3, false] }],
+            ["bold", "italic", "underline", "strike"],
             ["blockquote", "code-block"],
+            [{ list: "ordered" }, { list: "bullet" }],
+            [{ align: [] }],
+            [{ color: [] }, { background: [] }],
             ["link", "image", "video"],
-            ["clean"], // remove formatting button
+            ["clean"],
         ];
 
         quill = new Quill(editorElement, {
@@ -241,9 +238,22 @@
 
     :global(.ql-editor) {
         padding: 1.5rem 2rem !important;
-        min-height: 400px;
+        min-height: 600px; /* Increased height */
         color: #334155;
         line-height: 1.75;
+        font-size: 1.125rem;
+    }
+
+    /* Mobile Optimizations */
+    @media (max-width: 640px) {
+        :global(.ql-toolbar) {
+            padding: 0.5rem !important;
+        }
+        :global(.ql-editor) {
+            padding: 1rem !important;
+            font-size: 1rem;
+            min-height: 400px;
+        }
     }
 
     /* Typography inside Editor */

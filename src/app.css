@@ -43,7 +43,11 @@ body {
 	max-width: 100%;
 	overflow-wrap: break-word;
 	word-wrap: break-word;
-	word-break: normal;
+	word-break: normal !important;
+	/* Prevent splitting words, only break if strictly necessary */
+	hyphens: manual;
+	text-align: left;
+	-webkit-font-smoothing: antialiased;
 }
 
 /* Article Typography */
