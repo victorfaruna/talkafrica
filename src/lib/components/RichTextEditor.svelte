@@ -242,6 +242,13 @@
         color: #334155;
         line-height: 1.75;
         font-size: 1.125rem;
+        /* Match global article styles */
+        overflow-wrap: break-word !important;
+        word-wrap: break-word !important;
+        word-break: normal !important;
+        hyphens: none !important;
+        -webkit-hyphens: none !important;
+        -moz-hyphens: none !important;
     }
 
     /* Mobile Optimizations */

@@ -37,15 +37,17 @@ body {
    Reusable across all blog posts
    ============================================ */
 
-.article-content {
+.article-content,
+.article-content * {
 	/* Ensure content container doesn't overflow */
-	width: 100%;
 	max-width: 100%;
-	overflow-wrap: break-word;
-	word-wrap: break-word;
+	overflow-wrap: break-word !important;
+	word-wrap: break-word !important;
 	word-break: normal !important;
 	/* Prevent splitting words, only break if strictly necessary */
-	hyphens: manual;
+	hyphens: none !important;
+	-webkit-hyphens: none !important;
+	-moz-hyphens: none !important;
 	text-align: left;
 	-webkit-font-smoothing: antialiased;
 }
