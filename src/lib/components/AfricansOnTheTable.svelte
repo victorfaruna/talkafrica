@@ -80,12 +80,12 @@
                                 src={video.thumbnail_url ||
                                     "/images/placeholder.webp"}
                                 alt={video.title}
-                                class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-90 group-hover:scale-105 transition-all duration-700"
+                                class="absolute inset-0 w-full h-full object-cover opacity-100 group-hover:scale-105 transition-all duration-700"
                             />
 
                             <!-- Overlay Gradient -->
                             <div
-                                class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"
+                                class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"
                             ></div>
 
                             <!-- Play Button (Centered) -->

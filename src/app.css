@@ -37,22 +37,57 @@ body {
    Reusable across all blog posts
    ============================================ */
 
-.article-content,
-.article-content * {
-	/* Ensure content container doesn't overflow */
+.article-content {
+	/* Main container responsiveness */
+	width: 100%;
 	max-width: 100%;
-	overflow-wrap: break-word !important;
-	word-wrap: break-word !important;
-	word-break: break-word !important;
-	/* CHANGED from normal to break-word */
-	/* break-word breaks long words that would otherwise overflow */
-	overflow-x: hidden !important;
-	/* Prevent any horizontal scrolling */
-	hyphens: none !important;
-	-webkit-hyphens: none !important;
-	-moz-hyphens: none !important;
-	text-align: left;
-	-webkit-font-smoothing: antialiased;
+	overflow-wrap: break-word;
+	word-wrap: break-word;
+	word-break: break-word;
+	overflow-x: hidden;
+	/* Prevent container itself from scrolling */
+}
+
+/* Force all child elements to respect container width */
+.article-content * {
+	max-width: 100% !important;
+	box-sizing: border-box;
+}
+
+/* Fix for Images, Videos, and Iframes */
+.article-content img,
+.article-content video,
+.article-content iframe,
+.article-content embed,
+.article-content object {
+	max-width: 100% !important;
+	height: auto !important;
+	/* Maintain aspect ratio */
+	display: block;
+	margin: 1.5rem auto;
+}
+
+/* Fix for Tables - allow scrolling if too wide */
+.article-content table {
+	display: block;
+	width: 100%;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+	border-collapse: collapse;
+	margin: 1.5rem 0;
+}
+
+/* Fix for long URLs or code blocks */
+.article-content pre,
+.article-content code {
+	white-space: pre-wrap;
+	word-break: break-all;
+	overflow-x: auto;
+}
+
+.article-content a {
+	word-break: break-all;
+	/* Ensure long links break */
 }
 
 /* Article Typography */
