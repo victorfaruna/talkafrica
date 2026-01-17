@@ -42,15 +42,14 @@ body {
 	width: 100%;
 	max-width: 100%;
 	overflow-wrap: break-word !important;
-	/* Standard property for breaking long words */
 	word-wrap: break-word !important;
-	/* Legacy support */
 	word-break: normal !important;
-	/* KPIs words together (e.g. Nigeria vs Nig-eria) */
 	overflow-x: hidden;
-	/* Prevent container itself from scrolling */
-	padding-right: 2px;
-	/* Tiny buffer for italics/cursors */
+
+	/* PERMANENT FIX: Force padding text away from edges */
+	padding-left: 1rem !important;
+	padding-right: 1rem !important;
+	box-sizing: border-box !important;
 }
 
 /* Force all child elements to respect container width */
