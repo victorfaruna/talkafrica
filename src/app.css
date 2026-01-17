@@ -41,11 +41,16 @@ body {
 	/* Main container responsiveness */
 	width: 100%;
 	max-width: 100%;
-	overflow-wrap: break-word;
-	word-wrap: break-word;
-	word-break: break-word;
+	overflow-wrap: break-word !important;
+	/* Standard property for breaking long words */
+	word-wrap: break-word !important;
+	/* Legacy support */
+	word-break: normal !important;
+	/* KPIs words together (e.g. Nigeria vs Nig-eria) */
 	overflow-x: hidden;
 	/* Prevent container itself from scrolling */
+	padding-right: 2px;
+	/* Tiny buffer for italics/cursors */
 }
 
 /* Force all child elements to respect container width */
@@ -77,17 +82,19 @@ body {
 	margin: 1.5rem 0;
 }
 
+/* Fix for long URLs specifically */
+.article-content a {
+	overflow-wrap: break-word;
+	word-break: break-all;
+	/* Links CAN break anywhere */
+}
+
 /* Fix for long URLs or code blocks */
 .article-content pre,
 .article-content code {
 	white-space: pre-wrap;
 	word-break: break-all;
 	overflow-x: auto;
-}
-
-.article-content a {
-	word-break: break-all;
-	/* Ensure long links break */
 }
 
 /* Article Typography */
