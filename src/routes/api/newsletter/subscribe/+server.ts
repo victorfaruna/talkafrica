@@ -2,7 +2,7 @@ import { json } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
 import { newsletterSubscribersTable } from '$lib/server/schema';
 import type { RequestHandler } from './$types';
-import { appendToSheet } from '$lib/server/sheets';
+
 
 export const POST: RequestHandler = async ({ request }) => {
     try {
@@ -25,16 +25,8 @@ export const POST: RequestHandler = async ({ request }) => {
             throw dbError;
         }
 
-        // Add to Google Sheets (fire and forget)
-        try {
-            // We import this directly now, assuming it's safe or we handle error here
-            // Previous code used dynamic import, which is fine, but static is cleaner if we fix the env var issues.
-            // If the user hasn't fixed env vars, this might fail at runtime.
-            // But let's stick to the previous pattern of catching errors.
-            await appendToSheet(email).catch(err => console.error('Sheet append error:', err));
-        } catch (e) {
-            console.error('Failed to run sheets logic:', e);
-        }
+        // Google Sheets integration removed per user request. 
+        // Emails are stored in the database.
 
         return json({ success: true });
     } catch (error) {

@@ -15,6 +15,10 @@
 		"src/routes/admin/comments/+page.server.ts",
 		"src/routes/admin/+layout.server.ts"
 	],
+	"/admin/debug": [
+		"src/routes/admin/debug/+page.server.ts",
+		"src/routes/admin/+layout.server.ts"
+	],
 	"/admin/login": [
 		"src/routes/admin/+layout.server.ts"
 	],
@@ -47,11 +51,17 @@
 	"/api/donate": [
 		"src/routes/api/donate/+server.ts"
 	],
+	"/api/newsletter/subscribers": [
+		"src/routes/api/newsletter/subscribers/+server.ts"
+	],
 	"/api/newsletter/subscribe": [
 		"src/routes/api/newsletter/subscribe/+server.ts"
 	],
 	"/api/posts": [
 		"src/routes/api/posts/+server.ts"
+	],
+	"/api/posts/[postId]/comments": [
+		"src/routes/api/posts/[postId]/comments/+server.ts"
 	],
 	"/api/seed-categories": [
 		"src/routes/api/seed-categories/+server.ts"

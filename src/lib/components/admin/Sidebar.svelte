@@ -133,6 +133,35 @@
                 </a>
             </li>
 
+            <!-- NEWSLETTER TAB -->
+            <li>
+                <button
+                    on:click={() =>
+                        (window.location.href = "/admin?tab=newsletter")}
+                    class="flex items-center justify-center lg:justify-start gap-2 lg:gap-3 px-3 py-3 lg:py-2 text-xs sm:text-sm rounded-lg transition-all w-full {isActive(
+                        '/admin',
+                        'newsletter',
+                    )
+                        ? 'bg-accent text-white shadow-sm'
+                        : 'text-gray-700 hover:bg-gray-100'}"
+                >
+                    <svg
+                        class="w-4 h-4 lg:w-5 lg:h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                        />
+                    </svg>
+                    <span>Newsletter</span>
+                </button>
+            </li>
+
             <li>
                 <button
                     on:click={() => (window.location.href = "/admin?tab=users")}

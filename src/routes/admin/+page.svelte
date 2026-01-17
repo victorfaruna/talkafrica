@@ -16,7 +16,14 @@
         const tab = $page.url.searchParams.get("tab");
         if (
             tab &&
-            ["dashboard", "posts", "users", "media", "settings"].includes(tab)
+            [
+                "dashboard",
+                "posts",
+                "users",
+                "media",
+                "settings",
+                "newsletter",
+            ].includes(tab)
         ) {
             activeTab = tab;
         } else {
@@ -134,6 +141,31 @@
     // Post creation handled in the dedicated new/edit page
 
     // Image uploads handled in the dedicated new/edit page
+
+    let subscribers: any[] = [];
+    let loadingSubscribers = false;
+
+    $: if (browser && activeTab === "newsletter") {
+        fetchSubscribers();
+    }
+
+    async function fetchSubscribers() {
+        loadingSubscribers = true;
+        try {
+            const res = await fetch("/api/newsletter/subscribers");
+            const data = await res.json();
+            if (data.success) {
+                subscribers = data.subscribers;
+            } else {
+                alert("Failed to fetch subscribers: " + data.error);
+            }
+        } catch (error) {
+            console.error("Error fetching subscribers:", error);
+            alert("Error fetching subscribers");
+        } finally {
+            loadingSubscribers = false;
+        }
+    }
 </script>
 
 <svelte:head>
@@ -813,6 +845,77 @@
                                     and account management.
                                 </p>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            {:else if activeTab === "newsletter"}
+                <!-- Newsletter Management -->
+                <div class="space-y-8">
+                    <div>
+                        <h2 class="text-2xl font-semibold text-gray-900 mb-2">
+                            Newsletter Subscribers
+                        </h2>
+                        <p class="text-gray-600">
+                            See who has subscribed to your newsletter.
+                        </p>
+                    </div>
+
+                    <div class="bg-white rounded-xl border border-gray-200">
+                        <div
+                            class="px-6 py-4 border-b border-gray-200 flex justify-between items-center"
+                        >
+                            <h3 class="text-lg font-semibold text-gray-900">
+                                All Subscribers ({subscribers.length})
+                            </h3>
+                            <button
+                                on:click={fetchSubscribers}
+                                class="text-sm text-accent hover:text-accent/80 font-medium"
+                            >
+                                Refresh
+                            </button>
+                        </div>
+                        <div class="p-0">
+                            {#if loadingSubscribers}
+                                <div class="p-8 text-center text-gray-500">
+                                    Loading...
+                                </div>
+                            {:else if subscribers.length === 0}
+                                <div class="p-8 text-center text-gray-500">
+                                    No subscribers yet.
+                                </div>
+                            {:else}
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-left text-sm">
+                                        <thead
+                                            class="bg-gray-50 text-gray-600 font-medium border-b border-gray-200"
+                                        >
+                                            <tr>
+                                                <th class="px-6 py-3">Email</th>
+                                                <th class="px-6 py-3"
+                                                    >Subscribed At</th
+                                                >
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-100">
+                                            {#each subscribers as sub}
+                                                <tr class="hover:bg-gray-50/50">
+                                                    <td
+                                                        class="px-6 py-3 font-medium text-gray-900"
+                                                        >{sub.email}</td
+                                                    >
+                                                    <td
+                                                        class="px-6 py-3 text-gray-500"
+                                                    >
+                                                        {new Date(
+                                                            sub.created_at,
+                                                        ).toLocaleString()}
+                                                    </td>
+                                                </tr>
+                                            {/each}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {/if}
                         </div>
                     </div>
                 </div>
