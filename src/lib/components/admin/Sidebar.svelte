@@ -105,6 +105,34 @@
                 </a>
             </li>
 
+            <!-- COMMENTS TAB -->
+            <li>
+                <a
+                    href="/admin/comments"
+                    class="flex items-center justify-center lg:justify-start gap-2 lg:gap-3 px-3 py-3 lg:py-2 text-xs sm:text-sm rounded-lg transition-all w-full {isActive(
+                        '/admin/comments',
+                        'comments',
+                    )
+                        ? 'bg-accent text-white shadow-sm'
+                        : 'text-gray-700 hover:bg-gray-100'}"
+                >
+                    <svg
+                        class="w-4 h-4 lg:w-5 lg:h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
+                        />
+                    </svg>
+                    <span>Comments</span>
+                </a>
+            </li>
+
             <li>
                 <button
                     on:click={() => (window.location.href = "/admin?tab=users")}

@@ -3,10 +3,12 @@
     import { browser } from "$app/environment";
     import ArticleHero from "$lib/components/ArticleHero.svelte";
     import ArticleMeta from "$lib/components/ArticleMeta.svelte";
+    import CommentSection from "$lib/components/CommentSection.svelte";
     import { calculateReadingTime } from "$lib/utils/reading-time";
 
     export let data: {
         post: {
+            post_id: string;
             title: string;
             content: string;
             excerpt?: string | null;
@@ -370,6 +372,9 @@
             </div>
         </div>
     {/if}
+
+    <!-- Comments Section -->
+    <CommentSection postId={data.post.post_id} />
 </div>
 
 <!-- Floating Share Buttons (Mobile Only) -->

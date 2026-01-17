@@ -124,6 +124,11 @@
             image: "/images/team/oreoluwa-omojola.jpg",
             role: "",
         },
+        {
+            name: "Bernice Temitayo",
+            image: "/images/team/bernice-temitayo.jpg",
+            role: "",
+        },
     ];
 </script>
 

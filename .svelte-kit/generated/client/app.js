@@ -17,7 +17,8 @@ export const nodes = [
 	() => import('./nodes/13'),
 	() => import('./nodes/14'),
 	() => import('./nodes/15'),
-	() => import('./nodes/16')
+	() => import('./nodes/16'),
+	() => import('./nodes/17')
 ];
 
 export const server_loads = [2];
@@ -27,16 +28,17 @@ export const dictionary = {
 		"/about": [4],
 		"/admin": [~5,[2]],
 		"/admin/categories": [6,[2]],
-		"/admin/login": [7,[2]],
-		"/admin/posts/new": [8,[2]],
-		"/admin/videos": [~9,[2]],
-		"/admin/videos/new": [10,[2]],
-		"/admin/videos/[id]/edit": [~11,[2]],
-		"/african-giant": [~12],
-		"/donate": [13],
-		"/posts/[post_id]": [~14],
-		"/videos": [~15],
-		"/[category]": [~16]
+		"/admin/comments": [~7,[2]],
+		"/admin/login": [8,[2]],
+		"/admin/posts/new": [9,[2]],
+		"/admin/videos": [~10,[2]],
+		"/admin/videos/new": [11,[2]],
+		"/admin/videos/[id]/edit": [~12,[2]],
+		"/african-giant": [~13],
+		"/donate": [14],
+		"/posts/[post_id]": [~15],
+		"/videos": [~16],
+		"/[category]": [~17]
 	};
 
 export const hooks = {

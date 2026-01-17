@@ -414,10 +414,7 @@
                                     <p
                                         class="text-2xl font-semibold text-gray-900"
                                     >
-                                        <span
-                                            class="text-lg text-gray-400 font-normal italic"
-                                            >Coming Soon</span
-                                        >
+                                        {data.stats.totalComments}
                                     </p>
                                 </div>
                             </div>

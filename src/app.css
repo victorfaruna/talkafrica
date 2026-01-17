@@ -43,8 +43,11 @@ body {
 	max-width: 100%;
 	overflow-wrap: break-word !important;
 	word-wrap: break-word !important;
-	word-break: normal !important;
-	/* Prevent splitting words, only break if strictly necessary */
+	word-break: break-word !important;
+	/* CHANGED from normal to break-word */
+	/* break-word breaks long words that would otherwise overflow */
+	overflow-x: hidden !important;
+	/* Prevent any horizontal scrolling */
 	hyphens: none !important;
 	-webkit-hyphens: none !important;
 	-moz-hyphens: none !important;

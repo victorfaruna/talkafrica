@@ -11,6 +11,10 @@
 	"/admin/categories": [
 		"src/routes/admin/+layout.server.ts"
 	],
+	"/admin/comments": [
+		"src/routes/admin/comments/+page.server.ts",
+		"src/routes/admin/+layout.server.ts"
+	],
 	"/admin/login": [
 		"src/routes/admin/+layout.server.ts"
 	],
@@ -39,9 +43,6 @@
 	],
 	"/api/categories": [
 		"src/routes/api/categories/+server.ts"
-	],
-	"/api/comments": [
-		"src/routes/api/comments/+server.ts"
 	],
 	"/api/donate": [
 		"src/routes/api/donate/+server.ts"
