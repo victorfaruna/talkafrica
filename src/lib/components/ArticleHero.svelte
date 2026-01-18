@@ -119,6 +119,7 @@
         align-items: center;
         justify-content: center;
         background-color: #000;
+        border-radius: 1rem; /* rounded-2xl equivalent */
     }
 
     .article-hero-image {
@@ -161,6 +162,7 @@
         padding: 4rem 1.5rem 3rem;
         position: relative;
         border-bottom: 1px solid #f3f4f6;
+        border-radius: 1rem;
     }
 
     .article-hero-content-wrapper {
@@ -280,4 +282,3 @@
         }
     }
 </style>
-

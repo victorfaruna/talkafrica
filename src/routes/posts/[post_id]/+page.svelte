@@ -131,8 +131,14 @@
 </div>
 
 <div class="min-h-screen bg-white">
-    <!-- Global Article Hero Component -->
-    <ArticleHero title={post.title} excerpt={post.excerpt} image={post.image} />
+    <!-- Global Article Hero Component - Wrapped for padding -->
+    <div class="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 md:pt-10">
+        <ArticleHero
+            title={post.title}
+            excerpt={post.excerpt}
+            image={post.image}
+        />
+    </div>
 
     <!-- Main Content Wrapper -->
     <main
