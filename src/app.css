@@ -40,15 +40,18 @@ body {
 .article-content {
 	/* Main container responsiveness */
 	width: 100%;
-	max-width: 100%;
-	overflow-wrap: break-word !important;
-	word-wrap: break-word !important;
+	max-width: 680px;
+	/* BBC News style comfortable reading width */
+	margin: 0 auto;
+	/* Center content on desktop */
+	overflow-wrap: break-word;
+	word-wrap: break-word;
 	word-break: normal !important;
-	overflow-x: hidden;
 
-	/* PERMANENT FIX: Force padding text away from edges */
-	padding-left: 1rem !important;
-	padding-right: 1rem !important;
+	/* PERMANENT FIX: Responsive padding - BBC News style */
+	padding-left: clamp(1rem, 5vw, 1.25rem);
+	/* 16px mobile, 20px desktop */
+	padding-right: clamp(1rem, 5vw, 1.25rem);
 	box-sizing: border-box !important;
 }
 
@@ -84,8 +87,7 @@ body {
 /* Fix for long URLs specifically */
 .article-content a {
 	overflow-wrap: break-word;
-	word-break: break-all;
-	/* Links CAN break anywhere */
+	/* Links break at word boundaries, not mid-word */
 }
 
 /* Fix for long URLs or code blocks */
@@ -103,11 +105,29 @@ body {
 	font-family: 'Merriweather', 'Georgia', serif;
 	color: #27272a;
 	/* Zinc 800 */
-	font-size: 1.125rem;
-	/* 18px */
-	line-height: 1.8;
+
+	/* CRITICAL FIX: Responsive font sizing like BBC News */
+	/* Scales from 14px (mobile 320px) to 18px (desktop 1024px+) */
+	font-size: clamp(0.875rem, 0.75rem + 0.625vw, 1.125rem);
+
+	/* Responsive line-height that scales with font size */
+	line-height: clamp(1.6, 1.5 + 0.3vw, 1.8);
 	margin-bottom: 1.5em;
 	/* Cleaner spacing */
+
+	/* COMPREHENSIVE FIX: Prevent all types of hyphenation */
+	hyphens: none !important;
+	-webkit-hyphens: none !important;
+	-moz-hyphens: none !important;
+	-ms-hyphens: none !important;
+
+	/* Prevent mid-word breaks */
+	word-break: normal !important;
+	overflow-wrap: break-word !important;
+	word-wrap: break-word !important;
+
+	/* Natural left alignment */
+	text-align: left !important;
 }
 
 /* Headings */
@@ -125,25 +145,32 @@ body {
 	letter-spacing: -0.01em;
 	margin-top: 2em;
 	margin-bottom: 0.75em;
+	/* Prevent heading breaks */
+	word-break: keep-all;
+	overflow-wrap: normal;
 }
 
 .article-content h1 {
-	font-size: 2.5rem;
+	/* Responsive: 32px mobile to 40px desktop */
+	font-size: clamp(2rem, 1.5rem + 2vw, 2.5rem);
 	font-weight: 700;
 }
 
 .article-content h2 {
-	font-size: 2rem;
+	/* Responsive: 28px mobile to 32px desktop */
+	font-size: clamp(1.75rem, 1.5rem + 1vw, 2rem);
 	border-bottom: 1px solid #e4e4e7;
 	padding-bottom: 0.3em;
 }
 
 .article-content h3 {
-	font-size: 1.5rem;
+	/* Responsive: 22px mobile to 24px desktop */
+	font-size: clamp(1.375rem, 1.25rem + 0.5vw, 1.5rem);
 }
 
 .article-content h4 {
-	font-size: 1.25rem;
+	/* Responsive: 18px mobile to 20px desktop */
+	font-size: clamp(1.125rem, 1rem + 0.5vw, 1.25rem);
 }
 
 /* Links */
@@ -280,25 +307,21 @@ body {
 /* Mobile Adjustments */
 @media (max-width: 640px) {
 	.article-content {
-		font-size: 16px;
-		/* Slightly reduced base size for mobile */
-	}
-
-	.article-content h1 {
-		font-size: 2rem;
-	}
-
-	.article-content h2 {
-		font-size: 1.75rem;
-	}
-
-	.article-content h3 {
-		font-size: 1.35rem;
+		/* Ensure minimum 16px padding on mobile */
+		padding-left: 1rem;
+		padding-right: 1rem;
 	}
 
 	.article-content blockquote {
 		padding: 1em 1.25em;
 		margin: 1.5em 0;
+	}
+
+	/* Images have less vertical margin on mobile */
+	.article-content img,
+	.article-content video,
+	.article-content iframe {
+		margin: 1.5em auto;
 	}
 }
 
@@ -311,9 +334,7 @@ body {
 	text-align: right;
 }
 
-.article-content .ql-align-justify {
-	text-align: justify;
-}
+/* Keep natural left alignment for better readability */
 
 .article-content .ql-indent-1 {
 	padding-left: 3em;

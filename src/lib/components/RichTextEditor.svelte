@@ -45,6 +45,10 @@
                     maxStack: 500,
                     userOnly: true,
                 },
+                clipboard: {
+                    // Prevent visual formatting issues on paste
+                    matchVisual: false,
+                },
             },
         });
 
@@ -56,7 +60,9 @@
 
         // Event listeners
         quill.on("text-change", () => {
-            const html = quill.getSemanticHTML();
+            let html = quill.getSemanticHTML();
+            // CRITICAL: Strip soft hyphens to prevent mid-word breaks
+            html = html.replace(/\u00AD/g, "").replace(/&shy;/g, "");
             content = html;
             updateCounts();
             dispatch("change", html);
