@@ -16,7 +16,7 @@ const RSS_FEEDS = [
     'https://www.techinafrica.com/feed/',
     'https://www.itnewsafrica.com/feed/'
 ];
-const MAX_DAILY_POSTS = 4;
+const MAX_DAILY_POSTS = 3;
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const DATABASE_URL = process.env.DATABASE_URL;
 
