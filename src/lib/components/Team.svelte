@@ -48,11 +48,6 @@
             role: "",
         },
         {
-            name: "Oluwagbemi Delight Adetunji",
-            image: "/images/team/oluwagbemi-delight-adetunji.jpg",
-            role: "",
-        },
-        {
             name: "Angel Tomi Olorunmonu",
             image: "/images/team/angel-tomi-olorunmonu.jpg",
             role: "",
