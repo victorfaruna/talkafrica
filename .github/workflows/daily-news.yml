@@ -21,7 +21,7 @@ jobs:
           node-version: '18'
 
       - name: Install dependencies
-        run: npm install rss-parser @google/generative-ai postgres dotenv
+        run: npm install --legacy-peer-deps rss-parser @google/generative-ai postgres dotenv
 
       - name: Run Fetch Script
         env:
