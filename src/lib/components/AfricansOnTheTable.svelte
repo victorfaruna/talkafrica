@@ -73,7 +73,7 @@
                     <!-- Featured Video -->
                     {#each videos.slice(0, 1) as video}
                         <div
-                            class="group relative w-full aspect-[4/3] md:aspect-[16/9] lg:aspect-[4/3] xl:aspect-[16/9] rounded-[2rem] overflow-hidden bg-gray-900 border border-white/5 shadow-2xl transition-all duration-500 hover:shadow-[0_20px_50px_rgba(247,148,29,0.15)]"
+                            class="group relative w-full aspect-[3/4] md:aspect-[16/9] lg:aspect-[4/3] xl:aspect-[16/9] rounded-[2rem] overflow-hidden bg-gray-900 border border-white/5 shadow-2xl transition-all duration-500 hover:shadow-[0_20px_50px_rgba(247,148,29,0.15)]"
                         >
                             <!-- Image -->
                             <img
@@ -106,7 +106,7 @@
 
                             <!-- Content Overlay -->
                             <div
-                                class="absolute bottom-0 left-0 w-full p-8 md:p-12 z-30"
+                                class="absolute bottom-0 left-0 w-full p-6 md:p-12 z-30"
                             >
                                 <div class="flex items-center gap-3 mb-4">
                                     <span
@@ -120,7 +120,7 @@
                                     >
                                 </div>
                                 <h3
-                                    class="font-clash-grotesk font-bold text-3xl md:text-5xl leading-tight mb-4 text-white group-hover:text-[#F7941D] transition-colors"
+                                    class="font-clash-grotesk font-bold text-2xl md:text-5xl leading-tight mb-4 text-white group-hover:text-[#F7941D] transition-colors"
                                 >
                                     {video.title}
                                 </h3>
@@ -148,7 +148,7 @@
                     {#each posts.slice(0, 1) as post}
                         <a
                             href="/posts/{post.post_id}"
-                            class="block group relative w-full aspect-[4/3] md:aspect-[16/9] lg:aspect-[4/3] xl:aspect-[16/9] rounded-[2rem] overflow-hidden bg-gray-900 border border-white/5 shadow-2xl transition-all duration-500 hover:shadow-[0_20px_50px_rgba(247,148,29,0.15)]"
+                            class="block group relative w-full aspect-[3/4] md:aspect-[16/9] lg:aspect-[4/3] xl:aspect-[16/9] rounded-[2rem] overflow-hidden bg-gray-900 border border-white/5 shadow-2xl transition-all duration-500 hover:shadow-[0_20px_50px_rgba(247,148,29,0.15)]"
                         >
                             <img
                                 src={post.image || "/images/placeholder.webp"}
@@ -160,7 +160,7 @@
                             ></div>
 
                             <div
-                                class="absolute bottom-0 left-0 w-full p-8 md:p-12 z-30"
+                                class="absolute bottom-0 left-0 w-full p-6 md:p-12 z-30"
                             >
                                 <div class="flex items-center gap-3 mb-4">
                                     <span
@@ -170,7 +170,7 @@
                                     </span>
                                 </div>
                                 <h3
-                                    class="font-clash-grotesk font-bold text-3xl md:text-5xl leading-tight mb-4 text-white group-hover:text-[#F7941D] transition-colors"
+                                    class="font-clash-grotesk font-bold text-2xl md:text-5xl leading-tight mb-4 text-white group-hover:text-[#F7941D] transition-colors"
                                 >
                                     {post.title}
                                 </h3>

@@ -124,6 +124,11 @@
             image: "/images/team/bernice-temitayo.jpg",
             role: "",
         },
+        {
+            name: "Buraimoh Oluwaseun Mercy",
+            image: "/images/team/buraimoh-oluwaseun-mercy.jpg",
+            role: "",
+        },
     ];
 </script>
 
