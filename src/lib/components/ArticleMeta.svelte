@@ -3,6 +3,7 @@
 
     export let categories: string[] = [];
     export let author: string | null = null;
+    export let editor: string | null = null;
     export let publishedDate: string | Date | null = null;
     export let readingTime: number | null = null;
 
@@ -27,13 +28,25 @@
 
 <!-- Global Article Meta Component -->
 <aside class="article-meta" aria-label="Article information">
-    <div class="article-meta-info">
+    <div class="article-meta-info gap-3">
         {#if author}
-            <div class="article-meta-item">
-                <span class="article-meta-label">By</span>
-                <span class="article-meta-value font-medium text-gray-900"
-                    >{author}</span
-                >
+            <div class="flex items-center gap-1.5 flex-wrap">
+                <div class="article-meta-item">
+                    <span class="article-meta-label">By</span>
+                    <span class="article-meta-value font-medium text-gray-900"
+                        >{author}</span
+                    >
+                </div>
+                {#if editor}
+                    <span class="article-meta-separator" aria-hidden="true">&bull;</span
+                    >
+                    <div class="article-meta-item">
+                        <span class="article-meta-label">Edited by</span>
+                        <span class="article-meta-value font-medium text-gray-900"
+                            >{editor}</span
+                        >
+                    </div>
+                {/if}
             </div>
             <span class="article-meta-separator" aria-hidden="true">&bull;</span
             >

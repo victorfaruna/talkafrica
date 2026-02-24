@@ -92,6 +92,7 @@ export const postTable = pgTable("posts", {
     views: integer("views").notNull().default(0),
     author: varchar({ length: 255 }).notNull().default("Admin"),
     author_id: uuid("author_id"), // Nullable initially for backfill
+    editor: varchar({ length: 255 }), // New column for article editor
     created_at: timestamp("created_at").notNull().defaultNow(),
     updated_at: timestamp("updated_at").notNull().defaultNow(),
 });

@@ -42,6 +42,7 @@ export const load: PageServerLoad = async () => {
                 deleted: postTable.deleted,
                 views: postTable.views,
                 author_id: postTable.author_id,
+                editor: postTable.editor,
                 created_at: postTable.created_at,
                 updated_at: postTable.updated_at,
             })
@@ -67,6 +68,7 @@ export const load: PageServerLoad = async () => {
                 deleted: postTable.deleted,
                 views: postTable.views,
                 author_id: postTable.author_id,
+                editor: postTable.editor,
                 created_at: postTable.created_at,
                 updated_at: postTable.updated_at,
             })
@@ -92,6 +94,7 @@ export const load: PageServerLoad = async () => {
                 deleted: postTable.deleted,
                 views: postTable.views,
                 author_id: postTable.author_id,
+                editor: postTable.editor,
                 created_at: postTable.created_at,
                 updated_at: postTable.updated_at,
             })
@@ -117,6 +120,7 @@ export const load: PageServerLoad = async () => {
                 deleted: postTable.deleted,
                 views: postTable.views,
                 author_id: postTable.author_id,
+                editor: postTable.editor,
                 created_at: postTable.created_at,
                 updated_at: postTable.updated_at,
             })
@@ -146,6 +150,7 @@ export const load: PageServerLoad = async () => {
                 deleted: postTable.deleted,
                 views: postTable.views,
                 author: sql<string>`coalesce(${adminTable.username}, ${postTable.author})`,
+                editor: postTable.editor,
                 created_at: postTable.created_at,
                 updated_at: postTable.updated_at,
             })

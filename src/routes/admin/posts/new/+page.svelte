@@ -14,6 +14,7 @@
     let featured = $state(false);
     let isTrendingNews = $state(false);
     let status = $state("draft");
+    let editor = $state(""); // Optional editor
     let content = $state("");
     let editingPostId = $state<string | null>(null);
     let uploadStatus = $state<"idle" | "uploading" | "success" | "error">(
@@ -21,6 +22,11 @@
     );
     let uploadMessage = $state("");
     let isSaving = $state(false);
+
+    const editors = [
+        "Ipinyomi korede Precious",
+        "Omojola Oreoluwa Favour"
+    ];
 
     import { getPostCategories } from "$lib/categories";
 
@@ -79,6 +85,7 @@
                         featured = !!found.featured;
                         isTrendingNews = !!found.isTrendingNews;
                         status = found.status || "draft";
+                        editor = found.editor || "";
                         content = found.content || "";
                         // Editor will bind to content automatically
                     }
@@ -238,6 +245,7 @@
                 status,
                 featured,
                 isTrendingNews,
+                editor: editor || null, // Optional editor field
 
                 author: data?.admin?.username || "Admin", // Use logged-in admin's username
                 author_id: data?.admin?.admin_id, // Pass admin_id for dynamic linking
@@ -325,6 +333,7 @@
                 />
             </div>
 
+            <!-- Categories and Editor Details -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <!-- Categories -->
                 <div>
@@ -399,6 +408,26 @@
                                 {/if}
                             {/each}
                         </div>
+                    </div>
+                    
+                    <!-- Editor Dropdown -->
+                    <div class="mt-6">
+                        <label
+                            for="editor"
+                            class="block text-sm font-semibold text-gray-700 mb-2"
+                            >Editor (Optional)</label
+                        >
+                        <select
+                            id="editor"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent transition-all bg-white text-gray-700"
+                            bind:value={editor}
+                        >
+                            <option value="">None</option>
+                            {#each editors as ed}
+                                <option value={ed}>{ed}</option>
+                            {/each}
+                        </select>
+                        <p class="text-xs text-gray-500 mt-1">If this article was edited by a specific editor, please select their name.</p>
                     </div>
                 </div>
 

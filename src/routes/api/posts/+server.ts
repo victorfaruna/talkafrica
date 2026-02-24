@@ -31,6 +31,7 @@ export const GET: RequestHandler = async ({ url }) => {
                 deleted: postTable.deleted,
                 views: postTable.views,
                 author: postTable.author,
+                editor: postTable.editor,
                 created_at: postTable.created_at,
                 updated_at: postTable.updated_at,
             })
@@ -150,6 +151,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
             featured,
             isTrendingNews, // Extract new field
             author, // Get author from request body
+            editor, // Get editor from request body
         } = body;
 
         if (!title || !content) {
@@ -175,6 +177,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
             isTrendingNews: Boolean(isTrendingNews), // Save to DB
             author: author || "Admin", // Legacy field, kept for now
             author_id: body.author_id || null, // New field
+            editor: editor || null, // Optional editor field
         };
         console.log("💾 Inserting post with data:", JSON.stringify(insertData, null, 2));
 

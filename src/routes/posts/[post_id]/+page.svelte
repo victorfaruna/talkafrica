@@ -13,10 +13,10 @@
             content: string;
             excerpt?: string | null;
             image?: string | null;
-            category?: string | null;
             categories?: string[];
             created_at?: string | Date;
             author?: string | null;
+            editor?: string | null;
         };
         relatedPosts: Array<{
             post_id: string;
@@ -139,10 +139,10 @@
         class="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 relative"
     >
         <!-- Metadata Header -->
-        <div class="mb-12 border-b border-gray-100 pb-8">
             <ArticleMeta
                 categories={displayCategories}
                 author={post.author}
+                editor={post.editor}
                 publishedDate={post.created_at}
                 {readingTime}
             />

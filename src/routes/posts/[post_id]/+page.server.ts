@@ -23,6 +23,7 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
                 deleted: postTable.deleted,
                 views: postTable.views,
                 author_id: postTable.author_id,
+                editor: postTable.editor,
                 created_at: postTable.created_at,
                 updated_at: postTable.updated_at,
             })
