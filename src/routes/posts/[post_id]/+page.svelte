@@ -139,14 +139,13 @@
         class="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 relative"
     >
         <!-- Metadata Header -->
-            <ArticleMeta
-                categories={displayCategories}
-                author={post.author}
-                editor={post.editor}
-                publishedDate={post.created_at}
-                {readingTime}
-            />
-        </div>
+        <ArticleMeta
+            categories={displayCategories}
+            author={post.author}
+            editor={post.editor}
+            publishedDate={post.created_at}
+            {readingTime}
+        />
 
         <!-- Article Body -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
