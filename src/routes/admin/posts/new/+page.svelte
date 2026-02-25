@@ -23,10 +23,7 @@
     let uploadMessage = $state("");
     let isSaving = $state(false);
 
-    const editors = [
-        "Ipinyomi korede Precious",
-        "Omojola Oreoluwa Favour"
-    ];
+    const editors = ["Ipinyomi korede Precious", "Omojola Oreoluwa Favour"];
 
     import { getPostCategories } from "$lib/categories";
 
@@ -409,26 +406,6 @@
                             {/each}
                         </div>
                     </div>
-                    
-                    <!-- Editor Dropdown -->
-                    <div class="mt-6">
-                        <label
-                            for="editor"
-                            class="block text-sm font-semibold text-gray-700 mb-2"
-                            >Editor (Optional)</label
-                        >
-                        <select
-                            id="editor"
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent transition-all bg-white text-gray-700"
-                            bind:value={editor}
-                        >
-                            <option value="">None</option>
-                            {#each editors as ed}
-                                <option value={ed}>{ed}</option>
-                            {/each}
-                        </select>
-                        <p class="text-xs text-gray-500 mt-1">If this article was edited by a specific editor, please select their name.</p>
-                    </div>
                 </div>
 
                 <!-- Featured Image -->
@@ -603,7 +580,29 @@
                 {/if}
             </div>
 
-            <div class="pt-6 border-t border-gray-100 flex flex-col gap-4">
+            <div class="pt-6 border-t border-gray-100 flex flex-col gap-6">
+                <!-- Editor Dropdown (Moved here for visibility) -->
+                <div>
+                    <label
+                        for="editor"
+                        class="block text-sm font-semibold text-gray-700 mb-2"
+                        >Editor (Optional) <span
+                            class="text-[10px] text-gray-400 font-normal"
+                            >v1.1</span
+                        ></label
+                    >
+                    <select
+                        id="editor"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent transition-all bg-white text-gray-700"
+                        bind:value={editor}
+                    >
+                        <option value="">None</option>
+                        {#each editors as ed}
+                            <option value={ed}>{ed}</option>
+                        {/each}
+                    </select>
+                </div>
+
                 <div
                     class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6"
                 >
