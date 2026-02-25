@@ -23,7 +23,7 @@
     let uploadMessage = $state("");
     let isSaving = $state(false);
 
-    const editors = ["Ipinyomi korede Precious", "Omojola Oreoluwa Favour"];
+    const editors = ["Ipinyomi Korede", "Omojola Oreoluwa"];
 
     import { getPostCategories } from "$lib/categories";
 
