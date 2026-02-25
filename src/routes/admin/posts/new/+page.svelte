@@ -586,10 +586,7 @@
                     <label
                         for="editor"
                         class="block text-sm font-semibold text-gray-700 mb-2"
-                        >Editor (Optional) <span
-                            class="text-[10px] text-gray-400 font-normal"
-                            >v1.1</span
-                        ></label
+                        >Editor (Optional)</label
                     >
                     <select
                         id="editor"
