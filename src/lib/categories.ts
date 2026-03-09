@@ -278,6 +278,17 @@ export const CATEGORY_DEFINITIONS: Omit<Category, "id">[] = [
         sort_order: 4,
         is_active: true,
     },
+    {
+        name: "movie-reviews",
+        slug: "movie-reviews",
+        display_name: "Movie Reviews",
+        description: "Expert reviews and recommendations of African movies",
+        parent_id: "entertainment",
+        icon: "video",
+        color: "#F43F5E",
+        sort_order: 5,
+        is_active: true,
+    },
 ];
 
 /**

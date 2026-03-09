@@ -11,6 +11,11 @@
             $page.url.pathname.startsWith("/admin/videos")
         )
             return true;
+        if (
+            tabName === "movies" &&
+            $page.url.pathname.startsWith("/admin/movies")
+        )
+            return true;
         return false;
     }
 </script>
@@ -102,6 +107,34 @@
                         />
                     </svg>
                     <span>Videos</span>
+                </a>
+            </li>
+
+            <!-- MOVIES TAB -->
+            <li>
+                <a
+                    href="/admin/movies"
+                    class="flex items-center justify-center lg:justify-start gap-2 lg:gap-3 px-3 py-3 lg:py-2 text-xs sm:text-sm rounded-lg transition-all w-full {isActive(
+                        '/admin/movies',
+                        'movies',
+                    )
+                        ? 'bg-accent text-white shadow-sm'
+                        : 'text-gray-700 hover:bg-gray-100'}"
+                >
+                    <svg
+                        class="w-4 h-4 lg:w-5 lg:h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M7 4v16M17 4v16M3 8h4m10 0h4M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"
+                        />
+                    </svg>
+                    <span>The Big Screen</span>
                 </a>
             </li>
 

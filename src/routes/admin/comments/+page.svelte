@@ -576,11 +576,19 @@
                                             ></polyline></svg
                                         >
                                         <a
-                                            href="/posts/{comment.post_id}"
+                                            href={comment.postTitle
+                                                ? `/posts/${comment.post_id}`
+                                                : `/movies/${comment.post_id}`}
                                             class="hover:text-orange-600 hover:underline truncate max-w-[150px] md:max-w-xs transition-colors"
                                             target="_blank"
                                         >
-                                            {comment.postTitle}
+                                            {#if comment.postTitle}
+                                                Post: {comment.postTitle}
+                                            {:else if comment.movieTitle}
+                                                Movie: {comment.movieTitle}
+                                            {:else}
+                                                Unknown Resource
+                                            {/if}
                                         </a>
                                     </div>
 

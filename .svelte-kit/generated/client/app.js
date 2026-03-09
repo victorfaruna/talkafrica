@@ -19,7 +19,12 @@ export const nodes = [
 	() => import('./nodes/15'),
 	() => import('./nodes/16'),
 	() => import('./nodes/17'),
-	() => import('./nodes/18')
+	() => import('./nodes/18'),
+	() => import('./nodes/19'),
+	() => import('./nodes/20'),
+	() => import('./nodes/21'),
+	() => import('./nodes/22'),
+	() => import('./nodes/23')
 ];
 
 export const server_loads = [2];
@@ -32,15 +37,20 @@ export const dictionary = {
 		"/admin/comments": [~7,[2]],
 		"/admin/debug": [~8,[2]],
 		"/admin/login": [9,[2]],
-		"/admin/posts/new": [10,[2]],
-		"/admin/videos": [~11,[2]],
-		"/admin/videos/new": [12,[2]],
-		"/admin/videos/[id]/edit": [~13,[2]],
-		"/african-giant": [~14],
-		"/donate": [15],
-		"/posts/[post_id]": [~16],
-		"/videos": [~17],
-		"/[category]": [~18]
+		"/admin/movies": [~10,[2]],
+		"/admin/movies/new": [11,[2]],
+		"/admin/movies/[id]/edit": [~12,[2]],
+		"/admin/posts/new": [13,[2]],
+		"/admin/videos": [~14,[2]],
+		"/admin/videos/new": [15,[2]],
+		"/admin/videos/[id]/edit": [~16,[2]],
+		"/african-giant": [~17],
+		"/donate": [18],
+		"/movies": [~19],
+		"/movies/[slug]": [~20],
+		"/posts/[post_id]": [~21],
+		"/videos": [~22],
+		"/[category]": [~23]
 	};
 
 export const hooks = {

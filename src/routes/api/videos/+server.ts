@@ -16,8 +16,14 @@ export const GET: RequestHandler = async ({ url }) => {
     }
 };
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
     try {
+        // Ensure user is admin - check session
+        const session = locals.session;
+        if (!session) {
+            return json({ error: "Unauthorized" }, { status: 401 });
+        }
+
         const data = await request.json();
         const video = await createVideo(data);
         return json({ video: video[0] }, { status: 201 });

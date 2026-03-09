@@ -9,6 +9,7 @@ import {
     uuid,
     varchar,
     date,
+    real,
 } from "drizzle-orm/pg-core";
 
 export const adminTable = pgTable("admin", {
@@ -132,6 +133,33 @@ export const videosTable = pgTable("videos", {
     updated_at: timestamp("updated_at").notNull().defaultNow(),
 });
 
+export const movieReviewsTable = pgTable("movie_reviews", {
+    id: serial("id").primaryKey(),
+    review_id: uuid("review_id")
+        .default(sql`gen_random_uuid()`)
+        .unique()
+        .notNull(),
+    title: varchar({ length: 255 }).notNull(),
+    slug: varchar({ length: 255 }).notNull().unique(),
+    genre: varchar({ length: 255 }),
+    director: varchar({ length: 255 }),
+    cast: text("cast"),
+    release_date: date("release_date"),
+    runtime: varchar({ length: 64 }),
+    rating: real("rating").notNull().default(0),
+    poster_url: varchar({ length: 512 }).notNull(),
+    backdrop_url: varchar({ length: 512 }),
+    trailer_url: varchar({ length: 512 }),
+    content: text("content").notNull(),
+    status: varchar({ length: 32 }).notNull().default("draft"), // draft, published
+    is_recommended: boolean("is_recommended").notNull().default(false),
+    views: integer("views").notNull().default(0),
+    author: varchar({ length: 255 }).notNull().default("Admin"),
+    author_id: uuid("author_id"),
+    created_at: timestamp("created_at").notNull().defaultNow(),
+    updated_at: timestamp("updated_at").notNull().defaultNow(),
+});
+
 export const newsletterSubscribersTable = pgTable("newsletter_subscribers", {
     id: serial("id").primaryKey(),
     email: varchar({ length: 255 }).unique().notNull(),
@@ -144,3 +172,4 @@ export const dailyStatsTable = pgTable("daily_stats", {
     views: integer("views").notNull().default(0),
     updated_at: timestamp("updated_at").notNull().defaultNow(),
 });
+

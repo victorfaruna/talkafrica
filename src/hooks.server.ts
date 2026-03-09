@@ -1,5 +1,5 @@
 import { db } from '$lib/server/db';
-import { sessionsTable } from '$lib/server/schema';
+import { sessionsTable, adminTable } from '$lib/server/schema';
 import { eq, sql } from 'drizzle-orm';
 import { randomUUID } from 'crypto';
 
@@ -17,6 +17,30 @@ export const handle = async ({ event, resolve }) => {
     }
 
     let session_id = event.cookies.get('session_id');
+
+    // Handle Admin Session
+    const adminId = event.cookies.get('admin');
+    if (adminId) {
+        try {
+            const admin = await db
+                .select()
+                .from(adminTable)
+                .where(eq(adminTable.admin_id, adminId))
+                .limit(1);
+
+            if (admin.length > 0) {
+                event.locals.session = {
+                    id: admin[0].id,
+                    admin_id: admin[0].admin_id,
+                    email: admin[0].email,
+                    username: admin[0].username,
+                    name: admin[0].name
+                };
+            }
+        } catch (error) {
+            console.error('Failed to fetch admin in hook:', error);
+        }
+    }
 
     if (!session_id) {
         session_id = randomUUID();

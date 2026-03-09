@@ -4,6 +4,7 @@ import { db } from "$lib/server/db";
 import { desc, eq, and, sql } from "drizzle-orm";
 import { postTable, postCategoriesTable, adminTable } from "$lib/server/schema";
 import { getVideos } from "$lib/server/videos";
+import { getRecommendedMovies } from "$lib/server/movie-reviews";
 
 export const load: PageServerLoad = async () => {
     try {
@@ -21,166 +22,194 @@ export const load: PageServerLoad = async () => {
             videos = await getVideos(5);
         } catch (videoError) {
             console.error("[PageLoad] Failed to load videos:", videoError);
-            // Don't crash the whole page if videos fail? 
-            // For debugging, we re-throw, but maybe we should allow partial load later.
-            throw videoError;
+            // Don't crash the whole page if videos fail
         }
 
         // Featured posts
-        const featured = await db
-            .select({
-                post_id: postTable.post_id,
-                title: postTable.title,
-                content: postTable.content,
-                excerpt: postTable.excerpt,
-                image: postTable.image,
-                category: postTable.category,
-                author: sql<string>`coalesce(${adminTable.username}, ${postTable.author})`,
-                status: postTable.status,
-                featured: postTable.featured,
-                isTrendingNews: postTable.isTrendingNews,
-                deleted: postTable.deleted,
-                views: postTable.views,
-                author_id: postTable.author_id,
-                editor: postTable.editor,
-                created_at: postTable.created_at,
-                updated_at: postTable.updated_at,
-            })
-            .from(postTable)
-            .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
-            .where(and(baseWhere, eq(postTable.featured, true)))
-            .orderBy(desc(postTable.created_at))
-            .limit(4);
+        let featured = [];
+        try {
+            featured = await db
+                .select({
+                    post_id: postTable.post_id,
+                    title: postTable.title,
+                    content: postTable.content,
+                    excerpt: postTable.excerpt,
+                    image: postTable.image,
+                    category: postTable.category,
+                    author: sql<string>`coalesce(${adminTable.username}, ${postTable.author})`,
+                    status: postTable.status,
+                    featured: postTable.featured,
+                    isTrendingNews: postTable.isTrendingNews,
+                    deleted: postTable.deleted,
+                    views: postTable.views,
+                    author_id: postTable.author_id,
+                    editor: postTable.editor,
+                    created_at: postTable.created_at,
+                    updated_at: postTable.updated_at,
+                })
+                .from(postTable)
+                .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
+                .where(and(baseWhere, eq(postTable.featured, true)))
+                .orderBy(desc(postTable.created_at))
+                .limit(4);
+        } catch (featuredError) {
+            console.error("[PageLoad] Failed to load featured posts:", featuredError);
+        }
 
         // Latest posts
-        const latest = await db
-            .select({
-                post_id: postTable.post_id,
-                title: postTable.title,
-                content: postTable.content,
-                excerpt: postTable.excerpt,
-                image: postTable.image,
-                category: postTable.category,
-                author: sql<string>`coalesce(${adminTable.username}, ${postTable.author})`,
-                status: postTable.status,
-                featured: postTable.featured,
-                isTrendingNews: postTable.isTrendingNews,
-                deleted: postTable.deleted,
-                views: postTable.views,
-                author_id: postTable.author_id,
-                editor: postTable.editor,
-                created_at: postTable.created_at,
-                updated_at: postTable.updated_at,
-            })
-            .from(postTable)
-            .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
-            .where(baseWhere)
-            .orderBy(desc(postTable.created_at))
-            .limit(6);
+        let latest = [];
+        try {
+            latest = await db
+                .select({
+                    post_id: postTable.post_id,
+                    title: postTable.title,
+                    content: postTable.content,
+                    excerpt: postTable.excerpt,
+                    image: postTable.image,
+                    category: postTable.category,
+                    author: sql<string>`coalesce(${adminTable.username}, ${postTable.author})`,
+                    status: postTable.status,
+                    featured: postTable.featured,
+                    isTrendingNews: postTable.isTrendingNews,
+                    deleted: postTable.deleted,
+                    views: postTable.views,
+                    author_id: postTable.author_id,
+                    editor: postTable.editor,
+                    created_at: postTable.created_at,
+                    updated_at: postTable.updated_at,
+                })
+                .from(postTable)
+                .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
+                .where(baseWhere)
+                .orderBy(desc(postTable.created_at))
+                .limit(6);
+        } catch (latestError) {
+            console.error("[PageLoad] Failed to load latest posts:", latestError);
+        }
 
         // Popular posts (sorted by views)
-        const popular = await db
-            .select({
-                post_id: postTable.post_id,
-                title: postTable.title,
-                content: postTable.content,
-                excerpt: postTable.excerpt,
-                image: postTable.image,
-                category: postTable.category,
-                author: sql<string>`coalesce(${adminTable.username}, ${postTable.author})`,
-                status: postTable.status,
-                featured: postTable.featured,
-                isTrendingNews: postTable.isTrendingNews,
-                deleted: postTable.deleted,
-                views: postTable.views,
-                author_id: postTable.author_id,
-                editor: postTable.editor,
-                created_at: postTable.created_at,
-                updated_at: postTable.updated_at,
-            })
-            .from(postTable)
-            .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
-            .where(baseWhere)
-            .orderBy(desc(postTable.views))
-            .limit(8);
+        let popular = [];
+        try {
+            popular = await db
+                .select({
+                    post_id: postTable.post_id,
+                    title: postTable.title,
+                    content: postTable.content,
+                    excerpt: postTable.excerpt,
+                    image: postTable.image,
+                    category: postTable.category,
+                    author: sql<string>`coalesce(${adminTable.username}, ${postTable.author})`,
+                    status: postTable.status,
+                    featured: postTable.featured,
+                    isTrendingNews: postTable.isTrendingNews,
+                    deleted: postTable.deleted,
+                    views: postTable.views,
+                    author_id: postTable.author_id,
+                    editor: postTable.editor,
+                    created_at: postTable.created_at,
+                    updated_at: postTable.updated_at,
+                })
+                .from(postTable)
+                .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
+                .where(baseWhere)
+                .orderBy(desc(postTable.views))
+                .limit(8);
+        } catch (popularError) {
+            console.error("[PageLoad] Failed to load popular posts:", popularError);
+        }
 
         // Trending posts
-        const trending = await db
-            .select({
-                post_id: postTable.post_id,
-                title: postTable.title,
-                content: postTable.content,
-                excerpt: postTable.excerpt,
-                image: postTable.image,
-                category: postTable.category,
-                author: sql<string>`coalesce(${adminTable.username}, ${postTable.author})`,
-                status: postTable.status,
-                featured: postTable.featured,
-                isTrendingNews: postTable.isTrendingNews,
-                deleted: postTable.deleted,
-                views: postTable.views,
-                author_id: postTable.author_id,
-                editor: postTable.editor,
-                created_at: postTable.created_at,
-                updated_at: postTable.updated_at,
-            })
-            .from(postTable)
-            .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
-            .where(and(
-                eq(postTable.status, "published"),
-                eq(postTable.deleted, false),
-                eq(postTable.isTrendingNews, true)
-            ))
-            .orderBy(desc(postTable.created_at))
-            .limit(5);
+        let trending = [];
+        try {
+            trending = await db
+                .select({
+                    post_id: postTable.post_id,
+                    title: postTable.title,
+                    content: postTable.content,
+                    excerpt: postTable.excerpt,
+                    image: postTable.image,
+                    category: postTable.category,
+                    author: sql<string>`coalesce(${adminTable.username}, ${postTable.author})`,
+                    status: postTable.status,
+                    featured: postTable.featured,
+                    isTrendingNews: postTable.isTrendingNews,
+                    deleted: postTable.deleted,
+                    views: postTable.views,
+                    author_id: postTable.author_id,
+                    editor: postTable.editor,
+                    created_at: postTable.created_at,
+                    updated_at: postTable.updated_at,
+                })
+                .from(postTable)
+                .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
+                .where(and(
+                    eq(postTable.status, "published"),
+                    eq(postTable.deleted, false),
+                    eq(postTable.isTrendingNews, true)
+                ))
+                .orderBy(desc(postTable.created_at))
+                .limit(5);
+        } catch (trendingError) {
+            console.error("[PageLoad] Failed to load trending posts:", trendingError);
+        }
 
         // African Giant of the Week
-        const africanGiantPosts = await db
-            .select({
-                id: postTable.id,
-                post_id: postTable.post_id,
-                title: postTable.title,
-                content: postTable.content,
-                excerpt: postTable.excerpt,
-                category: postTable.category,
-                image: postTable.image,
-                status: postTable.status,
-                featured: postTable.featured,
-                isTrendingNews: postTable.isTrendingNews,
-                deleted: postTable.deleted,
-                views: postTable.views,
-                author: sql<string>`coalesce(${adminTable.username}, ${postTable.author})`,
-                editor: postTable.editor,
-                created_at: postTable.created_at,
-                updated_at: postTable.updated_at,
-            })
-            .from(postTable)
-            .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
-            .innerJoin(
-                postCategoriesTable,
-                eq(postTable.post_id, postCategoriesTable.post_id)
-            )
-            .where(
-                and(
-                    baseWhere,
-                    eq(postCategoriesTable.category_slug, "african-giant")
+        let africanGiantPosts = [];
+        try {
+            africanGiantPosts = await db
+                .select({
+                    id: postTable.id,
+                    post_id: postTable.post_id,
+                    title: postTable.title,
+                    content: postTable.content,
+                    excerpt: postTable.excerpt,
+                    category: postTable.category,
+                    image: postTable.image,
+                    status: postTable.status,
+                    featured: postTable.featured,
+                    isTrendingNews: postTable.isTrendingNews,
+                    deleted: postTable.deleted,
+                    views: postTable.views,
+                    author: sql<string>`coalesce(${adminTable.username}, ${postTable.author})`,
+                    editor: postTable.editor,
+                    created_at: postTable.created_at,
+                    updated_at: postTable.updated_at,
+                })
+                .from(postTable)
+                .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
+                .innerJoin(
+                    postCategoriesTable,
+                    eq(postTable.post_id, postCategoriesTable.post_id)
                 )
-            )
-            .orderBy(desc(postTable.created_at))
-            .limit(1);
+                .where(
+                    and(
+                        baseWhere,
+                        eq(postCategoriesTable.category_slug, "african-giant")
+                    )
+                )
+                .orderBy(desc(postTable.created_at))
+                .limit(1);
+        } catch (giantError) {
+            console.error("[PageLoad] Failed to load African Giant posts:", giantError);
+        }
 
-        // Calculate Stats
-
+        // The Big Screen
+        let recommendedMovies: Awaited<ReturnType<typeof getRecommendedMovies>> = [];
+        try {
+            recommendedMovies = await getRecommendedMovies(10);
+        } catch (movieErr) {
+            console.error("[PageLoad] Failed to load movie recommendations:", movieErr);
+        }
 
         const africanGiant = africanGiantPosts[0] || null;
 
         return {
-            posts: popular, // Pass popular posts to the 'posts' prop used by PopularBlogs
+            posts: popular,
             featuredPosts: featured,
             latestPosts: latest,
             trendingPosts: trending,
             africanGiant,
-
+            recommendedMovies,
         };
     } catch (err) {
         console.error("Error loading posts:", err);

@@ -13,6 +13,7 @@
 
     import AfricanGiantOfWeek from "$lib/components/AfricanGiantOfWeek.svelte";
     import TrendingTicker from "$lib/components/TrendingTicker.svelte";
+    import MovieRecommendations from "$lib/components/MovieRecommendations.svelte";
 
     import { onMount } from "svelte";
 
@@ -156,6 +157,9 @@
         posts={categoriesData.entertainment}
         color="var(--color-accent)"
     />
+
+    <!-- The Big Screen -->
+    <MovieRecommendations recommendedMovies={data.recommendedMovies} />
 
     <Donate />
     <AboutFounder />

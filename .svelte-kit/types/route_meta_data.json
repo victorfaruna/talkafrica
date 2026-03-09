@@ -22,6 +22,17 @@
 	"/admin/login": [
 		"src/routes/admin/+layout.server.ts"
 	],
+	"/admin/movies": [
+		"src/routes/admin/movies/+page.server.ts",
+		"src/routes/admin/+layout.server.ts"
+	],
+	"/admin/movies/new": [
+		"src/routes/admin/+layout.server.ts"
+	],
+	"/admin/movies/[id]/edit": [
+		"src/routes/admin/movies/[id]/edit/+page.server.ts",
+		"src/routes/admin/+layout.server.ts"
+	],
 	"/admin/posts/new": [
 		"src/routes/admin/+layout.server.ts"
 	],
@@ -50,6 +61,12 @@
 	],
 	"/api/donate": [
 		"src/routes/api/donate/+server.ts"
+	],
+	"/api/movie-reviews": [
+		"src/routes/api/movie-reviews/+server.ts"
+	],
+	"/api/movie-reviews/[id]": [
+		"src/routes/api/movie-reviews/[id]/+server.ts"
 	],
 	"/api/newsletter/subscribers": [
 		"src/routes/api/newsletter/subscribers/+server.ts"
@@ -82,6 +99,12 @@
 		"src/routes/api/videos/[id]/+server.ts"
 	],
 	"/donate": [],
+	"/movies": [
+		"src/routes/movies/+page.server.ts"
+	],
+	"/movies/[slug]": [
+		"src/routes/movies/[slug]/+page.server.ts"
+	],
 	"/posts/[post_id]": [
 		"src/routes/posts/[post_id]/+page.server.ts"
 	],

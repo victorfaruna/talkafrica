@@ -1,7 +1,7 @@
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/server/db';
-import { commentsTable, postTable, usersTable } from '$lib/server/schema';
-import { eq, desc, like, or, and } from 'drizzle-orm';
+import { commentsTable, postTable, usersTable, movieReviewsTable } from '$lib/server/schema';
+import { eq, desc, like, or, and, sql } from 'drizzle-orm';
 
 export const load: PageServerLoad = async ({ url }) => {
     const status = url.searchParams.get('status') || 'all';
@@ -17,11 +17,13 @@ export const load: PageServerLoad = async ({ url }) => {
                 status: commentsTable.status,
                 created_at: commentsTable.created_at,
                 postTitle: postTable.title,
+                movieTitle: movieReviewsTable.title,
                 userName: usersTable.name,
                 userEmail: usersTable.email
             })
             .from(commentsTable)
             .leftJoin(postTable, eq(commentsTable.post_id, postTable.post_id))
+            .leftJoin(movieReviewsTable, eq(commentsTable.post_id, movieReviewsTable.review_id))
             .leftJoin(usersTable, eq(commentsTable.user_id, usersTable.user_id))
             .$dynamic();
 
@@ -36,7 +38,8 @@ export const load: PageServerLoad = async ({ url }) => {
                 or(
                     like(commentsTable.content, `%${search}%`),
                     like(usersTable.email, `%${search}%`),
-                    like(postTable.title, `%${search}%`)
+                    like(postTable.title, `%${search}%`),
+                    like(movieReviewsTable.title, `%${search}%`)
                 )
             );
         }

@@ -8,6 +8,13 @@ declare global {
                 id: string;
                 email: string;
             };
+            session?: {
+                id: number;
+                admin_id: string;
+                email: string;
+                username: string;
+                name: string;
+            };
         }
         // interface PageData {}
         // interface PageState {}
@@ -15,4 +22,4 @@ declare global {
     }
 }
 
-export {};
+export { };

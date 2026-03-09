@@ -17,8 +17,8 @@ const client = postgres(DATABASE_URL, {
     max_lifetime: 60 * 30, // Max connection lifetime: 30 minutes
     connect_timeout: 30, // Increased to 30 seconds for remote connection
 
-    // Prevent prepared statement caching issues
-    // prepare: false, // Reverting this as it seems to cause issues
+    // Prevent prepared statement caching issues (Required for Supabase pooler)
+    prepare: false,
 
     // Handle connection errors gracefully
     onnotice: () => { }, // Suppress notices
