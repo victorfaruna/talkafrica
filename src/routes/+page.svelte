@@ -14,6 +14,7 @@
     import AfricanGiantOfWeek from "$lib/components/AfricanGiantOfWeek.svelte";
     import TrendingTicker from "$lib/components/TrendingTicker.svelte";
     import MovieRecommendations from "$lib/components/MovieRecommendations.svelte";
+    import ImpactShowcase from "$lib/components/ImpactShowcase.svelte";
 
     import { onMount } from "svelte";
 
@@ -92,6 +93,8 @@
         posts={categoriesData["africans-on-the-table"]}
         videos={africansOnTheTableVideos}
     />
+
+    <ImpactShowcase items={data.impactGalleryItems} />
 
     <!-- Politics -->
     <CategorySection

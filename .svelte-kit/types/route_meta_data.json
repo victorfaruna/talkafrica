@@ -19,6 +19,13 @@
 		"src/routes/admin/debug/+page.server.ts",
 		"src/routes/admin/+layout.server.ts"
 	],
+	"/admin/impact": [
+		"src/routes/admin/impact/+page.server.ts",
+		"src/routes/admin/+layout.server.ts"
+	],
+	"/admin/impact/new": [
+		"src/routes/admin/+layout.server.ts"
+	],
 	"/admin/login": [
 		"src/routes/admin/+layout.server.ts"
 	],
@@ -73,6 +80,12 @@
 	],
 	"/api/newsletter/subscribe": [
 		"src/routes/api/newsletter/subscribe/+server.ts"
+	],
+	"/api/our-impact": [
+		"src/routes/api/our-impact/+server.ts"
+	],
+	"/api/our-impact/[id]": [
+		"src/routes/api/our-impact/[id]/+server.ts"
 	],
 	"/api/posts": [
 		"src/routes/api/posts/+server.ts"

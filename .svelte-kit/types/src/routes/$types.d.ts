@@ -13,7 +13,7 @@ type OptionalUnion<U extends Record<string, any>, A extends keyof U = U extends 
 export type Snapshot<T = any> = Kit.Snapshot<T>;
 type PageServerParentData = EnsureDefined<LayoutServerData>;
 type PageParentData = EnsureDefined<LayoutData>;
-type LayoutRouteId = RouteId | "/" | "/about" | "/admin" | "/admin/categories" | "/admin/comments" | "/admin/debug" | "/admin/login" | "/admin/movies" | "/admin/movies/new" | "/admin/movies/[id]/edit" | "/admin/posts/new" | "/admin/videos" | "/admin/videos/new" | "/admin/videos/[id]/edit" | "/african-giant" | "/donate" | "/movies" | "/movies/[slug]" | "/posts/[post_id]" | "/videos" | "/[category]" | null
+type LayoutRouteId = RouteId | "/" | "/about" | "/admin" | "/admin/categories" | "/admin/comments" | "/admin/debug" | "/admin/impact" | "/admin/impact/new" | "/admin/login" | "/admin/movies" | "/admin/movies/new" | "/admin/movies/[id]/edit" | "/admin/posts/new" | "/admin/videos" | "/admin/videos/new" | "/admin/videos/[id]/edit" | "/african-giant" | "/donate" | "/movies" | "/movies/[slug]" | "/posts/[post_id]" | "/videos" | "/[category]" | null
 type LayoutParams = RouteParams & { id?: string; slug?: string; post_id?: string; category?: string }
 type LayoutParentData = EnsureDefined<{}>;
 

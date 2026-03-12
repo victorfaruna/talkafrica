@@ -1,10 +1,17 @@
 <script lang="ts">
     import MovieRecommendations from "$lib/components/MovieRecommendations.svelte";
     import CommentSection from "$lib/components/CommentSection.svelte";
+    import ShareButtons from "$lib/components/ShareButtons.svelte";
+    import { browser } from "$app/environment";
 
     export let data;
     let review = data.review;
     let relatedReviews = data.relatedReviews || [];
+    let currentUrl = "";
+
+    if (browser) {
+        currentUrl = window.location.href;
+    }
 
     function formatDate(d: string) {
         return new Date(d).toLocaleDateString("en-US", {
@@ -43,6 +50,39 @@
             ? `Genre: ${review.genre}.`
             : ''} Rated {review.rating}/5 stars."
     />
+
+    <!-- Social Meta Tags -->
+    <meta
+        property="og:title"
+        content="{review.title} - Movie Review | Talk Africa"
+    />
+    <meta
+        property="og:description"
+        content="Read Talk Africa's review of {review.title}. Rated {review.rating}/5 stars."
+    />
+    {#if review.backdrop_url || review.poster_url}
+        <meta
+            property="og:image"
+            content={review.backdrop_url || review.poster_url}
+        />
+    {/if}
+    <meta property="og:url" content={currentUrl} />
+    <meta property="og:type" content="video.movie" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+        name="twitter:title"
+        content="{review.title} - Movie Review | Talk Africa"
+    />
+    <meta
+        name="twitter:description"
+        content="Read Talk Africa's review of {review.title}. Rated {review.rating}/5 stars."
+    />
+    {#if review.backdrop_url || review.poster_url}
+        <meta
+            name="twitter:image"
+            content={review.backdrop_url || review.poster_url}
+        />
+    {/if}
 </svelte:head>
 
 <!-- Backdrop hero -->
@@ -269,6 +309,14 @@
             </div>
         </aside>
     </div>
+
+    <!-- Share Section -->
+    <ShareButtons
+        title={review.title}
+        url={currentUrl}
+        label="The Big Screen"
+        message="Experience the magic of African storytelling on The Big Screen: {review.title}"
+    />
 
     <!-- Comments -->
     <div class="mt-16 pt-16 border-t border-gray-100">

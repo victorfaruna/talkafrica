@@ -5,6 +5,7 @@ import { desc, eq, and, sql } from "drizzle-orm";
 import { postTable, postCategoriesTable, adminTable } from "$lib/server/schema";
 import { getVideos } from "$lib/server/videos";
 import { getRecommendedMovies } from "$lib/server/movie-reviews";
+import { getImpactGalleryItems } from "$lib/server/impact-gallery";
 
 export const load: PageServerLoad = async () => {
     try {
@@ -201,6 +202,14 @@ export const load: PageServerLoad = async () => {
             console.error("[PageLoad] Failed to load movie recommendations:", movieErr);
         }
 
+        // Our Impact Gallery
+        let impactGalleryItems = [];
+        try {
+            impactGalleryItems = await getImpactGalleryItems();
+        } catch (impactErr) {
+            console.error("[PageLoad] Failed to load impact gallery items:", impactErr);
+        }
+
         const africanGiant = africanGiantPosts[0] || null;
 
         return {
@@ -210,6 +219,7 @@ export const load: PageServerLoad = async () => {
             trendingPosts: trending,
             africanGiant,
             recommendedMovies,
+            impactGalleryItems,
         };
     } catch (err) {
         console.error("Error loading posts:", err);
