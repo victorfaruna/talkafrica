@@ -96,12 +96,19 @@
             <div
                 bind:this={scrollContainer}
                 class="flex gap-6 overflow-x-auto px-4 md:px-12 pb-12 no-scrollbar"
+                style="scroll-snap-type: none !important;"
                 role="region"
                 aria-label="Impact image gallery"
+                on:touchstart={() => (isPaused = true)}
+                on:touchend={() => {
+                    // Prevent immediate resume if we want a buffer,
+                    // or just resume if they stopped touching.
+                    setTimeout(() => (isPaused = false), 2000);
+                }}
             >
                 {#each [...items, ...items] as item}
                     <div
-                        class="flex-shrink-0 w-[300px] md:w-[450px] aspect-[4/3] relative rounded-[2rem] overflow-hidden group/item snap-center shadow-xl transition-all duration-500 hover:scale-[1.03] hover:shadow-[0_20px_40px_rgba(253,176,34,0.15)]"
+                        class="flex-shrink-0 w-[300px] md:w-[450px] aspect-[4/3] relative rounded-[2rem] overflow-hidden group/item shadow-xl transition-all duration-500 hover:scale-[1.03] hover:shadow-[0_20px_40px_rgba(253,176,34,0.15)]"
                     >
                         <img
                             src={item.image_url || item.image}
