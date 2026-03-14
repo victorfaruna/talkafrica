@@ -11,10 +11,10 @@
 
     export let items: any[] = [];
 
-    let scrollContainer: HTMLElement;
+    let scrollContainer: HTMLDivElement;
     let animationFrame: number;
     let isPaused = false;
-    let scrollSpeed = 0.5; // Pixels per frame
+    let scrollSpeed = 1.5; // Increased speed for faster rotation
 
     function startContinuousScroll() {
         if (!browser || !scrollContainer) return;
