@@ -1,4 +1,5 @@
 import type { PageServerLoad } from "./$types";
+
 import { getImpactGalleryItems } from "$lib/server/impact-gallery";
 
 export const load: PageServerLoad = async () => {

@@ -21,8 +21,8 @@
     export let data;
 
     let categoriesData: any = {
-        politics: [],
-        economy: [],
+        politics: data.serverPolitics || [],
+        economy: data.serverEconomy || [],
         health: [],
         technology: [],
         culture: [],
@@ -47,20 +47,30 @@
             "africans-on-the-table",
         ];
 
-        // Fetch in parallel for better performance
-        const results = await Promise.allSettled(
-            categories.map((cat) =>
-                fetch(
-                    `/api/posts?category=${cat}&limit=3&status=published`,
-                ).then((res) => res.json()),
-            ),
-        );
-
-        results.forEach((result, index) => {
-            if (result.status === "fulfilled" && result.value.success) {
-                categoriesData[categories[index]] = result.value.posts;
-            }
+        // Only fetch categories that aren't already provided by the server
+        const categoriesToFetch = categories.filter((cat) => {
+            if (cat === "politics" && data.serverPolitics?.length) return false;
+            if (cat === "economy" && data.serverEconomy?.length) return false;
+            return true;
         });
+
+        // Fetch remaining categories in parallel
+        if (categoriesToFetch.length > 0) {
+            const results = await Promise.allSettled(
+                categoriesToFetch.map((cat) =>
+                    fetch(
+                        `/api/posts?category=${cat}&limit=3&status=published`,
+                    ).then((res) => res.json()),
+                ),
+            );
+
+            results.forEach((result, index) => {
+                const catName = categoriesToFetch[index];
+                if (result.status === "fulfilled" && result.value.success) {
+                    categoriesData[catName] = result.value.posts;
+                }
+            });
+        }
 
         // Fetch videos for Africans on the Table
         try {

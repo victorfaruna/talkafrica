@@ -173,3 +173,12 @@ export const dailyStatsTable = pgTable("daily_stats", {
     updated_at: timestamp("updated_at").notNull().defaultNow(),
 });
 
+export const impactGalleryTable = pgTable("impact_gallery", {
+    id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+    image_url: text("image_url").notNull(),
+    caption: text("caption").notNull(),
+    tag: varchar("tag", { length: 255 }),
+    display_order: integer("display_order").default(0),
+    created_at: timestamp("created_at", { withTimezone: true }).defaultNow(),
+});
+
