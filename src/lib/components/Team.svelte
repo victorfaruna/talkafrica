@@ -129,6 +129,16 @@
             image: "/images/team/buraimoh-oluwaseun-mercy.jpg",
             role: "",
         },
+        {
+            name: "Chibueze Ijeoma Blessing(eseoghene)",
+            image: "/images/team/chibueze-ijeoma-blessing.jpg",
+            role: "",
+        },
+        {
+            name: "Ukachi Rejoice Akarachi",
+            image: "/images/team/ukachi-rejoice-akarachi.jpg",
+            role: "",
+        },
     ];
 </script>
 
