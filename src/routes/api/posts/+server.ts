@@ -179,7 +179,8 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
             author_id: body.author_id || null, // New field
             editor: editor || null, // Optional editor field
         };
-        console.log("💾 Inserting post with data:", JSON.stringify(insertData, null, 2));
+        // const insertData = { ... };
+        // console.log("💾 Inserting post with data:", JSON.stringify(insertData, null, 2));
 
         const [created] = await db
             .insert(postTable)

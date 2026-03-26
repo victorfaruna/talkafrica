@@ -4,8 +4,10 @@
     import ArticleHero from "$lib/components/ArticleHero.svelte";
     import ArticleMeta from "$lib/components/ArticleMeta.svelte";
     import CommentSection from "$lib/components/CommentSection.svelte";
+    import SEO from "$lib/components/SEO.svelte";
     import ShareButtons from "$lib/components/ShareButtons.svelte";
     import { calculateReadingTime } from "$lib/utils/reading-time";
+    import { getOptimizedImageUrl } from "$lib/utils/image";
 
     export let data: {
         post: {
@@ -70,30 +72,15 @@
     });
 </script>
 
-<svelte:head>
-    <title>{post.title} - Talk Africa</title>
-    <meta name="description" content={post.excerpt || post.title} />
-    <meta name="author" content={post.author || "Talk Africa"} />
-    {#if post.created_at}
-        <meta
-            name="published_time"
-            content={new Date(post.created_at).toISOString()}
-        />
-    {/if}
-    {#if post.image}
-        <meta property="og:image" content={post.image} />
-    {/if}
-    <meta property="og:title" content={post.title} />
-    <meta property="og:description" content={post.excerpt || post.title} />
-    <meta property="og:url" content={currentUrl} />
-    <meta property="og:type" content="article" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={post.title} />
-    <meta name="twitter:description" content={post.excerpt || post.title} />
-    {#if post.image}
-        <meta name="twitter:image" content={post.image} />
-    {/if}
-</svelte:head>
+<SEO 
+    title={post.title} 
+    description={(post.excerpt ?? undefined) as string | undefined} 
+    image={(post.image ?? undefined) as string | undefined} 
+    type="article"
+    author={(post.author ?? undefined) as string | undefined} 
+    publishedDate={post.created_at}
+    schemaType="Article"
+/>
 
 <!-- Reading Progress Bar -->
 <div class="fixed top-0 left-0 w-full h-1.5 bg-gray-100 z-[100]">
@@ -202,9 +189,11 @@
                             >
                                 {#if relatedPost.image}
                                     <img
-                                        src={relatedPost.image}
+                                        src={getOptimizedImageUrl(relatedPost.image, { width: 400, height: 250 })}
                                         alt={relatedPost.title}
                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                        loading="lazy"
+                                        decoding="async"
                                     />
                                 {:else}
                                     <div

@@ -21,34 +21,21 @@ export const load: PageServerLoad = async ({ params, url, depends }) => {
     }
 
     try {
-        // First, get post IDs that have this category
-        const postIdSet = new Set<string>();
-
-        try {
-            const postIdsWithCategory = await db
-                .select({ post_id: postCategoriesTable.post_id })
+        // 1. Fetch post IDs from both current and legacy systems in parallel
+        const [categoryResults, legacyResults] = await Promise.all([
+            db.select({ post_id: postCategoriesTable.post_id })
                 .from(postCategoriesTable)
-                .where(eq(postCategoriesTable.category_slug, categoryParam));
+                .where(eq(postCategoriesTable.category_slug, categoryParam))
+                .catch(() => []), 
+            db.select({ post_id: postTable.post_id })
+                .from(postTable)
+                .where(and(eq(postTable.category, categoryParam), eq(postTable.status, "published")))
+                .catch(() => [])
+        ]);
 
-            postIdsWithCategory.forEach((p) => postIdSet.add(p.post_id));
-        } catch (err) {
-            // If post_categories table doesn't exist, fall back to legacy category field
-            console.warn("Failed to fetch posts from post_categories table, using legacy category field:", err);
-        }
-
-        // Also check legacy category field for backward compatibility
-        const legacyPosts = await db
-            .select({ post_id: postTable.post_id })
-            .from(postTable)
-            .where(
-                and(
-                    eq(postTable.category, categoryParam),
-                    eq(postTable.status, "published")
-                )
-            );
-
-        legacyPosts.forEach((p) => postIdSet.add(p.post_id));
-
+        const postIdSet = new Set<string>();
+        categoryResults.forEach((p) => postIdSet.add(p.post_id));
+        legacyResults.forEach((p) => postIdSet.add(p.post_id));
         const postIdsArray = Array.from(postIdSet);
 
         if (postIdsArray.length === 0) {
@@ -69,9 +56,10 @@ export const load: PageServerLoad = async ({ params, url, depends }) => {
             };
         }
 
-        // Fetch posts for this category
-        const posts = await db
-            .select({
+        // 2. Fetch all category content in parallel
+        const [posts, totalCount, featuredPosts, trendingPosts] = await Promise.all([
+            // Main posts list
+            db.select({
                 post_id: postTable.post_id,
                 title: postTable.title,
                 excerpt: postTable.excerpt,
@@ -83,32 +71,26 @@ export const load: PageServerLoad = async ({ params, url, depends }) => {
                 featured: postTable.featured,
             })
             .from(postTable)
-            .where(
-                and(
-                    inArray(postTable.post_id, postIdsArray),
-                    eq(postTable.status, "published"),
-                    eq(postTable.deleted, false)
-                )
-            )
+            .where(and(
+                inArray(postTable.post_id, postIdsArray),
+                eq(postTable.status, "published"),
+                eq(postTable.deleted, false)
+            ))
             .orderBy(desc(postTable.featured), desc(postTable.created_at))
             .limit(limit)
-            .offset(offset);
+            .offset(offset),
 
-        // Get total count for pagination
-        const totalCount = await db
-            .select({ count: postTable.id })
+            // Pagination count
+            db.select({ count: postTable.id })
             .from(postTable)
-            .where(
-                and(
-                    inArray(postTable.post_id, postIdsArray),
-                    eq(postTable.status, "published"),
-                    eq(postTable.deleted, false)
-                )
-            );
+            .where(and(
+                inArray(postTable.post_id, postIdsArray),
+                eq(postTable.status, "published"),
+                eq(postTable.deleted, false)
+            )),
 
-        // Get featured posts for hero section
-        const featuredPosts = await db
-            .select({
+            // Hero featured posts
+            db.select({
                 post_id: postTable.post_id,
                 title: postTable.title,
                 excerpt: postTable.excerpt,
@@ -119,20 +101,17 @@ export const load: PageServerLoad = async ({ params, url, depends }) => {
                 created_at: postTable.created_at,
             })
             .from(postTable)
-            .where(
-                and(
-                    inArray(postTable.post_id, postIdsArray),
-                    eq(postTable.status, "published"),
-                    eq(postTable.featured, true),
-                    eq(postTable.deleted, false)
-                )
-            )
+            .where(and(
+                inArray(postTable.post_id, postIdsArray),
+                eq(postTable.status, "published"),
+                eq(postTable.featured, true),
+                eq(postTable.deleted, false)
+            ))
             .orderBy(desc(postTable.created_at))
-            .limit(3);
+            .limit(3),
 
-        // Get trending posts (most viewed in this category)
-        const trendingPosts = await db
-            .select({
+            // Trending sidebar
+            db.select({
                 post_id: postTable.post_id,
                 title: postTable.title,
                 image: postTable.image,
@@ -140,15 +119,14 @@ export const load: PageServerLoad = async ({ params, url, depends }) => {
                 created_at: postTable.created_at,
             })
             .from(postTable)
-            .where(
-                and(
-                    inArray(postTable.post_id, postIdsArray),
-                    eq(postTable.status, "published"),
-                    eq(postTable.deleted, false)
-                )
-            )
+            .where(and(
+                inArray(postTable.post_id, postIdsArray),
+                eq(postTable.status, "published"),
+                eq(postTable.deleted, false)
+            ))
             .orderBy(desc(postTable.views))
-            .limit(5);
+            .limit(5)
+        ]);
 
         return {
             category: categoryParam,

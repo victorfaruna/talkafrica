@@ -7,6 +7,23 @@
     let swiperEl: HTMLDivElement | null = null;
     let paginationEl: HTMLDivElement | null = null;
 
+    import { getOptimizedImageUrl } from "$lib/utils/image";
+
+    const heroImages = [
+        "/images/hero/ta-1.jpeg",
+        "/images/hero/ta-2.jpeg",
+        "/images/hero/ta-3.jpeg",
+        "/images/hero/ta-4.jpeg",
+        "/images/hero/ta-14.jpg",
+        "/images/hero/ta-15.jpg",
+        "/images/hero/ta-16.jpg",
+        "/images/hero/ta-17.jpg",
+        "/images/hero/ta-19.jpg",
+        "/images/hero/ta-20.jpg",
+        "/images/hero/ta-21.jpg",
+        "/images/hero/ta-22.jpg",
+    ];
+
     onMount(async () => {
         if (!swiperEl || !paginationEl) return;
         const [{ default: Swiper }, { Autoplay, Pagination }] =
@@ -38,67 +55,18 @@
     <div class="cont h-full absolute top-0 right-0 bottom-0 left-0 z-[1]">
         <div class="swiper h-full" bind:this={swiperEl}>
             <div class="swiper-wrapper h-full">
-                <div class="swiper-slide">
-                    <div
-                        class="h-full w-full bg-[url(/images/hero/ta-1.jpeg)] bg-cover bg-center"
-                    ></div>
-                </div>
-                <div class="swiper-slide">
-                    <div
-                        class="h-full w-full bg-[url(/images/hero/ta-2.jpeg)] bg-cover bg-center"
-                    ></div>
-                </div>
-                <div class="swiper-slide">
-                    <div
-                        class="h-full w-full bg-[url(/images/hero/ta-3.jpeg)] bg-cover bg-center"
-                    ></div>
-                </div>
-                <div class="swiper-slide">
-                    <div
-                        class="h-full w-full bg-[url(/images/hero/ta-4.jpeg)] bg-cover bg-center"
-                    ></div>
-                </div>
-                <div class="swiper-slide">
-                    <div
-                        class="h-full w-full bg-[url(/images/hero/ta-14.jpg)] bg-cover bg-center"
-                    ></div>
-                </div>
-                <div class="swiper-slide">
-                    <div
-                        class="h-full w-full bg-[url(/images/hero/ta-15.jpg)] bg-cover bg-center"
-                    ></div>
-                </div>
-                <div class="swiper-slide">
-                    <div
-                        class="h-full w-full bg-[url(/images/hero/ta-16.jpg)] bg-cover bg-center"
-                    ></div>
-                </div>
-                <div class="swiper-slide">
-                    <div
-                        class="h-full w-full bg-[url(/images/hero/ta-17.jpg)] bg-cover bg-center"
-                    ></div>
-                </div>
-                <!-- New images appended below -->
-                <div class="swiper-slide">
-                    <div
-                        class="h-full w-full bg-[url(/images/hero/ta-19.jpg)] bg-cover bg-center"
-                    ></div>
-                </div>
-                <div class="swiper-slide">
-                    <div
-                        class="h-full w-full bg-[url(/images/hero/ta-20.jpg)] bg-cover bg-center"
-                    ></div>
-                </div>
-                <div class="swiper-slide">
-                    <div
-                        class="h-full w-full bg-[url(/images/hero/ta-21.jpg)] bg-cover bg-center"
-                    ></div>
-                </div>
-                <div class="swiper-slide">
-                    <div
-                        class="h-full w-full bg-[url(/images/hero/ta-22.jpg)] bg-cover bg-center"
-                    ></div>
-                </div>
+                {#each heroImages as img, i}
+                    <div class="swiper-slide h-full w-full">
+                        <img
+                            src={getOptimizedImageUrl(img, { width: 1920, quality: 80 })}
+                            alt="Hero background"
+                            class="h-full w-full object-cover"
+                            loading={i === 0 ? "eager" : "lazy"}
+                            decoding={i === 0 ? "sync" : "async"}
+                            fetchpriority={i === 0 ? "high" : "auto"}
+                        />
+                    </div>
+                {/each}
             </div>
             <!-- Pagination -->
             <div class="swiper-pagination" bind:this={paginationEl}></div>

@@ -1,7 +1,9 @@
 <script lang="ts">
     import { fade, fly } from "svelte/transition";
+    import SEO from "$lib/components/SEO.svelte";
     import Header from "$lib/components/Header.svelte";
     import Footer from "$lib/components/Footer.svelte";
+    import { getOptimizedImageUrl } from "$lib/utils/image";
 
     interface Props {
         data: {
@@ -35,13 +37,11 @@
     }
 </script>
 
-<svelte:head>
-    <title>African Giant of the Week - TalkAfrica</title>
-    <meta
-        name="description"
-        content="Celebrating Africa's most influential leaders, innovators, and changemakers who are shaping the continent's future."
-    />
-</svelte:head>
+<SEO 
+    title="African Giant of the Week - TalkAfrica"
+    description="Celebrating Africa's most influential leaders, innovators, and changemakers who are shaping the continent's future."
+    image={posts[0]?.image || undefined}
+/>
 
 <Header />
 
@@ -163,10 +163,12 @@
                                 class="lg:col-span-2 relative h-96 lg:h-auto lg:min-h-[500px] overflow-hidden"
                             >
                                 <img
-                                    src={posts[0].image ||
-                                        "/images/placeholder.webp"}
+                                    src={getOptimizedImageUrl(posts[0].image, { width: 1200, height: 800 })}
                                     alt={posts[0].title}
                                     class="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
+                                    loading="eager"
+                                    decoding="async"
+                                    fetchpriority="high"
                                 />
                                 <div
                                     class="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-black/40 via-black/10 to-transparent"
@@ -329,10 +331,11 @@
                                     class="relative h-56 overflow-hidden block"
                                 >
                                     <img
-                                        src={post.image ||
-                                            "/images/placeholder.webp"}
+                                        src={getOptimizedImageUrl(post.image, { width: 600, height: 400 })}
                                         alt={post.title}
                                         class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                                        loading="lazy"
+                                        decoding="async"
                                     />
                                     <div
                                         class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"

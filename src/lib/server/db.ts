@@ -12,7 +12,7 @@ if (!DATABASE_URL) {
 // Enhanced connection configuration optimized for remote Supabase database
 const client = postgres(DATABASE_URL, {
     // Connection pool settings
-    max: 10, // Maximum number of connections in the pool
+    max: 20, // Increased to 20 to handle parallel homepage queries
     idle_timeout: 30, // Close idle connections after 30 seconds
     max_lifetime: 60 * 30, // Max connection lifetime: 30 minutes
     connect_timeout: 30, // Increased to 30 seconds for remote connection

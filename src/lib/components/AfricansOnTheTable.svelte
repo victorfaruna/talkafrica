@@ -1,6 +1,7 @@
 <script lang="ts">
     export let posts: any[] = [];
     export let videos: any[] = [];
+    import { getOptimizedImageUrl } from "$lib/utils/image";
 </script>
 
 <section
@@ -50,9 +51,11 @@
                             class="absolute inset-0 bg-[#F7941D] rounded-2xl rotate-6 opacity-20"
                         ></div>
                         <img
-                            src="/images/africans-on-the-table.jpg"
+                            src={getOptimizedImageUrl("/images/africans-on-the-table.jpg", { width: 400, height: 400, fit: 'fill' })}
                             alt="Africans on the Table"
                             class="absolute inset-0 w-full h-full object-cover rounded-2xl shadow-xl border-2 border-[#F7941D]/20"
+                            loading="lazy"
+                            decoding="async"
                         />
                     </div>
                 </div>
@@ -77,10 +80,11 @@
                         >
                             <!-- Image -->
                             <img
-                                src={video.thumbnail_url ||
-                                    "/images/placeholder.webp"}
+                                src={getOptimizedImageUrl(video.thumbnail_url, { width: 1280, height: 720, fit: 'fill' })}
                                 alt={video.title}
                                 class="absolute inset-0 w-full h-full object-cover opacity-100 group-hover:scale-105 transition-all duration-700"
+                                loading="lazy"
+                                decoding="async"
                             />
 
                             <!-- Overlay Gradient -->
@@ -151,9 +155,11 @@
                             class="block group relative w-full aspect-[3/4] md:aspect-[16/9] lg:aspect-[4/3] xl:aspect-[16/9] rounded-[2rem] overflow-hidden bg-gray-900 border border-white/5 shadow-2xl transition-all duration-500 hover:shadow-[0_20px_50px_rgba(247,148,29,0.15)]"
                         >
                             <img
-                                src={post.image || "/images/placeholder.webp"}
+                                src={getOptimizedImageUrl(post.image, { width: 1280, height: 720, fit: 'fill' })}
                                 alt={post.title}
                                 class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-90 group-hover:scale-105 transition-all duration-700"
+                                loading="lazy"
+                                decoding="async"
                             />
                             <div
                                 class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"
@@ -236,10 +242,11 @@
                                 class="w-28 h-28 shrink-0 rounded-2xl overflow-hidden relative"
                             >
                                 <img
-                                    src={post.image ||
-                                        "/images/placeholder.webp"}
+                                    src={getOptimizedImageUrl(post.image, { width: 200, height: 200, fit: 'fill' })}
                                     alt={post.title}
                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                    loading="lazy"
+                                    decoding="async"
                                 />
                             </div>
                             <div class="flex-1 min-w-0 pr-2">

@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount, onDestroy } from "svelte";
     import { browser } from "$app/environment";
+    import { getOptimizedImageUrl } from "$lib/utils/image";
 
     interface GalleryItem {
         id: number;
@@ -90,6 +91,8 @@
         <!-- Gallery Wrapper -->
         <div
             class="relative group"
+            role="region"
+            aria-label="Impact interactive gallery"
             on:mouseenter={() => (isPaused = true)}
             on:mouseleave={() => (isPaused = false)}
         >
@@ -111,9 +114,11 @@
                         class="flex-shrink-0 w-[300px] md:w-[450px] aspect-[4/3] relative rounded-[2rem] overflow-hidden group/item shadow-xl transition-all duration-500 hover:scale-[1.03] hover:shadow-[0_20px_40px_rgba(253,176,34,0.15)]"
                     >
                         <img
-                            src={item.image_url || item.image}
+                            src={getOptimizedImageUrl(item.image_url || item.image, { width: 600, height: 450, fit: 'fill' })}
                             alt={item.caption}
                             class="w-full h-full object-cover transition-transform duration-700 group-hover/item:scale-110"
+                            loading="lazy"
+                            decoding="async"
                         />
 
                         <!-- Main Overlay (Bottom Shadow for Caption) -->

@@ -22,6 +22,7 @@
     );
     let uploadMessage = $state("");
     let isSaving = $state(false);
+    let isEditorUploading = $state(false);
 
     const editors = ["Ipinyomi Korede", "Omojola Oreoluwa"];
 
@@ -326,6 +327,7 @@
                 <RichTextEditor
                     bind:content
                     on:change={handleEditorChange}
+                    on:uploading={(e) => (isEditorUploading = e.detail)}
                     placeholder="Write your story here..."
                 />
             </div>
@@ -648,7 +650,7 @@
                     <button
                         class="px-6 py-2.5 bg-accent text-white font-medium rounded-lg hover:bg-accent/90 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm transition-all hover:shadow-md w-full sm:w-auto"
                         onclick={save}
-                        disabled={isSaving}
+                        disabled={isSaving || isEditorUploading}
                     >
                         {#if isSaving}
                             <div

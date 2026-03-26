@@ -7,16 +7,9 @@ import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ params }) => {
     try {
-        const review = await getMovieReviewBySlug(params.slug);
-        if (!review || review.status !== "published") {
-            throw error(404, "Movie review not found");
-        }
-
-        // Fetch other recommendations
-        let relatedReviews = [];
-        try {
-            relatedReviews = await db
-                .select()
+        const [review, relatedReviews] = await Promise.all([
+            getMovieReviewBySlug(params.slug),
+            db.select()
                 .from(movieReviewsTable)
                 .where(
                     and(
@@ -25,9 +18,15 @@ export const load: PageServerLoad = async ({ params }) => {
                         ne(movieReviewsTable.slug, params.slug)
                     )
                 )
-                .limit(6);
-        } catch (relatedErr) {
-            console.error("Error fetching related movie reviews:", relatedErr);
+                .limit(6)
+                .catch(err => {
+                    console.error("Error fetching related movie reviews:", err);
+                    return [];
+                })
+        ]);
+
+        if (!review || review.status !== "published") {
+            throw error(404, "Movie review not found");
         }
 
         // Increment view count (fire and forget)

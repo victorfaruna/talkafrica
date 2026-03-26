@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { getOptimizedImageUrl } from "$lib/utils/image";
     export let title: string;
     export let excerpt: string | null | undefined = null;
     export let image: string | null | undefined = null;
@@ -11,10 +12,12 @@
         <div class="article-hero-with-image">
             <!-- Image with gentle zoom effect on load (handled via CSS/JS if needed, here just clean) -->
             <img
-                src={image}
+                src={getOptimizedImageUrl(image, { width: 1600, height: 900 })}
                 alt={title}
                 class="article-hero-image"
                 loading="eager"
+                decoding="async"
+                fetchpriority="high"
             />
             <!-- Gradient Overlay for readability -->
             <div class="article-hero-overlay"></div>

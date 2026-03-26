@@ -7,15 +7,16 @@ import { postTable, postCategoriesTable, dailyStatsTable, adminTable } from "$li
 export const load: PageServerLoad = async ({ params, cookies }) => {
     try {
         const { post_id } = params;
-        const [post] = await db
-            .select({
+        
+        // 1. Fetch main post and categories in parallel
+        const [postResults, categoryResults] = await Promise.all([
+            db.select({
                 post_id: postTable.post_id,
                 title: postTable.title,
                 content: postTable.content,
                 excerpt: postTable.excerpt,
                 image: postTable.image,
                 category: postTable.category,
-                // Dynamic author fetch
                 author: sql<string>`coalesce(${adminTable.username}, ${postTable.author})`,
                 status: postTable.status,
                 featured: postTable.featured,
@@ -29,73 +30,55 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
             })
             .from(postTable)
             .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
-            .where(
-                and(eq(postTable.post_id, post_id), eq(postTable.deleted, false))
-            );
+            .where(and(eq(postTable.post_id, post_id), eq(postTable.deleted, false))),
+
+            db.select({ category_slug: postCategoriesTable.category_slug })
+            .from(postCategoriesTable)
+            .where(eq(postCategoriesTable.post_id, post_id))
+            .catch(() => []) // Fallback for missing table/error
+        ]);
+
+        const post = postResults[0];
+        let categorySlugs = categoryResults.map(c => c.category_slug);
 
 
         if (!post || post.status !== "published") {
             throw error(404, "Post not found");
         }
 
-        // Increment views (Unique per user/post/day check)
+        // Increment views (Unique per user/post/day check) - Non-blocking
         const viewedCookie = cookies.get('viewed_posts') || '';
         const viewedPostIds = viewedCookie.split(',');
 
-        // If this specific post hasn't been viewed by this user yet
         if (!viewedPostIds.includes(post_id)) {
-            try {
-                console.log(`Debug: Incrementing unique views for post ${post_id}`);
+            // Fire and forget view incrementing
+            (async () => {
+                try {
+                    await Promise.all([
+                        db.update(postTable)
+                            .set({ views: sql`${postTable.views} + 1` })
+                            .where(eq(postTable.post_id, post_id)),
+                        db.insert(dailyStatsTable)
+                            .values({ date: sql`CURRENT_DATE`, views: 1 })
+                            .onConflictDoUpdate({
+                                target: dailyStatsTable.date,
+                                set: { views: sql`${dailyStatsTable.views} + 1` },
+                            })
+                    ]);
+                } catch (e) {
+                    console.error("Delayed view increment failed:", e);
+                }
+            })();
 
-                // 1. Increment total post views
-                await db
-                    .update(postTable)
-                    .set({ views: sql`${postTable.views} + 1` })
-                    .where(eq(postTable.post_id, post_id));
-
-                // 2. Increment daily stats
-                await db
-                    .insert(dailyStatsTable)
-                    .values({
-                        date: sql`CURRENT_DATE`,
-                        views: 1,
-                    })
-                    .onConflictDoUpdate({
-                        target: dailyStatsTable.date,
-                        set: { views: sql`${dailyStatsTable.views} + 1` },
-                    });
-
-                // Update cookie list
-                viewedPostIds.push(post_id);
-                // Keep cookie size reasonable (last 50 posts)
-                if (viewedPostIds.length > 50) viewedPostIds.shift();
-
-                cookies.set('viewed_posts', viewedPostIds.join(','), {
-                    path: '/',
-                    httpOnly: true,
-                    maxAge: 60 * 60 * 24, // 1 day
-                    sameSite: 'lax'
-                });
-            } catch (e) {
-                console.error("Failed to increment views:", e);
-            }
-        } else {
-            console.log("Debug: Skipping view increment (already viewed this post)");
-        }
-
-        // Fetch categories for this post
-        let categorySlugs: string[] = [];
-        try {
-            const postCategories = await db
-                .select({ category_slug: postCategoriesTable.category_slug })
-                .from(postCategoriesTable)
-                .where(eq(postCategoriesTable.post_id, post_id));
-
-            categorySlugs = postCategories.map((pc) => pc.category_slug);
-        } catch (err) {
-            // If post_categories table doesn't exist or query fails, 
-            // fall back to legacy category field
-            console.warn("Failed to fetch post categories, falling back to legacy category field:", err);
+            // Update cookie list
+            viewedPostIds.push(post_id);
+            if (viewedPostIds.length > 50) viewedPostIds.shift();
+            cookies.set('viewed_posts', viewedPostIds.join(','), {
+                path: '/',
+                httpOnly: true,
+                maxAge: 60 * 60 * 24, // 1 day
+                sameSite: 'lax'
+            });
         }
 
         // Include legacy category if exists and not already in array
@@ -103,106 +86,79 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
             categorySlugs.push(post.category);
         }
 
-        // Fetch related posts (same categories, excluding current post)
-        let relatedPosts: any[] = [];
-        if (categorySlugs.length > 0) {
-            const relatedPostIdSet = new Set<string>();
+        // 2. Fetch related and latest posts in parallel
+        const [relatedByCategories, legacyRelated, fallbackLatest] = await Promise.all([
+            // Category-based related
+            categorySlugs.length > 0 ? db.select({ post_id: postCategoriesTable.post_id })
+                .from(postCategoriesTable)
+                .innerJoin(postTable, eq(postCategoriesTable.post_id, postTable.post_id))
+                .where(and(
+                    inArray(postCategoriesTable.category_slug, categorySlugs),
+                    ne(postCategoriesTable.post_id, post_id),
+                    eq(postTable.status, "published"),
+                    eq(postTable.deleted, false)
+                )).catch(() => []) : Promise.resolve([]),
+            
+            // Legacy related
+            post.category ? db.select({ post_id: postTable.post_id })
+                .from(postTable)
+                .where(and(
+                    eq(postTable.category, post.category),
+                    ne(postTable.post_id, post_id),
+                    eq(postTable.status, "published"),
+                    eq(postTable.deleted, false)
+                )).catch(() => []) : Promise.resolve([]),
 
-            // Try to get related posts from post_categories table
-            try {
-                const relatedPostIds = await db
-                    .select({ post_id: postCategoriesTable.post_id })
-                    .from(postCategoriesTable)
-                    .innerJoin(
-                        postTable,
-                        eq(postCategoriesTable.post_id, postTable.post_id)
-                    )
-                    .where(
-                        and(
-                            inArray(postCategoriesTable.category_slug, categorySlugs),
-                            ne(postCategoriesTable.post_id, post_id),
-                            eq(postTable.status, "published"),
-                            eq(postTable.deleted, false)
-                        )
-                    );
+            // Fallback latest
+            db.select({
+                post_id: postTable.post_id,
+                title: postTable.title,
+                excerpt: postTable.excerpt,
+                image: postTable.image,
+                category: postTable.category,
+                created_at: postTable.created_at,
+            })
+            .from(postTable)
+            .where(and(
+                ne(postTable.post_id, post_id),
+                eq(postTable.status, "published"),
+                eq(postTable.deleted, false)
+            ))
+            .orderBy(desc(postTable.created_at))
+            .limit(3)
+        ]);
 
-                relatedPostIds.forEach((p) => relatedPostIdSet.add(p.post_id));
-            } catch (err) {
-                // If post_categories table doesn't exist, skip this query
-                console.warn("Failed to fetch related posts from post_categories, using legacy category field:", err);
-            }
+        const relatedIdSet = new Set<string>();
+        relatedByCategories.forEach(p => relatedIdSet.add(p.post_id));
+        legacyRelated.forEach(p => relatedIdSet.add(p.post_id));
 
-            // Also check legacy category field
-            if (post.category) {
-                const legacyRelated = await db
-                    .select({ post_id: postTable.post_id })
-                    .from(postTable)
-                    .where(
-                        and(
-                            eq(postTable.category, post.category),
-                            ne(postTable.post_id, post_id),
-                            eq(postTable.status, "published"),
-                            eq(postTable.deleted, false)
-                        )
-                    );
-                legacyRelated.forEach((p) => relatedPostIdSet.add(p.post_id));
-            }
-
-            if (relatedPostIdSet.size > 0) {
-                relatedPosts = await db
-                    .select({
-                        post_id: postTable.post_id,
-                        title: postTable.title,
-                        excerpt: postTable.excerpt,
-                        image: postTable.image,
-                        category: postTable.category,
-                        created_at: postTable.created_at,
-                    })
-                    .from(postTable)
-                    .where(
-                        and(
-                            inArray(
-                                postTable.post_id,
-                                Array.from(relatedPostIdSet)
-                            ),
-                            ne(postTable.post_id, post_id),
-                            eq(postTable.status, "published"),
-                            eq(postTable.deleted, false)
-                        )
-                    )
-                    .orderBy(desc(postTable.created_at))
-                    .limit(3);
-            }
+        let relatedPosts = [];
+        if (relatedIdSet.size > 0) {
+            relatedPosts = await db.select({
+                post_id: postTable.post_id,
+                title: postTable.title,
+                excerpt: postTable.excerpt,
+                image: postTable.image,
+                category: postTable.category,
+                created_at: postTable.created_at,
+            })
+            .from(postTable)
+            .where(and(
+                inArray(postTable.post_id, Array.from(relatedIdSet)),
+                ne(postTable.post_id, post_id),
+                eq(postTable.status, "published"),
+                eq(postTable.deleted, false)
+            ))
+            .orderBy(desc(postTable.created_at))
+            .limit(3);
         }
 
-        // If no related posts in same categories, get latest posts
         if (relatedPosts.length === 0) {
-            relatedPosts = await db
-                .select({
-                    post_id: postTable.post_id,
-                    title: postTable.title,
-                    excerpt: postTable.excerpt,
-                    image: postTable.image,
-                    category: postTable.category,
-                    created_at: postTable.created_at,
-                })
-                .from(postTable)
-                .where(
-                    and(
-                        ne(postTable.post_id, post_id),
-                        eq(postTable.status, "published"),
-                        eq(postTable.deleted, false)
-                    )
-                )
-                .orderBy(desc(postTable.created_at))
-                .limit(3);
+            relatedPosts = fallbackLatest;
         }
 
         return {
-            post: {
-                ...post,
-                categories: categorySlugs,
-            },
+            post: { ...post, categories: categorySlugs },
             relatedPosts,
         };
     } catch (err) {

@@ -2,7 +2,9 @@
     import MovieRecommendations from "$lib/components/MovieRecommendations.svelte";
     import CommentSection from "$lib/components/CommentSection.svelte";
     import ShareButtons from "$lib/components/ShareButtons.svelte";
+    import SEO from "$lib/components/SEO.svelte";
     import { browser } from "$app/environment";
+    import { getOptimizedImageUrl } from "$lib/utils/image";
 
     export let data;
     let review = data.review;
@@ -42,48 +44,15 @@
     $: embedUrl = review.trailer_url ? getEmbedUrl(review.trailer_url) : "";
 </script>
 
-<svelte:head>
-    <title>{review.title} - Movie Review | Talk Africa</title>
-    <meta
-        name="description"
-        content="Read Talk Africa's review of {review.title}. {review.genre
-            ? `Genre: ${review.genre}.`
-            : ''} Rated {review.rating}/5 stars."
-    />
-
-    <!-- Social Meta Tags -->
-    <meta
-        property="og:title"
-        content="{review.title} - Movie Review | Talk Africa"
-    />
-    <meta
-        property="og:description"
-        content="Read Talk Africa's review of {review.title}. Rated {review.rating}/5 stars."
-    />
-    {#if review.backdrop_url || review.poster_url}
-        <meta
-            property="og:image"
-            content={review.backdrop_url || review.poster_url}
-        />
-    {/if}
-    <meta property="og:url" content={currentUrl} />
-    <meta property="og:type" content="video.movie" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta
-        name="twitter:title"
-        content="{review.title} - Movie Review | Talk Africa"
-    />
-    <meta
-        name="twitter:description"
-        content="Read Talk Africa's review of {review.title}. Rated {review.rating}/5 stars."
-    />
-    {#if review.backdrop_url || review.poster_url}
-        <meta
-            name="twitter:image"
-            content={review.backdrop_url || review.poster_url}
-        />
-    {/if}
-</svelte:head>
+<SEO 
+    title={`${review.title} - Movie Review | Talk Africa`}
+    description={`Read Talk Africa's review of ${review.title}. ${review.genre ? `Genre: ${review.genre}.` : ""} Rated ${review.rating}/5 stars.`}
+    image={review.backdrop_url || review.poster_url || undefined}
+    type="video.movie"
+    author={review.author}
+    schemaType="Review"
+    rating={review.rating}
+/>
 
 <!-- Backdrop hero -->
 <div
@@ -92,9 +61,12 @@
 >
     {#if review.backdrop_url}
         <img
-            src={review.backdrop_url}
+            src={getOptimizedImageUrl(review.backdrop_url, { width: 1920, height: 1080 })}
             alt=""
             class="absolute inset-0 w-full h-full object-cover opacity-40"
+            loading="eager"
+            decoding="async"
+            fetchpriority="high"
         />
     {:else}
         <div
@@ -113,9 +85,11 @@
             class="w-36 sm:w-48 flex-shrink-0 rounded-xl overflow-hidden shadow-2xl border-2 border-white/10"
         >
             <img
-                src={review.poster_url}
+                src={getOptimizedImageUrl(review.poster_url, { width: 400, height: 600 })}
                 alt={review.title}
                 class="w-full aspect-[2/3] object-cover"
+                loading="eager"
+                decoding="async"
             />
         </div>
 

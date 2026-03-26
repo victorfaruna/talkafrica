@@ -11,6 +11,8 @@
     let wordCount = 0;
     let charCount = 0;
     let isFullscreen = false;
+    let isUploading = false;
+    let uploadProgress = "";
 
     const dispatch = createEventDispatcher();
 
@@ -39,7 +41,12 @@
             placeholder,
             modules: {
                 blotFormatter: {},
-                toolbar: toolbarOptions,
+                toolbar: {
+                    container: toolbarOptions,
+                    handlers: {
+                        image: imageHandler,
+                    },
+                },
                 history: {
                     delay: 2000,
                     maxStack: 500,
@@ -110,6 +117,55 @@
             text.trim().length === 0 ? 0 : text.trim().split(/\s+/).length;
     }
 
+    async function imageHandler() {
+        const input = document.createElement("input");
+        input.setAttribute("type", "file");
+        input.setAttribute("accept", "image/*");
+        input.click();
+
+        input.onchange = async () => {
+            const file = input.files?.[0];
+            if (!file) return;
+
+            // Basic validation
+            if (file.size > 10 * 1024 * 1024) {
+                alert("File too large (max 10MB)");
+                return;
+            }
+
+            try {
+                isUploading = true;
+                uploadProgress = "Uploading image...";
+                dispatch("uploading", true);
+
+                const formData = new FormData();
+                formData.append("file", file);
+
+                const response = await fetch("/api/upload", {
+                    method: "POST",
+                    body: formData,
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const range = quill.getSelection();
+                    quill.insertEmbed(range.index, "image", result.url);
+                    quill.setSelection(range.index + 1);
+                } else {
+                    alert("Upload failed: " + result.message);
+                }
+            } catch (error) {
+                console.error("Image upload error:", error);
+                alert("An error occurred during image upload");
+            } finally {
+                isUploading = false;
+                uploadProgress = "";
+                dispatch("uploading", false);
+            }
+        };
+    }
+
     function toggleFullscreen() {
         isFullscreen = !isFullscreen;
         if (isFullscreen) {
@@ -144,12 +200,25 @@
                         x2="18"
                         y2="18"
                     ></line></svg
-                >
+                    >
             </button>
         </div>
     {/if}
 
-    <div class="editor-wrapper">
+    <div class="editor-wrapper relative">
+        {#if isUploading}
+            <div
+                class="absolute inset-0 bg-white/60 z-[100] flex flex-col items-center justify-center backdrop-blur-sm transition-all"
+                in:fade
+            >
+                <div
+                    class="w-12 h-12 border-4 border-orange-200 border-t-orange-600 rounded-full animate-spin mb-4"
+                ></div>
+                <p class="text-orange-600 font-bold animate-pulse">
+                    {uploadProgress}
+                </p>
+            </div>
+        {/if}
         <div bind:this={editorElement}></div>
     </div>
 

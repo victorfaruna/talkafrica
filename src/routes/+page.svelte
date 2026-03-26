@@ -19,71 +19,16 @@
     import { onMount } from "svelte";
 
     export let data;
-
-    let categoriesData: any = {
-        politics: data.serverPolitics || [],
-        economy: data.serverEconomy || [],
-        health: [],
-        technology: [],
-        culture: [],
-        sports: [],
-        entertainment: [],
-        "african-giant": [],
-        "africans-on-the-table": [],
-    };
-
-    let africansOnTheTableVideos: any[] = [];
-
-    onMount(async () => {
-        const categories = [
-            "politics",
-            "economy",
-            "health",
-            "technology",
-            "culture",
-            "sports",
-            "entertainment",
-            "african-giant",
-            "africans-on-the-table",
-        ];
-
-        // Only fetch categories that aren't already provided by the server
-        const categoriesToFetch = categories.filter((cat) => {
-            if (cat === "politics" && data.serverPolitics?.length) return false;
-            if (cat === "economy" && data.serverEconomy?.length) return false;
-            return true;
-        });
-
-        // Fetch remaining categories in parallel
-        if (categoriesToFetch.length > 0) {
-            const results = await Promise.allSettled(
-                categoriesToFetch.map((cat) =>
-                    fetch(
-                        `/api/posts?category=${cat}&limit=3&status=published`,
-                    ).then((res) => res.json()),
-                ),
-            );
-
-            results.forEach((result, index) => {
-                const catName = categoriesToFetch[index];
-                if (result.status === "fulfilled" && result.value.success) {
-                    categoriesData[catName] = result.value.posts;
-                }
-            });
-        }
-
-        // Fetch videos for Africans on the Table
-        try {
-            const videoRes = await fetch(
-                `/api/videos?category=africans-on-the-table&limit=2`,
-            );
-            if (videoRes.ok) {
-                const videoData = await videoRes.json();
-                africansOnTheTableVideos = videoData.videos;
-            }
-        } catch (error) {
-            console.error("Error fetching videos:", error);
-        }
+    
+    // Use data provided by the server
+    $: categoriesData = data.categories;
+    
+    let africansOnTheTableVideos: any[] = data.videos?.filter((v: any) => v.category === "africans-on-the-table") || [];
+    
+    onMount(() => {
+        // Videos are already fetched on the server in the load function (line 32 of +page.server.ts)
+        // If they are not filtered by category there, we can filter them here or just use them if they are correct.
+        // The current load function fetches 5 latest videos.
     });
 </script>
 

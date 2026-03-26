@@ -12,6 +12,8 @@
     export let posts: Post[];
     export let trendingPosts: Post[] = [];
 
+    import { getOptimizedImageUrl } from "$lib/utils/image";
+
     type ListItem = {
         title: string;
         description: string;
@@ -56,9 +58,11 @@
                             class="item flex flex-col sm:flex-row w-full gap-5 rounded-2xl bg-white p-4 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-gray-100 ring-1 ring-black/5"
                         >
                             <img
-                                src={item.image}
+                                src={getOptimizedImageUrl(item.image, { width: 400, height: 260, fit: 'fill' })}
                                 alt={item.title}
                                 class="h-[200px] sm:h-[180px] w-full sm:w-[280px] shrink-0 rounded-xl bg-gray-100 object-cover group-hover:scale-[1.02] transition-transform duration-500"
+                                loading="lazy"
+                                decoding="async"
                             />
                             <div class="flex flex-col gap-3 py-1 pr-4">
                                 <h3

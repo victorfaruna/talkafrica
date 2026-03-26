@@ -8,12 +8,41 @@ import { getVideos } from "$lib/server/videos";
 import { getRecommendedMovies } from "$lib/server/movie-reviews";
 import { getImpactGalleryItems } from "$lib/server/impact-gallery";
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({ setHeaders }) => {
+    // Cache the homepage for 60 seconds to speed up "Back to Home" navigation
+    setHeaders({
+        "Cache-Control": "public, max-age=60, s-maxage=60",
+    });
+
     try {
         const baseWhere = and(
             eq(postTable.status, "published"),
             eq(postTable.deleted, false)
         );
+
+        // Helper for category queries
+        const getCategoryPosts = (categorySlug: string, limit = 3) => {
+            return db.select({
+                post_id: postTable.post_id,
+                title: postTable.title,
+                image: postTable.image,
+                category: postTable.category,
+                created_at: postTable.created_at,
+                slug: postTable.post_id,
+            })
+                .from(postTable)
+                .innerJoin(
+                    postCategoriesTable,
+                    eq(postTable.post_id, postCategoriesTable.post_id)
+                )
+                .where(and(baseWhere, eq(postCategoriesTable.category_slug, categorySlug)))
+                .orderBy(desc(postTable.created_at))
+                .limit(limit)
+                .catch(err => {
+                    console.error(`[PageLoad] Failed to load ${categorySlug}:`, err);
+                    return [];
+                });
+        };
 
         // Fetch all primary content in parallel for maximum performance
         const [
@@ -22,11 +51,18 @@ export const load: PageServerLoad = async () => {
             latest,
             popular,
             trending,
-            africanGiantPosts,
+            africanGiantOfTheWeek,
             recommendedMovies,
             impactGalleryItems,
             politicsPosts,
-            economyPosts
+            economyPosts,
+            healthPosts,
+            techPosts,
+            culturePosts,
+            sportsPosts,
+            entertainmentPosts,
+            africanGiantSectionPosts,
+            africansOnTheTablePosts
         ] = await Promise.all([
             // Videos
             getVideos(5).catch(err => {
@@ -150,7 +186,7 @@ export const load: PageServerLoad = async () => {
                     return [];
                 }),
 
-            // African Giant
+            // African Giant of the Week
             db.select({
                 id: postTable.id,
                 post_id: postTable.post_id,
@@ -179,7 +215,7 @@ export const load: PageServerLoad = async () => {
                 .orderBy(desc(postTable.created_at))
                 .limit(1)
                 .catch(err => {
-                    console.error("[PageLoad] Failed to load african giant:", err);
+                    console.error("[PageLoad] Failed to load african giant of the week:", err);
                     return [];
                 }),
 
@@ -195,35 +231,16 @@ export const load: PageServerLoad = async () => {
                 return [];
             }),
 
-            // PRE-FETCH CRITICAL CATEGORIES (Politics)
-            db.select({
-                post_id: postTable.post_id,
-                title: postTable.title,
-                image: postTable.image,
-                category: postTable.category,
-                created_at: postTable.created_at,
-                slug: postTable.post_id,
-            })
-                .from(postTable)
-                .where(and(baseWhere, eq(postTable.category, "politics")))
-                .orderBy(desc(postTable.created_at))
-                .limit(3)
-                .catch(() => []),
-
-            // PRE-FETCH CRITICAL CATEGORIES (Economy)
-            db.select({
-                post_id: postTable.post_id,
-                title: postTable.title,
-                image: postTable.image,
-                category: postTable.category,
-                created_at: postTable.created_at,
-                slug: postTable.post_id,
-            })
-                .from(postTable)
-                .where(and(baseWhere, eq(postTable.category, "economy")))
-                .orderBy(desc(postTable.created_at))
-                .limit(3)
-                .catch(() => []),
+            // Sections
+            getCategoryPosts("politics"),
+            getCategoryPosts("economy"),
+            getCategoryPosts("health"),
+            getCategoryPosts("technology"),
+            getCategoryPosts("culture"),
+            getCategoryPosts("sports"),
+            getCategoryPosts("entertainment"),
+            getCategoryPosts("african-giant"),
+            getCategoryPosts("africans-on-the-table"),
         ]);
 
         return {
@@ -231,12 +248,21 @@ export const load: PageServerLoad = async () => {
             featuredPosts: featured,
             latestPosts: latest,
             trendingPosts: trending,
-            africanGiant: africanGiantPosts[0] || null,
+            africanGiant: africanGiantOfTheWeek[0] || null,
             recommendedMovies,
             impactGalleryItems,
-            serverPolitics: politicsPosts,
-            serverEconomy: economyPosts,
-            videos
+            videos,
+            categories: {
+                politics: politicsPosts,
+                economy: economyPosts,
+                health: healthPosts,
+                technology: techPosts,
+                culture: culturePosts,
+                sports: sportsPosts,
+                entertainment: entertainmentPosts,
+                "african-giant": africanGiantSectionPosts,
+                "africans-on-the-table": africansOnTheTablePosts
+            }
         };
     } catch (err) {
         console.error("Critical error in PageLoad:", err);

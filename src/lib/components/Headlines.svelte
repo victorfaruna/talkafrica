@@ -3,6 +3,7 @@
     import { onMount } from "svelte";
     import { fly } from "svelte/transition";
     import { quartOut } from "svelte/easing";
+    import { getOptimizedImageUrl } from "$lib/utils/image";
 
     type Post = {
         post_id: string;
@@ -97,10 +98,11 @@
                             aria-label={post.title}
                         >
                             <img
-                                src={post.image || fallback}
+                                src={getOptimizedImageUrl(post.image, { width: 1200, height: 580, fit: 'fill' })}
                                 alt={post.title}
                                 class="absolute inset-0 h-full w-full object-cover"
                                 loading="lazy"
+                                decoding="async"
                             />
                             <div
                                 class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"
@@ -153,9 +155,11 @@
                         out:fly={{ x: "100%", duration: 800, easing: quartOut }}
                     >
                         <img
-                            src={s.image || fallback}
+                            src={getOptimizedImageUrl(s.image, { width: 400, height: 250, fit: 'fill' })}
                             alt={s.title}
                             class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            loading="lazy"
+                            decoding="async"
                         />
                         <div
                             class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"
@@ -196,9 +200,11 @@
                         }}
                     >
                         <img
-                            src={s.image || fallback}
+                            src={getOptimizedImageUrl(s.image, { width: 400, height: 250, fit: 'fill' })}
                             alt={s.title}
                             class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            loading="lazy"
+                            decoding="async"
                         />
                         <div
                             class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"

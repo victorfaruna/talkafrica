@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { getOptimizedImageUrl } from "$lib/utils/image";
     export let review: {
         review_id: string;
         title: string;
@@ -25,9 +26,11 @@
     >
         <!-- Poster Image -->
         <img
-            src={review.poster_url}
+            src={getOptimizedImageUrl(review.poster_url, { width: 400, height: 600, fit: 'fill' })}
             alt={review.title}
             class="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+            loading="lazy"
+            decoding="async"
         />
 
         <!-- Overlay gradient -->

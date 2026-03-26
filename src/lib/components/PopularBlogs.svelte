@@ -5,6 +5,7 @@
         image?: string | null;
         excerpt?: string | null;
     }>;
+    import { getOptimizedImageUrl } from "$lib/utils/image";
     $: list = (posts ?? []).slice(0, 8).map((p) => ({
         title: p.title,
         image: p.image ?? "/images/placeholder.webp",

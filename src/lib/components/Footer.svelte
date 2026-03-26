@@ -46,7 +46,7 @@
                 >
                     <img
                         src="/images/logo.webp"
-                        alt="Talk Africa"
+                        alt="Talk Africa Logo"
                         class="size-10 inline-block object-fit"
                     />
                     {" "}

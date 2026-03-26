@@ -1,5 +1,6 @@
 <script lang="ts">
     export let post: any = null;
+    import { getOptimizedImageUrl } from "$lib/utils/image";
 </script>
 
 <section class="african-giant-section py-8 md:my-16">
@@ -17,11 +18,11 @@
             >
                 <div class="relative h-56 md:h-auto md:min-h-[300px]">
                     <img
-                        src={post.featured_image ||
-                            post.image ||
-                            "/images/placeholder.webp"}
+                        src={getOptimizedImageUrl(post.featured_image || post.image, { width: 800, height: 600, fit: 'fill' })}
                         alt={post.title}
                         class="absolute inset-0 w-full h-full object-cover"
+                        loading="lazy"
+                        decoding="async"
                     />
                     <div
                         class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent md:hidden"

@@ -93,6 +93,7 @@
                 stroke-width="1.5"
                 stroke="currentColor"
                 class="size-6"
+                aria-hidden="true"
             >
                 <path
                     stroke-linecap="round"
@@ -129,6 +130,7 @@
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
+                                aria-hidden="true"
                             >
                                 <path
                                     stroke-linecap="round"
@@ -324,7 +326,7 @@
                 >
                     <img
                         src="/images/logo.webp"
-                        alt="Talk Africa"
+                        alt="Talk Africa Logo"
                         class="size-12 object-contain"
                     />
                 </div>
@@ -586,7 +588,7 @@
                             href="https://youtube.com/@talkafricang?si=yXdrZeI_Cm3s7DEh"
                             target="_blank"
                             class="flex-1 h-10 flex items-center justify-center rounded-xl bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-300"
-                            aria-label="YouTube"
+                            aria-label="Follow us on YouTube"
                         >
                             <svg
                                 class="w-5 h-5"

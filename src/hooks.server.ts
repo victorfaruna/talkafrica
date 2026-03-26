@@ -53,17 +53,29 @@ export const handle = async ({ event, resolve }) => {
         });
     }
 
-    try {
-        await db.insert(sessionsTable).values({
+    // Throttled session tracking: only update DB if last update was > 5 mins ago
+    const lastSessionUpdate = event.cookies.get('last_session_update');
+    const now = Date.now();
+    
+    if (!lastSessionUpdate || now - parseInt(lastSessionUpdate) > 5 * 60 * 1000) {
+        // Update cookie immediately to prevent multiple triggers in same session
+        event.cookies.set('last_session_update', now.toString(), {
+            path: '/',
+            maxAge: 60 * 60, // 1 hour
+            httpOnly: true,
+            sameSite: 'lax'
+        });
+
+        // Fire and forget session tracking (unblocks request)
+        db.insert(sessionsTable).values({
             session_id,
             last_seen: new Date(),
         })
             .onConflictDoUpdate({
                 target: sessionsTable.session_id,
                 set: { last_seen: new Date() }
-            });
-    } catch (error) {
-        console.error('Failed to track session:', error);
+            })
+            .catch(error => console.error('Failed to track session:', error));
     }
 
     const response = await resolve(event);

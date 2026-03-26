@@ -4,6 +4,8 @@
     export let posts: any[] = [];
     export let color = "#16a34a";
     export let special = false;
+
+    import { getOptimizedImageUrl } from "$lib/utils/image";
 </script>
 
 <section
@@ -57,11 +59,11 @@
                                 class="flex-shrink-0 w-[120px] sm:w-full aspect-square sm:aspect-[4/3] overflow-hidden rounded-lg sm:rounded-xl relative"
                             >
                                 <img
-                                    src={post.image ||
-                                        "/images/placeholder.webp"}
+                                    src={getOptimizedImageUrl(post.image, { width: 400, height: 300, fit: 'fill' })}
                                     alt={post.title}
                                     class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                     loading="lazy"
+                                    decoding="async"
                                 />
                                 {#if index === 0}
                                     <span
