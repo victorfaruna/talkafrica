@@ -92,11 +92,11 @@
                 <!-- Image -->
                 <picture>
                     <source
-                        srcset="/images/headshot-001.webp"
+                        srcset="https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389708/talkafrica/headshot-001.jpg"
                         type="image/webp"
                     />
                     <img
-                        src="/images/headshot-001.webp"
+                        src="https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389708/talkafrica/headshot-001.jpg"
                         alt="Portrait of John Emmanuel Fagbemi - Founder of TalkAfrica"
                         class="founder-image block h-full w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
                         loading="lazy"

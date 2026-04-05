@@ -1,0 +1,292 @@
+﻿[dotenv@17.2.3] injecting env (12) from .env -- tip: ≡ƒùé∩╕Å backup and recover secrets: https://dotenvx.com/ops
+≡ƒÜÇ TalkAfrica ΓåÆ Cloudinary Migration
+Γÿü∩╕Å  Cloud: dwwyegu5r
+
+≡ƒôü Found 73 images to upload:
+
+   /images/hero/ta-1.jpeg
+   /images/hero/ta-10.jpg
+   /images/hero/ta-11.jpg
+   /images/hero/ta-12.jpg
+   /images/hero/ta-13.jpg
+   /images/hero/ta-14.jpg
+   /images/hero/ta-15.jpg
+   /images/hero/ta-16.jpg
+   /images/hero/ta-17.jpg
+   /images/hero/ta-18.jpg
+   /images/hero/ta-19.jpg
+   /images/hero/ta-2.jpeg
+   /images/hero/ta-20.jpg
+   /images/hero/ta-21.jpg
+   /images/hero/ta-22.jpg
+   /images/hero/ta-3.jpeg
+   /images/hero/ta-4.jpeg
+   /images/hero/ta-5.jpeg
+   /images/hero/ta-6.jpeg
+   /images/hero/ta-7.jpeg
+   /images/hero/ta-8.jpeg
+   /images/hero/ta-9.jpg
+   /images/1767052674485.png
+   /images/africans-on-the-table.jpg
+   /images/big-screen-bg-v2.jpg
+   /images/big-screen-bg.jpg
+   /images/category/arts.webp
+   /images/category/business.webp
+   /images/category/culture.webp
+   /images/category/innovation.webp
+   /images/category/lifestyle.webp
+   /images/category/music.webp
+   /images/category/news.webp
+   /images/category/sport.webp
+   /images/category/travel.webp
+   /images/eee.png
+   /images/eee.webp
+   /images/founder.webp
+   /images/headshot-001.jpeg
+   /images/headshot-001.webp
+   /images/logo-1.webp
+   /images/logo.webp
+   /images/op.webp
+   /images/placeholder.jpeg
+   /images/placeholder.webp
+   /images/team/aisha-deborah-egena-aruwa.jpg
+   /images/team/ajayi-korede.jpg
+   /images/team/akinbusola-godwin-olaoluwa.jpg
+   /images/team/angel-tomi-olorunmonu.jpg
+   /images/team/armstrong-ogundele.jpg
+   /images/team/azeema-aliu.jpg
+   /images/team/bernice-temitayo.jpg
+   /images/team/buraimoh-oluwaseun-mercy.jpg
+   /images/team/chibueze-ijeoma-blessing.jpg
+   /images/team/divine-micheal-update.jpg
+   /images/team/divine-micheal.jpg
+   /images/team/esther-ojoma-sule.jpg
+   /images/team/fagbemi-janet-okikiola.jpg
+   /images/team/ipinymi-korede-precious.jpg
+   /images/team/isaac-olorunmowaju.jpg
+   /images/team/kehinde-samuel-oluwagbemiga.jpg
+   /images/team/oluwagbemi-delight-adetunji.jpg
+   /images/team/oreoluwa-omojola.jpg
+   /images/team/ukachi-rejoice-akarachi.jpg
+   /images/team/victoria-ojima-abiodun.jpg
+   /images/uploads/1759693286674.jpeg
+   /images/uploads/1759698171564.jpeg
+   /images/uploads/1759735010088.jpeg
+   /images/uploads/1759735387474.jpg
+   /images/uploads/1759739637895.jpg
+   /images/uploads/1759741073911.jpg
+   /images/uploads/1759741159818.jpg
+   /images/uploads/1760644014540.jpg
+
+Γ¼å∩╕Å  Uploading /images/hero/ta-1.jpeg ... Γ£à uploaded (919 KB)
+Γ¼å∩╕Å  Uploading /images/hero/ta-10.jpg ... Γ£à uploaded (64 KB)
+Γ¼å∩╕Å  Uploading /images/hero/ta-11.jpg ... Γ£à uploaded (60 KB)
+Γ¼å∩╕Å  Uploading /images/hero/ta-12.jpg ... Γ£à uploaded (104 KB)
+Γ¼å∩╕Å  Uploading /images/hero/ta-13.jpg ... Γ£à uploaded (91 KB)
+Γ¼å∩╕Å  Uploading /images/hero/ta-14.jpg ... Γ£à uploaded (74 KB)
+Γ¼å∩╕Å  Uploading /images/hero/ta-15.jpg ... Γ£à uploaded (64 KB)
+Γ¼å∩╕Å  Uploading /images/hero/ta-16.jpg ... Γ£à uploaded (60 KB)
+Γ¼å∩╕Å  Uploading /images/hero/ta-17.jpg ... Γ£à uploaded (104 KB)
+Γ¼å∩╕Å  Uploading /images/hero/ta-18.jpg ... Γ£à uploaded (91 KB)
+Γ¼å∩╕Å  Uploading /images/hero/ta-19.jpg ... Γ£à uploaded (74 KB)
+Γ¼å∩╕Å  Uploading /images/hero/ta-2.jpeg ... Γ£à uploaded (558 KB)
+Γ¼å∩╕Å  Uploading /images/hero/ta-20.jpg ... Γ£à uploaded (163 KB)
+Γ¼å∩╕Å  Uploading /images/hero/ta-21.jpg ... Γ£à uploaded (70 KB)
+Γ¼å∩╕Å  Uploading /images/hero/ta-22.jpg ... Γ£à uploaded (102 KB)
+Γ¼å∩╕Å  Uploading /images/hero/ta-3.jpeg ... Γ£à uploaded (132 KB)
+Γ¼å∩╕Å  Uploading /images/hero/ta-4.jpeg ... Γ£à uploaded (297 KB)
+Γ¼å∩╕Å  Uploading /images/hero/ta-5.jpeg ... Γ£à uploaded (361 KB)
+Γ¼å∩╕Å  Uploading /images/hero/ta-6.jpeg ... Γ£à uploaded (169 KB)
+Γ¼å∩╕Å  Uploading /images/hero/ta-7.jpeg ... Γ£à uploaded (161 KB)
+Γ¼å∩╕Å  Uploading /images/hero/ta-8.jpeg ... Γ£à uploaded (169 KB)
+Γ¼å∩╕Å  Uploading /images/hero/ta-9.jpg ... Γ£à uploaded (74 KB)
+Γ¼å∩╕Å  Uploading /images/1767052674485.png ... Γ£à uploaded (0 KB)
+Γ¼å∩╕Å  Uploading /images/africans-on-the-table.jpg ... Γ£à uploaded (53 KB)
+Γ¼å∩╕Å  Uploading /images/big-screen-bg-v2.jpg ... Γ£à uploaded (135 KB)
+Γ¼å∩╕Å  Uploading /images/big-screen-bg.jpg ... Γ£à uploaded (49 KB)
+Γ¼å∩╕Å  Uploading /images/category/arts.webp ... Γ£à uploaded (489 KB)
+Γ¼å∩╕Å  Uploading /images/category/business.webp ... Γ£à uploaded (489 KB)
+Γ¼å∩╕Å  Uploading /images/category/culture.webp ... Γ£à uploaded (489 KB)
+Γ¼å∩╕Å  Uploading /images/category/innovation.webp ... Γ£à uploaded (489 KB)
+Γ¼å∩╕Å  Uploading /images/category/lifestyle.webp ... Γ£à uploaded (489 KB)
+Γ¼å∩╕Å  Uploading /images/category/music.webp ... Γ£à uploaded (489 KB)
+Γ¼å∩╕Å  Uploading /images/category/news.webp ... Γ£à uploaded (489 KB)
+Γ¼å∩╕Å  Uploading /images/category/sport.webp ... Γ£à uploaded (489 KB)
+Γ¼å∩╕Å  Uploading /images/category/travel.webp ... Γ£à uploaded (489 KB)
+Γ¼å∩╕Å  Uploading /images/eee.png ... Γ£à uploaded (31 KB)
+Γ¼å∩╕Å  Uploading /images/eee.webp ... Γ£à uploaded (31 KB)
+Γ¼å∩╕Å  Uploading /images/founder.webp ... Γ£à uploaded (588 KB)
+Γ¼å∩╕Å  Uploading /images/headshot-001.jpeg ... Γ£à uploaded (184 KB)
+Γ¼å∩╕Å  Uploading /images/headshot-001.webp ... Γ£à uploaded (184 KB)
+Γ¼å∩╕Å  Uploading /images/logo-1.webp ... Γ£à uploaded (4486 KB)
+Γ¼å∩╕Å  Uploading /images/logo.webp ... Γ£à uploaded (60 KB)
+Γ¼å∩╕Å  Uploading /images/op.webp ... Γ£à uploaded (6 KB)
+Γ¼å∩╕Å  Uploading /images/placeholder.jpeg ... Γ£à uploaded (5 KB)
+Γ¼å∩╕Å  Uploading /images/placeholder.webp ... Γ£à uploaded (5 KB)
+Γ¼å∩╕Å  Uploading /images/team/aisha-deborah-egena-aruwa.jpg ... Γ£à uploaded (52 KB)
+Γ¼å∩╕Å  Uploading /images/team/ajayi-korede.jpg ... Γ£à uploaded (43 KB)
+Γ¼å∩╕Å  Uploading /images/team/akinbusola-godwin-olaoluwa.jpg ... Γ£à uploaded (89 KB)
+Γ¼å∩╕Å  Uploading /images/team/angel-tomi-olorunmonu.jpg ... Γ£à uploaded (38 KB)
+Γ¼å∩╕Å  Uploading /images/team/armstrong-ogundele.jpg ... Γ£à uploaded (36 KB)
+Γ¼å∩╕Å  Uploading /images/team/azeema-aliu.jpg ... Γ£à uploaded (39 KB)
+Γ¼å∩╕Å  Uploading /images/team/bernice-temitayo.jpg ... Γ£à uploaded (52 KB)
+Γ¼å∩╕Å  Uploading /images/team/buraimoh-oluwaseun-mercy.jpg ... Γ£à uploaded (49 KB)
+Γ¼å∩╕Å  Uploading /images/team/chibueze-ijeoma-blessing.jpg ... Γ£à uploaded (115 KB)
+Γ¼å∩╕Å  Uploading /images/team/divine-micheal-update.jpg ... Γ£à uploaded (41 KB)
+Γ¼å∩╕Å  Uploading /images/team/divine-micheal.jpg ... Γ£à uploaded (41 KB)
+Γ¼å∩╕Å  Uploading /images/team/esther-ojoma-sule.jpg ... Γ£à uploaded (80 KB)
+Γ¼å∩╕Å  Uploading /images/team/fagbemi-janet-okikiola.jpg ... Γ£à uploaded (47 KB)
+Γ¼å∩╕Å  Uploading /images/team/ipinymi-korede-precious.jpg ... Γ£à uploaded (48 KB)
+Γ¼å∩╕Å  Uploading /images/team/isaac-olorunmowaju.jpg ... Γ£à uploaded (61 KB)
+Γ¼å∩╕Å  Uploading /images/team/kehinde-samuel-oluwagbemiga.jpg ... Γ£à uploaded (46 KB)
+Γ¼å∩╕Å  Uploading /images/team/oluwagbemi-delight-adetunji.jpg ... Γ£à uploaded (27 KB)
+Γ¼å∩╕Å  Uploading /images/team/oreoluwa-omojola.jpg ... Γ£à uploaded (70 KB)
+Γ¼å∩╕Å  Uploading /images/team/ukachi-rejoice-akarachi.jpg ... Γ£à uploaded (55 KB)
+Γ¼å∩╕Å  Uploading /images/team/victoria-ojima-abiodun.jpg ... Γ£à uploaded (28 KB)
+Γ¼å∩╕Å  Uploading /images/uploads/1759693286674.jpeg ... Γ£à uploaded (19 KB)
+Γ¼å∩╕Å  Uploading /images/uploads/1759698171564.jpeg ... Γ£à uploaded (19 KB)
+Γ¼å∩╕Å  Uploading /images/uploads/1759735010088.jpeg ... Γ£à uploaded (622 KB)
+Γ¼å∩╕Å  Uploading /images/uploads/1759735387474.jpg ... Γ£à uploaded (1393 KB)
+Γ¼å∩╕Å  Uploading /images/uploads/1759739637895.jpg ... Γ£à uploaded (833 KB)
+Γ¼å∩╕Å  Uploading /images/uploads/1759741073911.jpg ... Γ£à uploaded (1348 KB)
+Γ¼å∩╕Å  Uploading /images/uploads/1759741159818.jpg ... Γ£à uploaded (1498 KB)
+Γ¼å∩╕Å  Uploading /images/uploads/1760644014540.jpg ... Γ£à uploaded (61 KB)
+
+======================================================================
+≡ƒôè Summary: 73 uploaded, 0 already existed, 0 failed
+======================================================================
+
+≡ƒôï URL MAPPING (copy these into Hero.svelte and other components):
+
+// Hero images (replace in Hero.svelte):
+const heroImages = [
+  "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389880/talkafrica/hero/ta-1.jpg",
+  "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389881/talkafrica/hero/ta-10.jpg",
+  "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389587/talkafrica/hero/ta-11.jpg",
+  "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389589/talkafrica/hero/ta-12.jpg",
+  "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389591/talkafrica/hero/ta-13.jpg",
+  "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389593/talkafrica/hero/ta-14.jpg",
+  "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389595/talkafrica/hero/ta-15.jpg",
+  "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389598/talkafrica/hero/ta-16.jpg",
+  "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389603/talkafrica/hero/ta-17.jpg",
+  "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389605/talkafrica/hero/ta-18.jpg",
+  "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389607/talkafrica/hero/ta-19.jpg",
+  "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389610/talkafrica/hero/ta-2.jpg",
+  "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389613/talkafrica/hero/ta-20.jpg",
+  "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389615/talkafrica/hero/ta-21.jpg",
+  "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389618/talkafrica/hero/ta-22.jpg",
+  "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389620/talkafrica/hero/ta-3.jpg",
+  "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389623/talkafrica/hero/ta-4.jpg",
+  "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389626/talkafrica/hero/ta-5.jpg",
+  "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389628/talkafrica/hero/ta-6.jpg",
+  "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389629/talkafrica/hero/ta-7.jpg",
+  "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389631/talkafrica/hero/ta-8.jpg",
+  "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389634/talkafrica/hero/ta-9.jpg",
+];
+
+// Other images:
+// /images/1767052674485.png
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389635/talkafrica/1767052674485.png
+// /images/africans-on-the-table.jpg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389637/talkafrica/africans-on-the-table.jpg
+// /images/big-screen-bg-v2.jpg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389639/talkafrica/big-screen-bg-v2.jpg
+// /images/big-screen-bg.jpg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389640/talkafrica/big-screen-bg.jpg
+// /images/category/arts.webp
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389642/talkafrica/category/arts.jpg
+// /images/category/business.webp
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389645/talkafrica/category/business.jpg
+// /images/category/culture.webp
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389648/talkafrica/category/culture.jpg
+// /images/category/innovation.webp
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389652/talkafrica/category/innovation.jpg
+// /images/category/lifestyle.webp
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389655/talkafrica/category/lifestyle.jpg
+// /images/category/music.webp
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389658/talkafrica/category/music.jpg
+// /images/category/news.webp
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389661/talkafrica/category/news.jpg
+// /images/category/sport.webp
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389663/talkafrica/category/sport.jpg
+// /images/category/travel.webp
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389671/talkafrica/category/travel.jpg
+// /images/eee.png
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389691/talkafrica/eee.png
+// /images/eee.webp
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389691/talkafrica/eee.png
+// /images/founder.webp
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389703/talkafrica/founder.jpg
+// /images/headshot-001.jpeg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389708/talkafrica/headshot-001.jpg
+// /images/headshot-001.webp
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389708/talkafrica/headshot-001.jpg
+// /images/logo-1.webp
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389714/talkafrica/logo-1.png
+// /images/logo.webp
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389719/talkafrica/logo.png
+// /images/op.webp
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389721/talkafrica/op.png
+// /images/placeholder.jpeg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389723/talkafrica/placeholder.jpg
+// /images/placeholder.webp
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389723/talkafrica/placeholder.jpg
+// /images/team/aisha-deborah-egena-aruwa.jpg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389726/talkafrica/team/aisha-deborah-egena-aruwa.jpg
+// /images/team/ajayi-korede.jpg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389727/talkafrica/team/ajayi-korede.jpg
+// /images/team/akinbusola-godwin-olaoluwa.jpg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389729/talkafrica/team/akinbusola-godwin-olaoluwa.jpg
+// /images/team/angel-tomi-olorunmonu.jpg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389731/talkafrica/team/angel-tomi-olorunmonu.jpg
+// /images/team/armstrong-ogundele.jpg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389733/talkafrica/team/armstrong-ogundele.jpg
+// /images/team/azeema-aliu.jpg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389734/talkafrica/team/azeema-aliu.jpg
+// /images/team/bernice-temitayo.jpg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389736/talkafrica/team/bernice-temitayo.jpg
+// /images/team/buraimoh-oluwaseun-mercy.jpg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389738/talkafrica/team/buraimoh-oluwaseun-mercy.jpg
+// /images/team/chibueze-ijeoma-blessing.jpg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389740/talkafrica/team/chibueze-ijeoma-blessing.jpg
+// /images/team/divine-micheal-update.jpg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389743/talkafrica/team/divine-micheal-update.jpg
+// /images/team/divine-micheal.jpg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389744/talkafrica/team/divine-micheal.jpg
+// /images/team/esther-ojoma-sule.jpg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389746/talkafrica/team/esther-ojoma-sule.jpg
+// /images/team/fagbemi-janet-okikiola.jpg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389748/talkafrica/team/fagbemi-janet-okikiola.jpg
+// /images/team/ipinymi-korede-precious.jpg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389750/talkafrica/team/ipinymi-korede-precious.jpg
+// /images/team/isaac-olorunmowaju.jpg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389752/talkafrica/team/isaac-olorunmowaju.jpg
+// /images/team/kehinde-samuel-oluwagbemiga.jpg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389754/talkafrica/team/kehinde-samuel-oluwagbemiga.jpg
+// /images/team/oluwagbemi-delight-adetunji.jpg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389755/talkafrica/team/oluwagbemi-delight-adetunji.jpg
+// /images/team/oreoluwa-omojola.jpg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389757/talkafrica/team/oreoluwa-omojola.jpg
+// /images/team/ukachi-rejoice-akarachi.jpg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389759/talkafrica/team/ukachi-rejoice-akarachi.jpg
+// /images/team/victoria-ojima-abiodun.jpg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389760/talkafrica/team/victoria-ojima-abiodun.jpg
+// /images/uploads/1759693286674.jpeg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389762/talkafrica/uploads/1759693286674.jpg
+// /images/uploads/1759698171564.jpeg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389763/talkafrica/uploads/1759698171564.jpg
+// /images/uploads/1759735010088.jpeg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389767/talkafrica/uploads/1759735010088.jpg
+// /images/uploads/1759735387474.jpg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389781/talkafrica/uploads/1759735387474.jpg
+// /images/uploads/1759739637895.jpg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389788/talkafrica/uploads/1759739637895.jpg
+// /images/uploads/1759741073911.jpg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389957/talkafrica/uploads/1759741073911.jpg
+// /images/uploads/1759741159818.jpg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389962/talkafrica/uploads/1759741159818.jpg
+// /images/uploads/1760644014540.jpg
+// ΓåÆ https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389964/talkafrica/uploads/1760644014540.jpg
+
+Γ£à Done! Update your components with the Cloudinary URLs above.
+≡ƒÄ» These images will now be served from Cloudinary CDN, not Vercel.
