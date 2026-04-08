@@ -139,6 +139,11 @@
             image: "/images/team/ukachi-rejoice-akarachi.jpg",
             role: "",
         },
+        {
+            name: "POPOOLA JOY CHRISTIANAH",
+            image: "/images/team/popoola-joy-christianah.jpg",
+            role: "",
+        },
     ];
 </script>
 
