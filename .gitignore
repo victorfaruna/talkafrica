@@ -10,6 +10,7 @@ lerna-debug.log*
 .svelte-kit/
 build/
 dist/
+.vercel/
 
 # Environment variables
 .env
