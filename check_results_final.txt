@@ -1,0 +1,7 @@
+﻿
+> website@0.0.1 check
+> svelte-kit sync && svelte-check --tsconfig ./tsconfig.json
+
+Loading svelte-check in workspace: c:\Users\USER\Desktop\talkafrica
+Getting Svelte diagnostics...
+

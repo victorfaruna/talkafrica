@@ -6,13 +6,15 @@
     let items = data.items || [];
     let isDeleting = false;
 
-    async function deleteItem(id: string) {
+    async function deleteItem(id: string | number | undefined) {
+        if (!id) return;
         if (!confirm("Are you sure you want to delete this gallery item?"))
             return;
 
+        const stringId = String(id);
         isDeleting = true;
         try {
-            const res = await fetch(`/api/our-impact/${id}`, {
+            const res = await fetch(`/api/our-impact/${stringId}`, {
                 method: "DELETE",
             });
             if (res.ok) {

@@ -4,9 +4,9 @@
         review_id: string;
         title: string;
         slug: string;
-        genre?: string;
-        director?: string;
-        release_date?: string;
+        genre?: string | null;
+        director?: string | null;
+        release_date?: string | null;
         rating: number;
         poster_url: string;
         is_recommended: boolean;

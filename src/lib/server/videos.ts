@@ -8,15 +8,16 @@ export async function getVideos(limit = 10, offset = 0, category?: string) {
         let query = db
             .select()
             .from(videosTable)
-            .orderBy(desc(videosTable.created_at))
-            .limit(limit)
-            .offset(offset);
+            .$dynamic();
 
         if (category) {
             query = query.where(eq(videosTable.category, category));
         }
 
-        const result = await query;
+        const result = await query
+            .orderBy(desc(videosTable.created_at))
+            .limit(limit)
+            .offset(offset);
         console.log(`[getVideos] Success. Found ${result.length} videos.`);
         return result;
     } catch (err) {

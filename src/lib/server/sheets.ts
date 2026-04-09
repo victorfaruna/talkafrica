@@ -11,17 +11,13 @@ export async function appendToSheet(email: string) {
     }
 
     try {
-        const auth = new google.auth.JWT(
-            GOOGLE_SERVICE_ACCOUNT_EMAIL,
-            undefined,
-            GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n').replace(/^["']|["']$/g, '').trim(), // Fix newlines and remove extra quotes/spaces
-            ['https://www.googleapis.com/auth/spreadsheets']
-        );
+        const auth = new google.auth.JWT({
+            email: GOOGLE_SERVICE_ACCOUNT_EMAIL,
+            key: GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n').replace(/^["']|["']$/g, '').trim(), // Fix newlines and remove extra quotes/spaces
+            scopes: ['https://www.googleapis.com/auth/spreadsheets']
+        });
 
         const sheets = google.sheets({ version: 'v4', auth });
-
-        // Add header row if it doesn't exist (basic check, assumes row 1 is headers)
-        // We actually just append to the sheet, so it adds to the next available row.
 
         await sheets.spreadsheets.values.append({
             spreadsheetId: GOOGLE_SHEET_ID,
