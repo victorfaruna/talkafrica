@@ -98,7 +98,11 @@
                             aria-label={post.title}
                         >
                             <img
-                                src={getOptimizedImageUrl(post.image, { width: 1200, height: 580, fit: 'fill' })}
+                                src={getOptimizedImageUrl(post.image, {
+                                    width: 1200,
+                                    height: 580,
+                                    fit: "fill",
+                                })}
                                 alt={post.title}
                                 class="absolute inset-0 h-full w-full object-cover"
                                 loading="lazy"
@@ -155,7 +159,11 @@
                         out:fly={{ x: "100%", duration: 800, easing: quartOut }}
                     >
                         <img
-                            src={getOptimizedImageUrl(s.image, { width: 400, height: 250, fit: 'fill' })}
+                            src={getOptimizedImageUrl(s.image, {
+                                width: 400,
+                                height: 250,
+                                fit: "fill",
+                            })}
                             alt={s.title}
                             class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                             loading="lazy"
@@ -200,7 +208,11 @@
                         }}
                     >
                         <img
-                            src={getOptimizedImageUrl(s.image, { width: 400, height: 250, fit: 'fill' })}
+                            src={getOptimizedImageUrl(s.image, {
+                                width: 400,
+                                height: 250,
+                                fit: "fill",
+                            })}
                             alt={s.title}
                             class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                             loading="lazy"
