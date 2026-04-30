@@ -22,7 +22,7 @@
     let {
         title = "TalkAfrica - African News & Lifestyle",
         description = "Your premier destination for African news, culture, and innovation.",
-        image = "/images/og-default.webp",
+        image = "/images/logo.webp",
         type = "website",
         author = "TalkAfrica",
         publishedDate,
@@ -35,13 +35,19 @@
         publisherLogo = "/images/logo.webp",
     }: Props = $props();
 
-    const siteUrl = "https://talkafrica.com"; // Adjust to actual domain
+    const siteUrl = "https://talkafricang.com"; // Updated to correct domain
     const currentUrl = $derived(canonical || `${siteUrl}${page.url.pathname}`);
-    const ogImage = $derived(
-        image?.startsWith("http")
-            ? getOptimizedImageUrl(image, { width: 1200, height: 630 })
-            : `${siteUrl}${image}`,
-    );
+    const ogImage = $derived.by(() => {
+        if (!image) return `${siteUrl}/images/og-default.webp`;
+        
+        if (image.startsWith("http")) {
+            return getOptimizedImageUrl(image, { width: 1200, height: 630 });
+        }
+        
+        // Ensure leading slash for relative paths
+        const imagePath = image.startsWith("/") ? image : `/${image}`;
+        return `${siteUrl}${imagePath}`;
+    });
 
     // JSON-LD Structured Data
     const jsonLd = $derived.by(() => {
@@ -122,10 +128,13 @@
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:type" content={type} />
 
     <!-- Twitter Tags -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@talkafricang" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
