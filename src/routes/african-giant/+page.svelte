@@ -37,11 +37,6 @@
     }
 </script>
 
-<SEO 
-    title="African Giant of the Week - TalkAfrica"
-    description="Celebrating Africa's most influential leaders, innovators, and changemakers who are shaping the continent's future."
-    image={posts[0]?.image || undefined}
-/>
 
 <Header />
 

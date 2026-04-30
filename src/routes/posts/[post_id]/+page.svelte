@@ -72,16 +72,6 @@
     });
 </script>
 
-<SEO 
-    title={post.title} 
-    description={(post.excerpt ?? undefined) as string | undefined} 
-    image={(post.image ?? undefined) as string | undefined} 
-    type="article"
-    author={(post.author ?? undefined) as string | undefined} 
-    publishedDate={post.created_at}
-    schemaType="Article"
-/>
-
 <!-- Reading Progress Bar -->
 <div class="fixed top-0 left-0 w-full h-1.5 bg-gray-100 z-[100]">
     <div

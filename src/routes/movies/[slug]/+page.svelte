@@ -44,15 +44,6 @@
     $: embedUrl = review.trailer_url ? getEmbedUrl(review.trailer_url) : "";
 </script>
 
-<SEO 
-    title={`${review.title} - Movie Review | Talk Africa`}
-    description={`Read Talk Africa's review of ${review.title}. ${review.genre ? `Genre: ${review.genre}.` : ""} Rated ${review.rating}/5 stars.`}
-    image={review.backdrop_url || review.poster_url || undefined}
-    type="video.movie"
-    author={review.author}
-    schemaType="Review"
-    rating={review.rating}
-/>
 
 <!-- Backdrop hero -->
 <div

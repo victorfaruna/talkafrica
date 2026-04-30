@@ -20,11 +20,11 @@
     }
 
     let {
-        title = "TalkAfrica - African News & Lifestyle",
-        description = "Your premier destination for African news, culture, and innovation.",
-        image = "/images/logo.webp",
-        type = "website",
-        author = "TalkAfrica",
+        title: propsTitle,
+        description: propsDescription,
+        image: propsImage,
+        type: propsType = "website",
+        author: propsAuthor = "TalkAfrica",
         publishedDate,
         updatedDate,
         canonical,
@@ -35,10 +35,57 @@
         publisherLogo = "/images/logo.webp",
     }: Props = $props();
 
-    const siteUrl = "https://talkafricang.com"; // Updated to correct domain
+    const siteUrl = "https://talkafricang.com";
+
+    // Derived values with fallbacks from page.data
+    const title = $derived(
+        propsTitle ||
+            page.data.post?.title ||
+            (page.data.review?.title
+                ? `${page.data.review.title} - Movie Review | Talk Africa`
+                : "") ||
+            (page.data.categoryName
+                ? `${page.data.categoryName} - Talk Africa`
+                : "") ||
+            "TalkAfrica - African News & Lifestyle",
+    );
+
+    const description = $derived(
+        propsDescription ||
+            page.data.post?.excerpt ||
+            (page.data.review?.title
+                ? `Read Talk Africa's review of ${page.data.review.title}.`
+                : "") ||
+            "Your premier destination for African news, culture, and innovation.",
+    );
+
+    const image = $derived(
+        propsImage ||
+            page.data.post?.image ||
+            page.data.review?.backdrop_url ||
+            page.data.review?.poster_url ||
+            "/images/logo.webp",
+    );
+
+    const author = $derived(
+        propsAuthor || page.data.post?.author || page.data.review?.author || "TalkAfrica"
+    );
+
+    const type = $derived(
+        page.data.review ? "video.movie" : (page.data.post ? "article" : propsType)
+    );
+
+    const schema = $derived(
+        page.data.review ? "Review" : schemaType
+    );
+
+    const currentRating = $derived(
+        rating || page.data.review?.rating
+    );
+
     const currentUrl = $derived(canonical || `${siteUrl}${page.url.pathname}`);
     const ogImage = $derived.by(() => {
-        if (!image) return `${siteUrl}/images/og-default.webp`;
+        if (!image) return `${siteUrl}/images/logo.webp`;
         
         if (image.startsWith("http")) {
             return getOptimizedImageUrl(image, { width: 1200, height: 630 });
@@ -53,13 +100,13 @@
     const jsonLd = $derived.by(() => {
         const base = {
             "@context": "https://schema.org",
-            "@type": schemaType,
+            "@type": schema,
             url: currentUrl,
             name: title,
             description: description,
         };
 
-        if (schemaType === "Article") {
+        if (schema === "Article") {
             return {
                 ...base,
                 headline: title,
@@ -72,13 +119,10 @@
                     : publishedDate
                       ? new Date(publishedDate).toISOString()
                       : undefined,
-                author: [
-                    {
-                        "@type": "Person",
-                        name: author,
-                        url: siteUrl,
-                    },
-                ],
+                author: {
+                    "@type": "Person",
+                    name: author,
+                },
                 publisher: {
                     "@type": "Organization",
                     name: publisherName,
@@ -90,21 +134,21 @@
             };
         }
 
-        if (schemaType === "Review") {
+        if (schema === "Review") {
             return {
                 ...base,
-                reviewRating: {
-                    "@type": "Rating",
-                    ratingValue: rating || 5,
-                    bestRating: "5",
+                itemReviewed: {
+                    "@type": "Movie",
+                    name: title.replace(" - Movie Review | Talk Africa", ""),
                 },
                 author: {
                     "@type": "Person",
                     name: author,
                 },
-                publisher: {
-                    "@type": "Organization",
-                    name: publisherName,
+                reviewRating: {
+                    "@type": "Rating",
+                    ratingValue: currentRating,
+                    bestRating: "5",
                 },
             };
         }
