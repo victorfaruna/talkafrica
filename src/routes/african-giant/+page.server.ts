@@ -30,7 +30,7 @@ export const load: PageServerLoad = async ({ url, depends }) => {
                 image: postTable.image,
                 category: postTable.category,
                 // Dynamically fetch author from admin table, fallback to static author field
-                author: sql<string>`coalesce(${adminTable.username}, ${postTable.author})`,
+                author: sql<string>`coalesce(${adminTable.name}, ${postTable.author})`,
                 views: postTable.views,
                 created_at: postTable.created_at,
 
@@ -62,7 +62,7 @@ export const load: PageServerLoad = async ({ url, depends }) => {
                 excerpt: postTable.excerpt,
                 image: postTable.image,
                 category: postTable.category,
-                author: sql<string>`coalesce(${adminTable.username}, ${postTable.author})`,
+                author: sql<string>`coalesce(${adminTable.name}, ${postTable.author})`,
                 views: postTable.views,
                 created_at: postTable.created_at,
 

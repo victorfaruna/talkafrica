@@ -17,7 +17,7 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
                 excerpt: postTable.excerpt,
                 image: postTable.image,
                 category: postTable.category,
-                author: sql<string>`coalesce(${adminTable.username}, ${postTable.author})`,
+                author: sql<string>`coalesce(${adminTable.name}, ${postTable.author})`,
                 status: postTable.status,
                 featured: postTable.featured,
                 isTrendingNews: postTable.isTrendingNews,
