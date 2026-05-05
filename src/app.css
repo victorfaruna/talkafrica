@@ -1,5 +1,9 @@
 @import 'tailwindcss';
 @import './lib/fonts.css';
+ 
+*, *::before, *::after {
+	box-sizing: border-box;
+}
 
 @theme {
 	--color-primary: #fff;

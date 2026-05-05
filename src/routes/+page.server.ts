@@ -3,7 +3,7 @@ import type { PageServerLoad } from "./$types";
 import { error } from "@sveltejs/kit";
 import { db } from "$lib/server/db";
 import { desc, eq, and, sql } from "drizzle-orm";
-import { postTable, postCategoriesTable, adminTable } from "$lib/server/schema";
+import { postTable, postCategoriesTable, adminTable, employeeOfTheMonthTable } from "$lib/server/schema";
 import { getVideos } from "$lib/server/videos";
 import { getRecommendedMovies } from "$lib/server/movie-reviews";
 import { getImpactGalleryItems } from "$lib/server/impact-gallery";
@@ -55,6 +55,7 @@ export const load: PageServerLoad = async ({ setHeaders }) => {
             africanGiantOfTheWeek,
             recommendedMovies,
             impactGalleryItems,
+            employeeOfTheMonth,
             politicsPosts,
             economyPosts,
             healthPosts,
@@ -232,6 +233,16 @@ export const load: PageServerLoad = async ({ setHeaders }) => {
                 return [];
             }),
 
+            // Employee of the Month
+            db.select()
+                .from(employeeOfTheMonthTable)
+                .orderBy(desc(employeeOfTheMonthTable.created_at))
+                .limit(1)
+                .catch(err => {
+                    console.error("[PageLoad] Failed to load employee of the month:", err);
+                    return [];
+                }),
+
             // Sections
             getCategoryPosts("politics"),
             getCategoryPosts("economy"),
@@ -252,6 +263,7 @@ export const load: PageServerLoad = async ({ setHeaders }) => {
             africanGiant: africanGiantOfTheWeek[0] || null,
             recommendedMovies,
             impactGalleryItems,
+            employeeOfTheMonth: employeeOfTheMonth[0] || null,
             videos,
             categories: {
                 politics: politicsPosts,
@@ -265,6 +277,7 @@ export const load: PageServerLoad = async ({ setHeaders }) => {
                 "africans-on-the-table": africansOnTheTablePosts
             }
         };
+
     } catch (err) {
         console.error("Critical error in PageLoad:", err);
         const errorMessage = err instanceof Error ? err.message : "Unknown error";

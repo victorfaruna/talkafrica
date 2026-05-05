@@ -412,9 +412,9 @@
         align-items: center;
         justify-content: center;
         z-index: 9999;
-        padding: 1rem;
+        padding: 0.75rem;
         animation: fadeIn 0.3s ease-out;
-        overflow-y: auto;
+        overflow-y: hidden;
     }
 
     /* ===================== POPUP SHELL ===================== */
@@ -425,7 +425,7 @@
         padding: 2.5rem 2.5rem 2rem;
         width: 100%;
         max-width: 760px;
-        max-height: 92vh;
+        max-height: min(85vh, 700px);
         overflow-y: auto;
         box-shadow:
             0 30px 60px -12px rgba(0, 0, 0, 0.3),
@@ -940,9 +940,9 @@
     /* Mobile: single column or 2-col compact */
     @media (max-width: 480px) {
         .newsletter-popup {
-            padding: 1.75rem 1.25rem 1.5rem;
+            padding: 1.5rem 1rem 1.25rem;
             border-radius: 18px;
-            max-height: 95vh;
+            max-height: 92vh;
         }
 
         .impact-cards {
@@ -963,14 +963,11 @@
         }
 
         .impact-desc {
-            font-size: 0.82rem;
+            display: none;
         }
 
         .benefits-list {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 0.5rem;
-            padding-left: 1rem;
+            display: none;
         }
 
         .popup-title {
@@ -978,11 +975,11 @@
         }
 
         .gallery-strip-wrap {
-            margin: 0.75rem -1.25rem 0;
+            margin: 0.5rem -1rem 0;
         }
         .gallery-item {
-            width: 130px;
-            height: 88px;
+            width: 110px;
+            height: 75px;
         }
     }
 </style>

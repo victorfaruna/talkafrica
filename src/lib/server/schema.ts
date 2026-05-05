@@ -182,3 +182,17 @@ export const impactGalleryTable = pgTable("impact_gallery", {
     created_at: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 
+export const employeeOfTheMonthTable = pgTable("employee_of_the_month", {
+    id: serial("id").primaryKey(),
+    name: varchar("name", { length: 255 }).notNull(),
+    role: varchar("role", { length: 255 }).notNull(),
+    photo_url: varchar("photo_url", { length: 512 }).notNull(),
+    bio: text("bio").notNull(),
+    impact_quote: text("impact_quote"), // Quote like "Impact starts with a single story."
+    contribution: text("contribution"), // Detailed description of contribution
+    email: varchar("email", { length: 255 }),
+    social_links: text("social_links"), // Store as JSON string or comma-separated
+    created_at: timestamp("created_at").notNull().defaultNow(),
+    updated_at: timestamp("updated_at").notNull().defaultNow(),
+});
+

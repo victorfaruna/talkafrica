@@ -15,6 +15,7 @@
     import TrendingTicker from "$lib/components/TrendingTicker.svelte";
     import MovieRecommendations from "$lib/components/MovieRecommendations.svelte";
     import ImpactShowcase from "$lib/components/ImpactShowcase.svelte";
+    import EmployeeOfTheMonth from "$lib/components/EmployeeOfTheMonth.svelte";
 
     import { onMount } from "svelte";
 
@@ -43,7 +44,6 @@
 
     <AfricanGiantOfWeek post={data.africanGiant} />
 
-    <!-- Africans on the Table -->
     <AfricansOnTheTable
         posts={categoriesData["africans-on-the-table"]}
         videos={africansOnTheTableVideos}
@@ -121,6 +121,7 @@
 
     <Donate />
     <AboutFounder />
+    <EmployeeOfTheMonth employee={data.employeeOfTheMonth} />
 
     <Contact />
     <Footer />

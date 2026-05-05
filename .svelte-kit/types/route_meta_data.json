@@ -19,6 +19,10 @@
 		"src/routes/admin/debug/+page.server.ts",
 		"src/routes/admin/+layout.server.ts"
 	],
+	"/admin/employee-of-the-month": [
+		"src/routes/admin/employee-of-the-month/+page.server.ts",
+		"src/routes/admin/+layout.server.ts"
+	],
 	"/admin/impact": [
 		"src/routes/admin/impact/+page.server.ts",
 		"src/routes/admin/+layout.server.ts"

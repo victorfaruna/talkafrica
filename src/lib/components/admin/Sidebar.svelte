@@ -166,6 +166,31 @@
                 </a>
             </li>
 
+            <!-- EMPLOYEE OF THE MONTH TAB -->
+            <li>
+                <a
+                    href="/admin/employee-of-the-month"
+                    class="flex items-center justify-center lg:justify-start gap-2 lg:gap-3 px-3 py-3 lg:py-2 text-xs sm:text-sm rounded-lg transition-all w-full {$page.url.pathname.startsWith('/admin/employee-of-the-month')
+                        ? 'bg-accent text-white shadow-sm'
+                        : 'text-gray-700 hover:bg-gray-100'}"
+                >
+                    <svg
+                        class="w-4 h-4 lg:w-5 lg:h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        />
+                    </svg>
+                    <span>Employee of the Month</span>
+                </a>
+            </li>
+
             <!-- COMMENTS TAB -->
             <li>
                 <a

@@ -26,7 +26,8 @@ export const nodes = [
 	() => import('./nodes/22'),
 	() => import('./nodes/23'),
 	() => import('./nodes/24'),
-	() => import('./nodes/25')
+	() => import('./nodes/25'),
+	() => import('./nodes/26')
 ];
 
 export const server_loads = [2];
@@ -38,23 +39,24 @@ export const dictionary = {
 		"/admin/categories": [6,[2]],
 		"/admin/comments": [~7,[2]],
 		"/admin/debug": [~8,[2]],
-		"/admin/impact": [~9,[2]],
-		"/admin/impact/new": [10,[2]],
-		"/admin/login": [11,[2]],
-		"/admin/movies": [~12,[2]],
-		"/admin/movies/new": [13,[2]],
-		"/admin/movies/[id]/edit": [~14,[2]],
-		"/admin/posts/new": [15,[2]],
-		"/admin/videos": [~16,[2]],
-		"/admin/videos/new": [17,[2]],
-		"/admin/videos/[id]/edit": [~18,[2]],
-		"/african-giant": [~19],
-		"/donate": [20],
-		"/movies": [~21],
-		"/movies/[slug]": [~22],
-		"/posts/[post_id]": [~23],
-		"/videos": [~24],
-		"/[category]": [~25]
+		"/admin/employee-of-the-month": [~9,[2]],
+		"/admin/impact": [~10,[2]],
+		"/admin/impact/new": [11,[2]],
+		"/admin/login": [12,[2]],
+		"/admin/movies": [~13,[2]],
+		"/admin/movies/new": [14,[2]],
+		"/admin/movies/[id]/edit": [~15,[2]],
+		"/admin/posts/new": [16,[2]],
+		"/admin/videos": [~17,[2]],
+		"/admin/videos/new": [18,[2]],
+		"/admin/videos/[id]/edit": [~19,[2]],
+		"/african-giant": [~20],
+		"/donate": [21],
+		"/movies": [~22],
+		"/movies/[slug]": [~23],
+		"/posts/[post_id]": [~24],
+		"/videos": [~25],
+		"/[category]": [~26]
 	};
 
 export const hooks = {
