@@ -31,7 +31,18 @@
     });
 
     // Helper to extract social icons or links
-    $: socialLinks = employee?.social_links ? employee.social_links.split(',').map((s: string) => s.trim()) : [];
+    function formatUrl(url: string | null) {
+        if (!url) return '';
+        url = url.trim();
+        if (url.startsWith('http://') || url.startsWith('https://')) return url;
+        return `https://${url}`;
+    }
+
+    function formatWhatsApp(num: string | null) {
+        if (!num) return '';
+        const cleanNum = num.replace(/\D/g, '');
+        return `https://wa.me/${cleanNum}`;
+    }
 </script>
 
 {#if employee}
@@ -141,22 +152,42 @@
                             {/if}
 
                             <div class="flex gap-3 md:gap-4">
-                                {#each socialLinks as link}
+                                {#if employee.whatsapp_number}
                                     <a 
-                                        href={link} 
+                                        href={formatWhatsApp(employee.whatsapp_number)} 
                                         target="_blank" 
                                         rel="noopener noreferrer"
-                                        class="w-11 h-11 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-white border border-gray-100 flex items-center justify-center text-gray-400 hover:text-accent hover:border-accent hover:shadow-xl hover:shadow-accent/10 transition-all duration-500 transform hover:-translate-y-2"
+                                        class="w-11 h-11 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-white border border-gray-100 flex items-center justify-center text-gray-400 hover:text-[#25D366] hover:border-[#25D366] hover:shadow-xl hover:shadow-[#25D366]/10 transition-all duration-500 transform hover:-translate-y-2"
+                                        title="WhatsApp"
                                     >
-                                        {#if link.includes('linkedin')}
-                                            <svg class="w-5 h-5 md:w-6 md:h-6 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-                                        {:else if link.includes('twitter') || link.includes('x.com')}
-                                            <svg class="w-5 h-5 md:w-6 md:h-6 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                                        {:else}
-                                            <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
-                                        {/if}
+                                        <svg class="w-5 h-5 md:w-6 md:h-6 fill-current" viewBox="0 0 24 24">
+                                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.067 2.877 1.215 3.076.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.937 3.659 1.43 5.623 1.43h.006c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                                     </a>
-                                {/each}
+                                {/if}
+
+                                {#if employee.linkedin_url}
+                                    <a 
+                                        href={formatUrl(employee.linkedin_url)} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        class="w-11 h-11 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-white border border-gray-100 flex items-center justify-center text-gray-400 hover:text-[#0077b5] hover:border-[#0077b5] hover:shadow-xl hover:shadow-[#0077b5]/10 transition-all duration-500 transform hover:-translate-y-2"
+                                        title="LinkedIn"
+                                    >
+                                        <svg class="w-5 h-5 md:w-6 md:h-6 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                                    </a>
+                                {/if}
+
+                                {#if employee.twitter_url}
+                                    <a 
+                                        href={formatUrl(employee.twitter_url)} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        class="w-11 h-11 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-white border border-gray-100 flex items-center justify-center text-gray-400 hover:text-black hover:border-black hover:shadow-xl hover:shadow-black/10 transition-all duration-500 transform hover:-translate-y-2"
+                                        title="Twitter (X)"
+                                    >
+                                        <svg class="w-5 h-5 md:w-6 md:h-6 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                                    </a>
+                                {/if}
                             </div>
                         </div>
 

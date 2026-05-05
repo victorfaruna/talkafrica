@@ -33,7 +33,9 @@ export const actions = {
         const impact_quote = formData.get("impact_quote") as string;
         const contribution = formData.get("contribution") as string;
         const email = formData.get("email") as string;
-        const social_links = formData.get("social_links") as string;
+        const linkedin_url = formData.get("linkedin_url") as string;
+        const twitter_url = formData.get("twitter_url") as string;
+        const whatsapp_number = formData.get("whatsapp_number") as string;
         const photo = formData.get("photo") as File;
 
         let photo_url = formData.get("current_photo_url") as string;
@@ -69,7 +71,9 @@ export const actions = {
                         impact_quote,
                         contribution,
                         email,
-                        social_links,
+                        linkedin_url,
+                        twitter_url,
+                        whatsapp_number,
                         photo_url,
                         updated_at: new Date(),
                     })
@@ -82,7 +86,9 @@ export const actions = {
                     impact_quote,
                     contribution,
                     email,
-                    social_links,
+                    linkedin_url,
+                    twitter_url,
+                    whatsapp_number,
                     photo_url,
                 });
             }

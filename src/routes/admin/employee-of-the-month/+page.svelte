@@ -143,17 +143,42 @@
                         </div>
 
                         <div class="sm:col-span-1">
-                            <label for="social_links" class="block text-sm font-semibold text-gray-700 mb-1">Social Links</label>
+                            <label for="linkedin_url" class="block text-sm font-semibold text-gray-700 mb-1">LinkedIn URL</label>
                             <input 
-                                type="text" 
-                                id="social_links" 
-                                name="social_links"
-                                value={data.employee?.social_links || ''}
-                                placeholder="LinkedIn or Twitter URL"
+                                type="url" 
+                                id="linkedin_url" 
+                                name="linkedin_url"
+                                value={data.employee?.linkedin_url || ''}
+                                placeholder="https://linkedin.com/in/..."
                                 class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-sm"
                             />
                         </div>
-                        <div class="sm:col-span-2">
+
+                        <div class="sm:col-span-1">
+                            <label for="twitter_url" class="block text-sm font-semibold text-gray-700 mb-1">Twitter (X) URL</label>
+                            <input 
+                                type="url" 
+                                id="twitter_url" 
+                                name="twitter_url"
+                                value={data.employee?.twitter_url || ''}
+                                placeholder="https://x.com/..."
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-sm"
+                            />
+                        </div>
+
+                        <div class="sm:col-span-1">
+                            <label for="whatsapp_number" class="block text-sm font-semibold text-gray-700 mb-1">WhatsApp Number</label>
+                            <input 
+                                type="text" 
+                                id="whatsapp_number" 
+                                name="whatsapp_number"
+                                value={data.employee?.whatsapp_number || ''}
+                                placeholder="e.g. +2348012345678"
+                                class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-sm"
+                            />
+                        </div>
+
+                        <div class="sm:col-span-1">
                             <label for="impact_quote" class="block text-sm font-semibold text-gray-700 mb-1">Impact Quote</label>
                             <input 
                                 type="text" 

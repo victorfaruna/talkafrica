@@ -191,7 +191,9 @@ export const employeeOfTheMonthTable = pgTable("employee_of_the_month", {
     impact_quote: text("impact_quote"), // Quote like "Impact starts with a single story."
     contribution: text("contribution"), // Detailed description of contribution
     email: varchar("email", { length: 255 }),
-    social_links: text("social_links"), // Store as JSON string or comma-separated
+    linkedin_url: varchar("linkedin_url", { length: 512 }),
+    twitter_url: varchar("twitter_url", { length: 512 }),
+    whatsapp_number: varchar("whatsapp_number", { length: 50 }),
     created_at: timestamp("created_at").notNull().defaultNow(),
     updated_at: timestamp("updated_at").notNull().defaultNow(),
 });
