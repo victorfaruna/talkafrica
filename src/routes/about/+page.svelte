@@ -3,6 +3,9 @@
     import Footer from "$lib/components/Footer.svelte";
     import AboutFounder from "$lib/components/AboutFounder.svelte";
     import Team from "$lib/components/Team.svelte";
+    import EmployeeOfTheMonth from "$lib/components/EmployeeOfTheMonth.svelte";
+
+    export let data;
 </script>
 
 <div class="app-container w-full min-h-screen overflow-x-hidden flex flex-col">
@@ -129,6 +132,7 @@
         </div>
     </section>
     
+    <EmployeeOfTheMonth employee={data.employeeOfTheMonth} />
     <Footer />
 </div>
 

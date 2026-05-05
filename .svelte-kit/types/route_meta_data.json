@@ -2,7 +2,9 @@
 	"/": [
 		"src/routes/+page.server.ts"
 	],
-	"/about": [],
+	"/about": [
+		"src/routes/about/+page.server.ts"
+	],
 	"/admin": [
 		"src/routes/admin/+page.server.ts",
 		"src/routes/admin/+layout.server.ts",
