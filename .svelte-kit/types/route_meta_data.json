@@ -117,6 +117,7 @@
 	"/api/videos/[id]": [
 		"src/routes/api/videos/[id]/+server.ts"
 	],
+	"/contact": [],
 	"/donate": [],
 	"/movies": [
 		"src/routes/movies/+page.server.ts"
@@ -127,9 +128,11 @@
 	"/posts/[post_id]": [
 		"src/routes/posts/[post_id]/+page.server.ts"
 	],
+	"/privacy": [],
 	"/sitemap.xml": [
 		"src/routes/sitemap.xml/+server.ts"
 	],
+	"/terms": [],
 	"/videos": [
 		"src/routes/videos/+page.server.ts"
 	],

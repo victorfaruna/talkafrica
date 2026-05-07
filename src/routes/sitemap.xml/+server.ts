@@ -11,6 +11,9 @@ const staticPages = [
     { url: "/movies", changefreq: "weekly", priority: "0.8" },
     { url: "/videos", changefreq: "weekly", priority: "0.7" },
     { url: "/donate", changefreq: "monthly", priority: "0.5" },
+    { url: "/privacy", changefreq: "monthly", priority: "0.3" },
+    { url: "/terms", changefreq: "monthly", priority: "0.3" },
+    { url: "/contact", changefreq: "monthly", priority: "0.4" },
 ];
 
 const categories = [
