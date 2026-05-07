@@ -105,8 +105,9 @@
                                 })}
                                 alt={post.title}
                                 class="absolute inset-0 h-full w-full object-cover"
-                                loading="lazy"
+                                loading="eager"
                                 decoding="async"
+                                fetchpriority="high"
                             />
                             <div
                                 class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"

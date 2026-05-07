@@ -38,6 +38,12 @@
 </script>
 
 
+<SEO 
+    title="African Giant of the Week | TalkAfrica" 
+    description="Celebrating Africa's most influential leaders, innovators, and changemakers who are shaping the continent's future."
+    keywords={["African Giant", "African leadership", "African innovation", "Changemakers", "TalkAfrica"]}
+/>
+
 <Header />
 
 <div
@@ -226,7 +232,9 @@
                                                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                                             />
                                         </svg>
-                                        {formatDate(posts[0].created_at)}
+                                        <time datetime={new Date(posts[0].created_at).toISOString().split('T')[0]}>
+                                            {formatDate(posts[0].created_at)}
+                                        </time>
                                     </span>
                                     <span>•</span>
                                     <span class="flex items-center gap-2">
@@ -363,7 +371,9 @@
                                                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                                                 />
                                             </svg>
-                                            {formatDate(post.created_at)}
+                                            <time datetime={new Date(post.created_at).toISOString().split('T')[0]}>
+                                                {formatDate(post.created_at)}
+                                            </time>
                                         </span>
                                     </div>
 

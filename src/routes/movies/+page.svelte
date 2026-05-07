@@ -1,5 +1,6 @@
 <script lang="ts">
     import MovieCard from "$lib/components/movies/MovieCard.svelte";
+    import SEO from "$lib/components/SEO.svelte";
 
     export let data;
     let reviews = data.reviews || [];
@@ -8,13 +9,11 @@
     $: allOther = reviews.filter((r: any) => !r.is_recommended);
 </script>
 
-<svelte:head>
-    <title>African Movie Reviews & Recommendations - Talk Africa</title>
-    <meta
-        name="description"
-        content="Discover the best African movies with expert reviews and recommendations from Talk Africa. Nollywood, African cinema, and more."
-    />
-</svelte:head>
+<SEO
+    title="African Movie Reviews & Recommendations | TalkAfrica"
+    description="Discover the best African movies with expert reviews and recommendations from TalkAfrica. Nollywood, African cinema, and more."
+    keywords={["African movies", "Nollywood reviews", "African cinema", "TalkAfrica movies"]}
+/>
 
 <!-- Hero -->
 <section class="relative bg-gray-950 text-white overflow-hidden">

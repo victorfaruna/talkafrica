@@ -1,14 +1,21 @@
 <script lang="ts">
     import Header from "$lib/components/Header.svelte";
     import Footer from "$lib/components/Footer.svelte";
+    import SEO from "$lib/components/SEO.svelte";
 
     export let data;
     let videos = data.videos || [];
+
+    function isoDate(dateString: string | Date | undefined) {
+        if (!dateString) return "";
+        return new Date(dateString).toISOString().split("T")[0];
+    }
 </script>
 
-<svelte:head>
-    <title>Videos - Talk Africa</title>
-</svelte:head>
+<SEO 
+    title="Videos | TalkAfrica" 
+    description="Watch the latest videos on African news, innovation, and culture. Stay connected with TalkAfrica's visual storytelling."
+/>
 
 <div class="app-container min-h-screen flex flex-col">
     <Header />
@@ -39,6 +46,8 @@
                                     src={video.thumbnail_url}
                                     alt={video.title}
                                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                    loading="lazy"
+                                    decoding="async"
                                 />
                                 <div
                                     class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
@@ -79,10 +88,10 @@
                                     class="flex items-center justify-between mt-3 text-xs text-gray-500"
                                 >
                                     <span>{video.author}</span>
-                                    <span
+                                    <time datetime={isoDate(video.created_at)}
                                         >{new Date(
                                             video.created_at,
-                                        ).toLocaleDateString()}</span
+                                        ).toLocaleDateString()}</time
                                     >
                                 </div>
                             </div>
