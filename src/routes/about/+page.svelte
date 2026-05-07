@@ -4,9 +4,16 @@
     import AboutFounder from "$lib/components/AboutFounder.svelte";
     import Team from "$lib/components/Team.svelte";
     import EmployeeOfTheMonth from "$lib/components/EmployeeOfTheMonth.svelte";
+    import SEO from "$lib/components/SEO.svelte";
 
     export let data;
 </script>
+
+<SEO
+    title="About Us | TalkAfrica"
+    description="Learn about TalkAfrica — a visionary platform committed to showcasing African creativity, preserving cultural heritage, and reshaping Africa's narrative through authentic storytelling."
+    keywords={["About TalkAfrica", "African media", "African storytelling", "African news platform"]}
+/>
 
 <div class="app-container w-full min-h-screen overflow-x-hidden flex flex-col">
     <Header />

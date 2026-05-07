@@ -1,6 +1,7 @@
 <script lang="ts">
     import Header from "$lib/components/Header.svelte";
     import Footer from "$lib/components/Footer.svelte";
+    import SEO from "$lib/components/SEO.svelte";
     import { page } from "$app/state";
 
     const { data } = $props();
@@ -19,6 +20,11 @@
         });
     }
 
+    function isoDate(dateString: string | Date | undefined) {
+        if (!dateString) return "";
+        return new Date(dateString).toISOString().split("T")[0];
+    }
+
     // Format views helper
     function formatViews(views: number) {
         if (views >= 1000000) {
@@ -34,6 +40,11 @@
     const categoryName = $derived(getCategoryDisplayName(data.category));
 </script>
 
+<SEO
+    title="{categoryName} | TalkAfrica"
+    description="Discover the latest {categoryName} news, stories, and insights from across Africa. Stay informed with TalkAfrica."
+    keywords={[categoryName, "Africa", "News", "TalkAfrica", data.category]}
+/>
 <Header />
 
 <!-- Hero Section -->
@@ -102,6 +113,8 @@
                                             "/images/placeholder.webp"}
                                         alt={post.title}
                                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                        loading="lazy"
+                                        decoding="async"
                                     />
                                     <div
                                         class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"
@@ -195,6 +208,8 @@
                                             "/images/placeholder.webp"}
                                         alt={post.title}
                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                        loading="lazy"
+                                        decoding="async"
                                     />
                                     <div
                                         class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"
@@ -211,8 +226,8 @@
                                     <div
                                         class="flex items-center gap-2 text-xs sm:text-sm text-tertiary mb-3"
                                     >
-                                        <span
-                                            >{formatDate(post.created_at)}</span
+                                        <time datetime={isoDate(post.created_at)}
+                                            >{formatDate(post.created_at)}</time
                                         >
                                         <span>•</span>
                                         <span

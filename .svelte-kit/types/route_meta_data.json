@@ -127,6 +127,9 @@
 	"/posts/[post_id]": [
 		"src/routes/posts/[post_id]/+page.server.ts"
 	],
+	"/sitemap.xml": [
+		"src/routes/sitemap.xml/+server.ts"
+	],
 	"/videos": [
 		"src/routes/videos/+page.server.ts"
 	],

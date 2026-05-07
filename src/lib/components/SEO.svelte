@@ -175,6 +175,7 @@
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:type" content={type} />
+    <meta property="og:locale" content="en_NG" />
 
     <!-- Twitter Tags -->
     <meta name="twitter:card" content="summary_large_image" />

@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Block admin and API routes from indexing
+Disallow: /admin/
+Disallow: /api/
+Disallow: /admin
+
+# Sitemap location
+Sitemap: https://talkafricang.com/sitemap.xml

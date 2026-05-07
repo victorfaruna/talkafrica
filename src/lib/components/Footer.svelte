@@ -214,7 +214,7 @@
             <div
                 class="flex flex-col items-center gap-4 text-sm text-primary/70 md:flex-row"
             >
-                <p>&copy; 2024 TalkAfrica. All rights reserved.</p>
+                <p>&copy; {new Date().getFullYear()} TalkAfrica. All rights reserved.</p>
                 <div class="flex gap-5 md:gap-6">
                     <a
                         href="/privacy"

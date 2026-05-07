@@ -11,6 +11,9 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
+	<link rel="manifest" href="/manifest.json" />
+	<meta name="theme-color" content="#ff9900" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
 </svelte:head>
 
 <SEO />
