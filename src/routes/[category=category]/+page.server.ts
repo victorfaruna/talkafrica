@@ -1,5 +1,5 @@
 import type { PageServerLoad } from "./$types";
-import { error } from "@sveltejs/kit";
+import { error, redirect } from "@sveltejs/kit";
 import { db } from "$lib/server/db";
 import { eq, desc, and, inArray } from "drizzle-orm";
 import { postTable, postCategoriesTable } from "$lib/server/schema";
@@ -7,6 +7,13 @@ import { categoryExists, getCategoryDisplayName } from "$lib/categories";
 
 export const load: PageServerLoad = async ({ params, url, depends }) => {
     const categoryParam = params.category?.toLowerCase();
+    
+    // Safety check: if this route somehow matched a static page, redirect to it
+    const reserved = ['terms', 'privacy', 'contact', 'about', 'movies', 'videos', 'donate'];
+    if (categoryParam && reserved.includes(categoryParam)) {
+        throw redirect(301, `/${categoryParam}`);
+    }
+
     const page = parseInt(url.searchParams.get("page") || "1");
     const limit = 12;
     const offset = (page - 1) * limit;
