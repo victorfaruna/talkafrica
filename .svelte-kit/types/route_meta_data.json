@@ -136,7 +136,7 @@
 	"/videos": [
 		"src/routes/videos/+page.server.ts"
 	],
-	"/[category]": [
-		"src/routes/[category]/+page.server.ts"
+	"/[category=category]": [
+		"src/routes/[category=category]/+page.server.ts"
 	]
 }

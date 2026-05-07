@@ -62,7 +62,7 @@ export const dictionary = {
 		"/privacy": [26],
 		"/terms": [27],
 		"/videos": [~28],
-		"/[category]": [~29]
+		"/[category=category]": [~29]
 	};
 
 export const hooks = {
