@@ -122,11 +122,33 @@
         font-size: 0.75em;
     }
 
-    /* Mobile */
+    /* Mobile Optimization - Modern Stacked Layout */
     @media (max-width: 640px) {
         .article-meta-info {
-            font-size: 0.875rem;
-            gap: 0.5rem;
+            flex-direction: column;
+            gap: 0.75rem;
+            align-items: center;
+            text-align: center;
+            font-size: 0.85rem;
+            padding: 1rem 0.5rem;
+            border-bottom: 1px solid #f3f4f6;
+            margin-bottom: 2rem;
+        }
+
+        .article-meta-separator {
+            display: none;
+        }
+
+        .article-meta-item {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .flex.items-center.gap-1.5.flex-wrap {
+            flex-direction: column;
+            gap: 0.25rem;
+            align-items: center;
         }
     }
 </style>

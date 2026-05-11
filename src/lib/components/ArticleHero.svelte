@@ -228,13 +228,13 @@
     }
 
     .article-hero-title {
-        font-size: clamp(2.5rem, 5vw, 5rem);
+        font-size: clamp(2.125rem, 5vw, 5rem);
         color: white;
         text-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
     }
 
     .article-hero-title-standalone {
-        font-size: clamp(2.5rem, 6vw, 4.5rem);
+        font-size: clamp(2.25rem, 6vw, 4.5rem);
         color: #09090b;
         margin-bottom: 1.5rem;
     }

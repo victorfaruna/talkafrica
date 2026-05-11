@@ -112,9 +112,9 @@
         <!-- Categories Footer -->
         {#if displayCategories.length > 0}
             <div class="mt-16 pt-8 border-t border-gray-100">
-                <div class="flex flex-wrap items-center gap-3">
+                <div class="flex flex-wrap items-center justify-center md:justify-start gap-3">
                     <span
-                        class="text-sm font-medium text-gray-500 uppercase tracking-wider"
+                        class="text-sm font-medium text-gray-500 uppercase tracking-wider w-full md:w-auto text-center md:text-left mb-2 md:mb-0"
                         >Filed under:</span
                     >
                     {#each displayCategories as categorySlug}
