@@ -117,8 +117,12 @@
 	"/api/videos/[id]": [
 		"src/routes/api/videos/[id]/+server.ts"
 	],
-	"/contact": [],
-	"/donate": [],
+	"/contact": [
+		"src/routes/contact/+page.ts"
+	],
+	"/donate": [
+		"src/routes/donate/+page.ts"
+	],
 	"/movies": [
 		"src/routes/movies/+page.server.ts"
 	],
@@ -128,11 +132,15 @@
 	"/posts/[post_id]": [
 		"src/routes/posts/[post_id]/+page.server.ts"
 	],
-	"/privacy": [],
+	"/privacy": [
+		"src/routes/privacy/+page.ts"
+	],
 	"/sitemap.xml": [
 		"src/routes/sitemap.xml/+server.ts"
 	],
-	"/terms": [],
+	"/terms": [
+		"src/routes/terms/+page.ts"
+	],
 	"/videos": [
 		"src/routes/videos/+page.server.ts"
 	],
