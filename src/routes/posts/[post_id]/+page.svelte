@@ -75,9 +75,9 @@
 <!-- SEO is now handled by the layout component which automatically pulls data from post -->
 
 <!-- Reading Progress Bar -->
-<div class="fixed top-0 left-0 w-full h-1.5 bg-gray-100 z-[100]">
+<div class="fixed top-0 left-0 w-full h-1 bg-gray-100/50 z-[100]">
     <div
-        class="h-full bg-gradient-to-r from-orange-500 to-red-600 transition-all duration-100 ease-out"
+        class="h-full bg-orange-600 transition-all duration-100 ease-out"
         style="width: {readingProgress}%"
     ></div>
 </div>
