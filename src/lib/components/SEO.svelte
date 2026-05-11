@@ -88,12 +88,29 @@
         if (!image) return `${siteUrl}/images/logo.webp`;
         
         if (image.startsWith("http")) {
-            return getOptimizedImageUrl(image, { width: 1200, height: 630 });
+            return getOptimizedImageUrl(image, { 
+                width: 1200, 
+                height: 630, 
+                format: "jpg", 
+                quality: 90,
+                fit: "fill"
+            });
         }
         
         // Ensure leading slash for relative paths
         const imagePath = image.startsWith("/") ? image : `/${image}`;
         return `${siteUrl}${imagePath}`;
+    });
+
+    const ogImageType = $derived.by(() => {
+        if (image?.startsWith("http") || !image) {
+            // We forced jpg for http (Cloudinary) URLs, and logo.webp is webp
+            return image?.startsWith("http") ? "image/jpeg" : "image/webp";
+        }
+        const ext = image.split(".").pop()?.toLowerCase();
+        if (ext === "png") return "image/png";
+        if (ext === "webp") return "image/webp";
+        return "image/jpeg";
     });
 
     // JSON-LD Structured Data
@@ -172,8 +189,10 @@
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:secure_url" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content={ogImageType} />
     <meta property="og:type" content={type} />
     <meta property="og:locale" content="en_NG" />
 
