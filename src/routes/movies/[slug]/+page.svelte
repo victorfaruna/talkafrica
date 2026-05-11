@@ -2,7 +2,6 @@
     import MovieRecommendations from "$lib/components/MovieRecommendations.svelte";
     import CommentSection from "$lib/components/CommentSection.svelte";
     import ShareButtons from "$lib/components/ShareButtons.svelte";
-    import SEO from "$lib/components/SEO.svelte";
     import { browser } from "$app/environment";
     import { getOptimizedImageUrl } from "$lib/utils/image";
 
@@ -44,16 +43,7 @@
     $: embedUrl = review.trailer_url ? getEmbedUrl(review.trailer_url) : "";
 </script>
 
-<!-- SEO for individual movie review -->
-<SEO
-    title="{review.title} - Movie Review | TalkAfrica"
-    description={review.synopsis || `Read TalkAfrica's review of ${review.title}. Rated ${review.rating}/5.`}
-    image={review.poster_url || review.backdrop_url || undefined}
-    type="video.movie"
-    author={review.author || "TalkAfrica"}
-    schemaType="Review"
-    rating={review.rating}
-/>
+<!-- SEO is handled by the layout component -->
 
 
 <!-- Backdrop hero -->

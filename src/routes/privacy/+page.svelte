@@ -1,13 +1,9 @@
 <script lang="ts">
     import Header from "$lib/components/Header.svelte";
     import Footer from "$lib/components/Footer.svelte";
-    import SEO from "$lib/components/SEO.svelte";
 </script>
 
-<SEO 
-    title="Privacy Policy | TalkAfrica" 
-    description="Learn how TalkAfrica collects, uses, and protects your personal data. Your privacy is important to us."
-/>
+<!-- SEO is handled by layout -->
 
 <div class="app-container min-h-screen flex flex-col">
     <Header />

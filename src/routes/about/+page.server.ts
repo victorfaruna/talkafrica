@@ -12,7 +12,9 @@ export const load: PageServerLoad = async () => {
             .limit(1);
 
         return {
-            employeeOfTheMonth: employee[0] || null
+            employeeOfTheMonth: employee[0] || null,
+            title: "About Us | TalkAfrica",
+            description: "Learn about TalkAfrica — a visionary platform committed to showcasing African creativity, preserving cultural heritage, and reshaping Africa's narrative through authentic storytelling."
         };
     } catch (error) {
         console.error("Error loading employee of the month for about page:", error);

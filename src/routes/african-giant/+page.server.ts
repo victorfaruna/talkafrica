@@ -136,6 +136,7 @@ export const load: PageServerLoad = async ({ url, depends }) => {
 
         return {
             posts,
+            categoryName: "African Giant of the Week",
             pagination: {
                 currentPage: page,
                 totalPages,

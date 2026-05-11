@@ -1,7 +1,6 @@
 <script lang="ts">
     import Header from "$lib/components/Header.svelte";
     import Footer from "$lib/components/Footer.svelte";
-    import SEO from "$lib/components/SEO.svelte";
 
     export let data;
     let videos = data.videos || [];
@@ -12,10 +11,7 @@
     }
 </script>
 
-<SEO 
-    title="Videos | TalkAfrica" 
-    description="Watch the latest videos on African news, innovation, and culture. Stay connected with TalkAfrica's visual storytelling."
-/>
+<!-- SEO is handled by layout -->
 
 <div class="app-container min-h-screen flex flex-col">
     <Header />

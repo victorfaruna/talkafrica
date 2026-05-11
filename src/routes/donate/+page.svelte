@@ -3,7 +3,6 @@
     import { onDestroy, onMount } from "svelte";
     import Header from "$lib/components/Header.svelte";
     import Footer from "$lib/components/Footer.svelte";
-    import SEO from "$lib/components/SEO.svelte";
 
     const paystackPublicKey = import.meta.env.PUBLIC_PAYSTACK_PUBLIC_KEY || "";
     const bankAccountName =
@@ -271,11 +270,7 @@
     });
 </script>
 
-<SEO
-    title="Donate to TalkAfrica | Support African Innovation"
-    description="Support TalkAfrica's mission to amplify African voices and connect entrepreneurs across the continent."
-    keywords={["Donate TalkAfrica", "Support African media", "African innovation", "African voices"]}
-/>
+<!-- SEO is handled by layout -->
 
 <div
     class="app-container flex flex-col gap-[3rem] [--side-p:1rem] sm:[--side-p:2rem] md:[--side-p:4rem] lg:[--side-p:8rem]"

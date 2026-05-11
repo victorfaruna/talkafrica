@@ -1,7 +1,6 @@
 <script lang="ts">
     import Header from "$lib/components/Header.svelte";
     import Footer from "$lib/components/Footer.svelte";
-    import SEO from "$lib/components/SEO.svelte";
 
     let name = "";
     let email = "";
@@ -23,10 +22,7 @@
     }
 </script>
 
-<SEO 
-    title="Contact Us | TalkAfrica" 
-    description="Get in touch with TalkAfrica. Whether you have a story to share, a question, or a partnership proposal, we'd love to hear from you."
-/>
+<!-- SEO is handled by layout -->
 
 <div class="app-container min-h-screen flex flex-col">
     <Header />

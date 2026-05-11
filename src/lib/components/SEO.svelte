@@ -38,8 +38,9 @@
     const siteUrl = "https://talkafricang.com";
 
     // Derived values with fallbacks from page.data
-    const title = $derived(
-        propsTitle ||
+    const title = $derived.by(() => {
+        let baseTitle = propsTitle ||
+            page.data.title ||
             page.data.post?.title ||
             (page.data.review?.title
                 ? `${page.data.review.title} - Movie Review | Talk Africa`
@@ -47,11 +48,19 @@
             (page.data.categoryName
                 ? `${page.data.categoryName} - Talk Africa`
                 : "") ||
-            "TalkAfrica - African News & Lifestyle",
-    );
+            "TalkAfrica - African News & Lifestyle";
+        
+        // Add suffix for articles if not already present
+        if (page.data.post && !baseTitle.includes("Talk Africa") && !baseTitle.includes("TalkAfrica")) {
+            baseTitle = `${baseTitle} | Talk Africa`;
+        }
+        
+        return baseTitle;
+    });
 
     const description = $derived(
         propsDescription ||
+            page.data.description ||
             page.data.post?.excerpt ||
             (page.data.review?.title
                 ? `Read Talk Africa's review of ${page.data.review.title}.`
@@ -61,6 +70,7 @@
 
     const image = $derived(
         propsImage ||
+            page.data.image ||
             page.data.post?.image ||
             page.data.review?.backdrop_url ||
             page.data.review?.poster_url ||
@@ -68,7 +78,7 @@
     );
 
     const author = $derived(
-        propsAuthor || page.data.post?.author || page.data.review?.author || "TalkAfrica"
+        propsAuthor || page.data.author || page.data.post?.author || page.data.review?.author || "TalkAfrica"
     );
 
     const type = $derived(
@@ -88,13 +98,17 @@
         if (!image) return `${siteUrl}/images/logo.webp`;
         
         if (image.startsWith("http")) {
-            return getOptimizedImageUrl(image, { 
-                width: 1200, 
-                height: 630, 
-                format: "jpg", 
-                quality: 90,
-                fit: "fill"
-            });
+            // For Cloudinary images, use high-quality but auto-compressed JPG
+            if (image.includes("cloudinary.com")) {
+                return getOptimizedImageUrl(image, { 
+                    width: 1200, 
+                    height: 630, 
+                    format: "jpg", 
+                    quality: "auto",
+                    fit: "fill"
+                });
+            }
+            return image;
         }
         
         // Ensure leading slash for relative paths
@@ -103,13 +117,16 @@
     });
 
     const ogImageType = $derived.by(() => {
-        if (image?.startsWith("http") || !image) {
-            // We forced jpg for http (Cloudinary) URLs, and logo.webp is webp
-            return image?.startsWith("http") ? "image/jpeg" : "image/webp";
+        if (!image) return "image/webp";
+        
+        if (image.includes("cloudinary.com")) {
+            return "image/jpeg"; // We forced jpg for Cloudinary
         }
+
         const ext = image.split(".").pop()?.toLowerCase();
         if (ext === "png") return "image/png";
         if (ext === "webp") return "image/webp";
+        if (ext === "gif") return "image/gif";
         return "image/jpeg";
     });
 
@@ -193,6 +210,7 @@
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:type" content={ogImageType} />
+    <meta property="og:image:alt" content={title} />
     <meta property="og:type" content={type} />
     <meta property="og:locale" content="en_NG" />
 
@@ -202,6 +220,13 @@
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={title} />
+
+    <!-- Schema.org / Google / WhatsApp -->
+    <meta itemprop="name" content={title} />
+    <meta itemprop="description" content={description} />
+    <meta itemprop="image" content={ogImage} />
+    <link rel="image_src" href={ogImage} />
 
     <!-- Structured Data -->
     {@html `<script type="application/ld+json">${JSON.stringify(jsonLd)}<\/script>`}

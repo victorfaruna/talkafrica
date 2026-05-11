@@ -1,13 +1,9 @@
 <script lang="ts">
     import Header from "$lib/components/Header.svelte";
     import Footer from "$lib/components/Footer.svelte";
-    import SEO from "$lib/components/SEO.svelte";
 </script>
 
-<SEO 
-    title="Terms of Service | TalkAfrica" 
-    description="Read the Terms of Service for TalkAfrica. By using our website, you agree to these terms and conditions."
-/>
+<!-- SEO is handled by layout -->
 
 <div class="app-container min-h-screen flex flex-col">
     <Header />

@@ -72,17 +72,7 @@
     });
 </script>
 
-<!-- SEO for individual post -->
-<SEO
-    title="{post.title} | TalkAfrica"
-    description={post.excerpt || `Read ${post.title} on TalkAfrica - Your premier source for African news and culture.`}
-    image={post.image || undefined}
-    type="article"
-    author={post.author || "TalkAfrica"}
-    publishedDate={post.created_at}
-    updatedDate={(post as any).updated_at || post.created_at}
-    schemaType="Article"
-/>
+<!-- SEO is now handled by the layout component which automatically pulls data from post -->
 
 <!-- Reading Progress Bar -->
 <div class="fixed top-0 left-0 w-full h-1.5 bg-gray-100 z-[100]">

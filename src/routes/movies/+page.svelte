@@ -9,11 +9,7 @@
     $: allOther = reviews.filter((r: any) => !r.is_recommended);
 </script>
 
-<SEO
-    title="African Movie Reviews & Recommendations | TalkAfrica"
-    description="Discover the best African movies with expert reviews and recommendations from TalkAfrica. Nollywood, African cinema, and more."
-    keywords={["African movies", "Nollywood reviews", "African cinema", "TalkAfrica movies"]}
-/>
+<!-- SEO is handled by layout -->
 
 <!-- Hero -->
 <section class="relative bg-gray-950 text-white overflow-hidden">

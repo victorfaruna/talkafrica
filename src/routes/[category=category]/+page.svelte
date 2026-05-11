@@ -40,11 +40,7 @@
     const categoryName = $derived(getCategoryDisplayName(data.category));
 </script>
 
-<SEO
-    title="{categoryName} | TalkAfrica"
-    description="Discover the latest {categoryName} news, stories, and insights from across Africa. Stay informed with TalkAfrica."
-    keywords={[categoryName, "Africa", "News", "TalkAfrica", data.category]}
-/>
+<!-- SEO is handled by layout -->
 <Header />
 
 <!-- Hero Section -->

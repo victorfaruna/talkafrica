@@ -38,11 +38,7 @@
 </script>
 
 
-<SEO 
-    title="African Giant of the Week | TalkAfrica" 
-    description="Celebrating Africa's most influential leaders, innovators, and changemakers who are shaping the continent's future."
-    keywords={["African Giant", "African leadership", "African innovation", "Changemakers", "TalkAfrica"]}
-/>
+<!-- SEO is handled by layout -->
 
 <Header />
 
