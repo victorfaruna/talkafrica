@@ -30,7 +30,7 @@
 <aside class="article-meta" aria-label="Article information">
     <div class="article-meta-info gap-3">
         {#if author}
-            <div class="flex items-center gap-1.5 flex-wrap">
+            <div class="article-meta-authors flex items-center gap-1.5 flex-wrap">
                 <div class="article-meta-item">
                     <span class="article-meta-label">By</span>
                     <span class="article-meta-value font-medium text-gray-900"
@@ -145,7 +145,7 @@
             width: 100%;
         }
 
-        .flex.items-center.gap-1.5.flex-wrap {
+        .article-meta-authors {
             flex-direction: column;
             gap: 0.25rem;
             align-items: center;
