@@ -96,6 +96,7 @@
 
 <style>
     section h2 {
-        @apply mb-4 mt-8;
+        margin-bottom: 1rem;
+        margin-top: 2rem;
     }
 </style>

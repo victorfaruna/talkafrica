@@ -243,8 +243,4 @@
     </div>
 </section>
 
-<style>
-    .item {
-        @apply rounded-[8px];
-    }
-</style>
+
