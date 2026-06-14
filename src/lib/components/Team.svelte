@@ -65,7 +65,7 @@
         },
         {
             name: "Osho Deborah Adetoni",
-            image: "/images/placeholder.webp",
+            image: "/images/team/osho-deborah-adetoni.jpg",
             role: "",
         },
         {
