@@ -98,14 +98,23 @@
         if (!image) return `${siteUrl}/images/logo.webp`;
         
         if (image.startsWith("http")) {
-            // For Cloudinary images, use high-quality but auto-compressed JPG
             if (image.includes("cloudinary.com")) {
-                return getOptimizedImageUrl(image, { 
+                // Build a clean Cloudinary URL for social sharing:
+                // - Strip any existing transformations to avoid doubles
+                // - Force JPEG at exactly 1200x630, quality 80 (< 300KB)
+                // - This meets WhatsApp's strict <600KB & large preview requirements
+                let cleanUrl = image;
+                if (image.includes('/upload/')) {
+                    // Remove any existing transformation segment between /upload/ and the version/filename
+                    cleanUrl = image.replace(/\/upload\/[^/]*(?=\/v\d|\/[^/]+\.[a-z]+)/i, '/upload/');
+                }
+                return getOptimizedImageUrl(cleanUrl, { 
                     width: 1200, 
                     height: 630, 
                     format: "jpg", 
-                    quality: "auto",
-                    fit: "fill"
+                    quality: 80,
+                    fit: "fill",
+                    gravity: "auto"
                 });
             }
             return image;
@@ -119,8 +128,9 @@
     const ogImageType = $derived.by(() => {
         if (!image) return "image/webp";
         
+        // Always report JPEG for Cloudinary (we force f_jpg above)
         if (image.includes("cloudinary.com")) {
-            return "image/jpeg"; // We forced jpg for Cloudinary
+            return "image/jpeg";
         }
 
         const ext = image.split(".").pop()?.toLowerCase();
@@ -207,6 +217,7 @@
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:secure_url" content={ogImage} />
+    <meta property="og:image:url" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:type" content={ogImageType} />
