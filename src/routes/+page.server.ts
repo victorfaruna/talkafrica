@@ -8,13 +8,7 @@ import { getVideos } from "$lib/server/videos";
 import { getRecommendedMovies } from "$lib/server/movie-reviews";
 import { getImpactGalleryItems } from "$lib/server/impact-gallery";
 
-export const load: PageServerLoad = async ({ setHeaders }) => {
-    // Cache the homepage for 5 minutes at the edge; serve stale for up to 10 min during revalidation.
-    // This dramatically cuts function invocations and Vercel bandwidth usage.
-    setHeaders({
-        "Cache-Control": "public, max-age=300, s-maxage=300, stale-while-revalidate=600",
-    });
-
+export const load: PageServerLoad = async () => {
     try {
         const baseWhere = and(
             eq(postTable.status, "published"),
