@@ -83,7 +83,7 @@
             image: "/images/team/ipinymi-korede-precious.jpg",
             role: "",
         },
-        { name: "Destiny Sunday", image: "/images/placeholder.webp", role: "" },
+        { name: "Destiny Sunday", image: "/images/team/destiny-sunday.jpg", role: "" },
         {
             name: "Ikeun Divine Michael",
             image: "/images/team/divine-micheal-update.jpg",
