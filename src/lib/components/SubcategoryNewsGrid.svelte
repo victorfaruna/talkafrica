@@ -1,5 +1,6 @@
 <script lang="ts">
     import { getOptimizedImageUrl } from "$lib/utils/image";
+    import ArrowIcon from "$lib/components/icons/ArrowIcon.svelte";
 
     export let posts: any[] = [];
     export let categoryName = "Stories";
@@ -54,7 +55,7 @@
                             </div>
                             <h3><a href={href(post)}>{post.title}</a></h3>
                             {#if post.excerpt}<p>{post.excerpt}</p>{/if}
-                            <a class="read-link" href={href(post)}>Read story <span aria-hidden="true">→</span></a>
+                            <a class="read-link" href={href(post)}>Read story <ArrowIcon /></a>
                         </article>
                     {/each}
                 </div>
@@ -70,7 +71,7 @@
                                 <h3><a href={href(post)}>{post.title}</a></h3>
                                 {#if post.excerpt}<p>{post.excerpt}</p>{/if}
                                 <div class="rail-footer">
-                                    <a class="read-link" href={href(post)}>Read story <span aria-hidden="true">→</span></a>
+                                    <a class="read-link" href={href(post)}>Read story <ArrowIcon /></a>
                                     <span>{formatViews(post.views)} views</span>
                                 </div>
                             </article>
@@ -134,11 +135,11 @@
         {#if pagination?.totalPages > 1}
             <nav class="pagination" aria-label="Article pages">
                 {#if pagination.hasPrevPage}
-                    <a href={`?page=${pagination.currentPage - 1}`}>← Previous</a>
+                    <a href={`?page=${pagination.currentPage - 1}`}><ArrowIcon direction="left" /> Previous</a>
                 {/if}
                 <span>Page {pagination.currentPage} of {pagination.totalPages}</span>
                 {#if pagination.hasNextPage}
-                    <a href={`?page=${pagination.currentPage + 1}`}>Next →</a>
+                    <a href={`?page=${pagination.currentPage + 1}`}>Next <ArrowIcon /></a>
                 {/if}
             </nav>
         {/if}

@@ -1,6 +1,7 @@
 <script lang="ts">
 	export let post: any = null;
 	import { getOptimizedImageUrl } from "$lib/utils/image";
+	import ArrowIcon from "$lib/components/icons/ArrowIcon.svelte";
 </script>
 
 <section class="bg-[#0a0a0a] py-14 text-white md:py-20">
@@ -30,7 +31,7 @@
 				class="hidden items-center gap-2 text-sm font-semibold text-white/70 underline-offset-4 hover:text-white hover:underline sm:inline-flex"
 			>
 				Explore all giants
-				<span aria-hidden="true">&rarr;</span>
+				<ArrowIcon />
 			</a>
 		</header>
 
@@ -89,7 +90,7 @@
 						<span class="text-sm font-bold text-white">Read the full story</span>
 						<span
 							class="flex h-11 w-11 items-center justify-center bg-accent text-xl text-black"
-							aria-hidden="true">&rarr;</span
+							aria-hidden="true"><ArrowIcon /></span
 						>
 					</div>
 				</div>
@@ -106,7 +107,7 @@
 			class="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-white/70 underline-offset-4 hover:text-white hover:underline sm:hidden"
 		>
 			Explore all giants
-			<span aria-hidden="true">&rarr;</span>
+			<ArrowIcon />
 		</a>
 	</div>
 </section>

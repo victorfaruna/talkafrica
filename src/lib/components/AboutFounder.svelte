@@ -1,3 +1,7 @@
+<script lang="ts">
+    import ArrowIcon from "$lib/components/icons/ArrowIcon.svelte";
+</script>
+
 <section id="founder" class="border-t border-black/15 bg-[#f2f1ed] py-16 lg:py-24">
     <div class="mx-auto w-full max-w-[1900px] px-[var(--side-p)]">
         <div class="mb-9 grid gap-6 border-b border-secondary pb-6 lg:grid-cols-[0.75fr_1.25fr] lg:items-end">
@@ -84,7 +88,7 @@
                             rel="noopener noreferrer"
                             class="inline-flex min-h-12 items-center justify-between gap-6 border border-accent bg-accent px-5 py-3 text-sm font-bold text-secondary transition-colors hover:bg-transparent hover:text-accent"
                         >
-                            LinkedIn <span aria-hidden="true">↗</span>
+                            LinkedIn <ArrowIcon direction="up-right" />
                         </a>
                         <a
                             href="https://www.instagram.com/kingjohndesax?igsh=bzk3bGp1enE4azY3&utm_source=qr"
@@ -92,13 +96,13 @@
                             rel="noopener noreferrer"
                             class="inline-flex min-h-12 items-center justify-between gap-6 border border-white/35 px-5 py-3 text-sm font-bold text-white transition-colors hover:border-accent hover:text-accent"
                         >
-                            Instagram <span aria-hidden="true">↗</span>
+                            Instagram <ArrowIcon direction="up-right" />
                         </a>
                         <a
                             href="mailto:talkafricang@gmail.com"
                             class="inline-flex min-h-12 items-center justify-between gap-6 border border-white/35 px-5 py-3 text-sm font-bold text-white transition-colors hover:border-accent hover:text-accent"
                         >
-                            Send email <span aria-hidden="true">→</span>
+                            Send email <ArrowIcon />
                         </a>
                     </div>
                 </div>

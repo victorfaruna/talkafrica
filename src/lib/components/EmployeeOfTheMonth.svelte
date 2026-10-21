@@ -1,4 +1,6 @@
 <script lang="ts">
+    import ArrowIcon from "$lib/components/icons/ArrowIcon.svelte";
+
     export let employee: any = null;
 
     function formatUrl(url: string | null) {
@@ -83,22 +85,22 @@
                         <div class="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                             {#if employee.email}
                                 <a href={`mailto:${employee.email}`} class="inline-flex min-h-12 items-center justify-between gap-6 border border-secondary bg-secondary px-5 py-3 text-sm font-bold text-white transition-colors hover:border-accent hover:bg-accent hover:text-secondary">
-                                    Email <span aria-hidden="true">→</span>
+                                    Email <ArrowIcon />
                                 </a>
                             {/if}
                             {#if employee.linkedin_url}
                                 <a href={formatUrl(employee.linkedin_url)} target="_blank" rel="noopener noreferrer" class="inline-flex min-h-12 items-center justify-between gap-6 border border-secondary/35 px-5 py-3 text-sm font-bold text-secondary transition-colors hover:border-secondary hover:bg-white">
-                                    LinkedIn <span aria-hidden="true">↗</span>
+                                    LinkedIn <ArrowIcon direction="up-right" />
                                 </a>
                             {/if}
                             {#if employee.twitter_url}
                                 <a href={formatUrl(employee.twitter_url)} target="_blank" rel="noopener noreferrer" class="inline-flex min-h-12 items-center justify-between gap-6 border border-secondary/35 px-5 py-3 text-sm font-bold text-secondary transition-colors hover:border-secondary hover:bg-white">
-                                    X / Twitter <span aria-hidden="true">↗</span>
+                                    X / Twitter <ArrowIcon direction="up-right" />
                                 </a>
                             {/if}
                             {#if employee.whatsapp_number}
                                 <a href={formatWhatsApp(employee.whatsapp_number)} target="_blank" rel="noopener noreferrer" class="inline-flex min-h-12 items-center justify-between gap-6 border border-secondary/35 px-5 py-3 text-sm font-bold text-secondary transition-colors hover:border-secondary hover:bg-white">
-                                    WhatsApp <span aria-hidden="true">↗</span>
+                                    WhatsApp <ArrowIcon direction="up-right" />
                                 </a>
                             {/if}
                         </div>

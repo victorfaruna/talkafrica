@@ -3,6 +3,7 @@
     import Footer from "$lib/components/Footer.svelte";
     import CategoryHero from "$lib/components/CategoryHero.svelte";
     import { getOptimizedImageUrl } from "$lib/utils/image";
+    import ArrowIcon from "$lib/components/icons/ArrowIcon.svelte";
 
     interface Props {
         data: {
@@ -66,7 +67,7 @@
                         Each feature is thoughtfully reported to inform, celebrate and inspire.
                     </p>
                     <a class="showcase-cta" href={`/posts/${latest.post_id}`}>
-                        Read the latest feature <span aria-hidden="true">→</span>
+                        Read the latest feature <ArrowIcon />
                     </a>
                 </div>
 
@@ -121,7 +122,7 @@
                                 </div>
                                 <h3><a href={`/posts/${post.post_id}`}>{post.title}</a></h3>
                                 {#if post.excerpt}<p>{post.excerpt}</p>{/if}
-                                <a class="story-link" href={`/posts/${post.post_id}`}>Read story <span aria-hidden="true">→</span></a>
+                                <a class="story-link" href={`/posts/${post.post_id}`}>Read story <ArrowIcon /></a>
                             </article>
                         {/each}
                     </div>
@@ -130,9 +131,9 @@
 
             {#if data.pagination.totalPages > 1}
                 <nav class="pagination" aria-label="African Giant article pages">
-                    {#if data.pagination.hasPrevPage}<a href={`?page=${data.pagination.currentPage - 1}`}>← Previous</a>{/if}
+                    {#if data.pagination.hasPrevPage}<a href={`?page=${data.pagination.currentPage - 1}`}><ArrowIcon direction="left" /> Previous</a>{/if}
                     <span>Page {data.pagination.currentPage} of {data.pagination.totalPages}</span>
-                    {#if data.pagination.hasNextPage}<a href={`?page=${data.pagination.currentPage + 1}`}>Next →</a>{/if}
+                    {#if data.pagination.hasNextPage}<a href={`?page=${data.pagination.currentPage + 1}`}>Next <ArrowIcon /></a>{/if}
                 </nav>
             {/if}
         {/if}

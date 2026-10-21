@@ -1,6 +1,7 @@
 <script lang="ts">
     import MovieCard from "./movies/MovieCard.svelte";
     import { onMount } from "svelte";
+    import ArrowIcon from "$lib/components/icons/ArrowIcon.svelte";
 
     export let recommendedMovies: any[] = [];
     export let title = "The Big Screen";
@@ -136,7 +137,7 @@
                     href="/movies"
                     class="ml-4 text-yellow-500 font-semibold hover:text-yellow-400 transition-colors hidden sm:block"
                 >
-                    View All Reviews →
+                    View All Reviews <ArrowIcon />
                 </a>
             </div>
         </div>
@@ -169,7 +170,7 @@
 
         <div class="sm:hidden mt-6 text-center">
             <a href="/movies" class="text-yellow-500 font-semibold">
-                View All Reviews →
+                View All Reviews <ArrowIcon />
             </a>
         </div>
     </div>

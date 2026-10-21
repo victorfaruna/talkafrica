@@ -1,4 +1,5 @@
 <script lang="ts">
+    import ArrowIcon from "$lib/components/icons/ArrowIcon.svelte";
     import MovieRecommendations from "$lib/components/MovieRecommendations.svelte";
     import CommentSection from "$lib/components/CommentSection.svelte";
     import ShareButtons from "$lib/components/ShareButtons.svelte";
@@ -306,7 +307,7 @@
             href="/movies"
             class="inline-flex items-center gap-2 text-yellow-600 hover:text-yellow-800 font-medium transition-colors"
         >
-            ← Back to all reviews
+            <ArrowIcon direction="left" /> Back to all reviews
         </a>
     </div>
 </div>

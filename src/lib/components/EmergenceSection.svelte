@@ -1,4 +1,44 @@
 <script lang="ts">
+    import { onMount } from "svelte";
+    import ArrowIcon from "$lib/components/icons/ArrowIcon.svelte";
+
+    let sectionElement: HTMLElement;
+    let videoElement: HTMLVideoElement;
+
+    onMount(() => {
+        if (!sectionElement || !videoElement) return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (!videoElement) return;
+
+                if (entry.isIntersecting) {
+                    // Mobile browsers only permit automatic playback when muted.
+                    videoElement.muted = true;
+                    if (videoElement.ended) videoElement.currentTime = 0;
+                    void videoElement.play().catch(() => {
+                        // Keep native controls available if a browser blocks autoplay.
+                    });
+                } else {
+                    videoElement.pause();
+                }
+            },
+            {
+                // Start once the section reaches the main viewing area and stop
+                // after it has moved beyond that area.
+                rootMargin: "-15% 0px -15% 0px",
+                threshold: 0,
+            },
+        );
+
+        observer.observe(sectionElement);
+
+        return () => {
+            observer.disconnect();
+            videoElement?.pause();
+        };
+    });
+
     const moments = [
         { src: "/media/emergence/photos/emergence-17.jpg", alt: "Emergence guests at the Lagos event photo wall" },
         { src: "/media/emergence/photos/emergence-04.jpg", alt: "A speaker leading a conversation at Emergence Lagos" },
@@ -11,7 +51,12 @@
     ];
 </script>
 
-<section class="emergence-section overflow-hidden bg-[#0b0b0b] py-16 text-white lg:py-24" aria-labelledby="emergence-heading">
+<section
+    id="emergence"
+    bind:this={sectionElement}
+    class="emergence-section scroll-mt-20 overflow-hidden bg-[#0b0b0b] py-16 text-white lg:scroll-mt-24 lg:py-24"
+    aria-labelledby="emergence-heading"
+>
     <div class="mx-auto w-full max-w-[1900px] px-[var(--side-p)]">
         <div class="grid gap-10 border-b border-white/20 pb-10 lg:grid-cols-[1.35fr_0.65fr] lg:items-end lg:pb-14">
             <div>
@@ -36,15 +81,21 @@
 
         <div class="grid border-b border-white/20 lg:grid-cols-[1.28fr_0.72fr]">
             <div class="relative min-h-[360px] overflow-hidden border-white/20 bg-black sm:min-h-[520px] lg:min-h-[560px] lg:border-r">
-                <iframe
-                    src="https://player.cloudinary.com/embed/?cloud_name=dwwyegu5r&public_id=IMG_0745_w0zlss"
+                <video
+                    bind:this={videoElement}
+                    class="absolute inset-0 h-full w-full border-0 bg-black object-contain"
+                    poster="https://res.cloudinary.com/dwwyegu5r/video/upload/so_0/IMG_0745_w0zlss.jpg"
                     title="Emergence Lagos event film"
-                    class="absolute inset-0 h-full w-full border-0"
-                    loading="lazy"
-                    allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
-                    allowfullscreen
-                ></iframe>
-                <span class="pointer-events-none absolute left-0 top-0 z-10 bg-[#f59e0b] px-4 py-3 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-black">Watch the Lagos film</span>
+                    preload="metadata"
+                    muted
+                    playsinline
+                    controls
+                >
+                    <source src="https://res.cloudinary.com/dwwyegu5r/video/upload/c_limit,w_1080,q_auto:good,vc_h264/IMG_0745_w0zlss.mp4" type="video/mp4" />
+                    <source src="https://res.cloudinary.com/dwwyegu5r/video/upload/IMG_0745_w0zlss.mp4" type="video/mp4" />
+                    Your browser does not support HTML video.
+                </video>
+                <span class="pointer-events-none absolute left-0 top-0 z-10 bg-[#f59e0b] px-4 py-3 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-black">Watch the highlight</span>
             </div>
 
             <div class="flex flex-col justify-between px-0 py-9 lg:p-10 xl:p-14">
@@ -79,7 +130,7 @@
                     <span class="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-[#f59e0b]">From the archive</span>
                     <h3 class="mt-2 font-clash-grotesk text-[2rem] font-semibold leading-none sm:text-[3rem]">Scenes from Emergence.</h3>
                 </div>
-                <span class="hidden text-[0.65rem] font-bold uppercase tracking-[0.18em] text-white/40 sm:block">Drag to explore →</span>
+                <span class="hidden items-center gap-1 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-white/40 sm:inline-flex">Drag to explore <ArrowIcon /></span>
             </div>
 
             <div class="emergence-gallery -mx-[var(--side-p)] flex snap-x snap-mandatory gap-3 overflow-x-auto px-[var(--side-p)] pb-5 sm:gap-4">
@@ -114,7 +165,7 @@
                 class="group flex min-h-20 items-center justify-between gap-8 border-t border-black bg-black px-6 text-sm font-bold uppercase tracking-[0.08em] text-white transition-colors hover:bg-white hover:text-black lg:min-w-[220px] lg:border-l lg:border-t-0 lg:px-8"
             >
                 Keep me posted
-                <span class="text-xl text-[#f59e0b] transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">→</span>
+                <span class="text-xl text-[#f59e0b] transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true"><ArrowIcon /></span>
             </a>
         </div>
     </div>

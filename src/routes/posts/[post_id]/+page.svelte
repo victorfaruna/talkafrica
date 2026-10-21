@@ -9,6 +9,7 @@
     import ArticleMeta from "$lib/components/ArticleMeta.svelte";
     import CommentSection from "$lib/components/CommentSection.svelte";
     import ShareButtons from "$lib/components/ShareButtons.svelte";
+    import ArrowIcon from "$lib/components/icons/ArrowIcon.svelte";
     import { calculateReadingTime } from "$lib/utils/reading-time";
     import { getOptimizedImageUrl } from "$lib/utils/image";
     import { getCategoryColor, getCategoryDisplayName, getAllCategories } from "$lib/categories";
@@ -491,7 +492,7 @@
                     {/if}
                     <div class="flex items-center justify-between pt-3 border-t border-gray-100 text-xs">
                         <span class="text-gray-400">{data.africansOnTablePost.author ? `By ${data.africansOnTablePost.author}` : 'Talk Africa'}</span>
-                        <span class="font-semibold" style="color: #FDB022;">Read Story &rarr;</span>
+                        <span class="inline-flex items-center gap-1 font-semibold" style="color: #FDB022;">Read Story <ArrowIcon /></span>
                     </div>
                 </a>
             {:else}
@@ -507,7 +508,7 @@
                     </p>
                     <div class="flex items-center justify-between pt-3 border-t border-gray-100 text-xs">
                         <span class="text-gray-400">Talk Africa Special</span>
-                        <span class="font-semibold" style="color: #FDB022;">Explore Series &rarr;</span>
+                        <span class="inline-flex items-center gap-1 font-semibold" style="color: #FDB022;">Explore Series <ArrowIcon /></span>
                     </div>
                 </a>
             {/if}
@@ -957,7 +958,7 @@
                                         {data.africansOnTablePost.author ? `By ${data.africansOnTablePost.author}` : 'Talk Africa'}
                                     </span>
                                     <span class="font-semibold flex items-center gap-1 transition-transform group-hover:translate-x-1" style="color: #FDB022;">
-                                        Read Story &rarr;
+                                        Read Story <ArrowIcon />
                                     </span>
                                 </div>
                             </a>
@@ -990,7 +991,7 @@
                                 <div class="flex items-center justify-between pt-3 border-t border-gray-100 text-xs">
                                     <span class="text-gray-400">Talk Africa Special</span>
                                     <span class="font-semibold flex items-center gap-1 transition-transform group-hover:translate-x-1" style="color: #FDB022;">
-                                        Explore Series &rarr;
+                                        Explore Series <ArrowIcon />
                                     </span>
                                 </div>
                             </a>

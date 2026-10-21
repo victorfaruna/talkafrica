@@ -1,5 +1,6 @@
 <script lang="ts">
     import { getOptimizedImageUrl } from "$lib/utils/image";
+    import ArrowIcon from "$lib/components/icons/ArrowIcon.svelte";
 
     export let category = "politics";
     export let categoryName = "Politics";
@@ -32,7 +33,7 @@
             <h2 id={`category-${category}`}>{categoryName}</h2>
         </div>
         <a class="view-all" href={`/${category}`}>
-            View all <span aria-hidden="true">→</span>
+            View all <ArrowIcon />
         </a>
     </div>
 

@@ -2,6 +2,7 @@
     import SubcategoryNewsGrid from "$lib/components/SubcategoryNewsGrid.svelte";
     import { getCategoryBySlug, getSubcategories } from "$lib/categories";
     import { getOptimizedImageUrl } from "$lib/utils/image";
+    import ArrowIcon from "$lib/components/icons/ArrowIcon.svelte";
 
     export let category: string;
     export let categoryName: string;
@@ -54,7 +55,7 @@
             {#if subcategories.length > 0}
                 <nav class="subcategory-nav" aria-label={`${categoryName} sections`}>
                     {#each subcategories as item}
-                        <a href={`/${item.slug}`}>{item.display_name}<span aria-hidden="true">→</span></a>
+                        <a href={`/${item.slug}`}>{item.display_name}<span aria-hidden="true"><ArrowIcon /></span></a>
                     {/each}
                 </nav>
             {/if}
@@ -74,7 +75,7 @@
                                     <span>More from</span>
                                     <h2 id={`coverage-${group.slug}`}>{group.display_name}</h2>
                                 </div>
-                                <a href={`/${group.slug}`}>View all <span aria-hidden="true">→</span></a>
+                                <a href={`/${group.slug}`}>View all <span aria-hidden="true"><ArrowIcon /></span></a>
                             </header>
 
                             <div class="coverage-grid">

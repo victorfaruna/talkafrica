@@ -433,7 +433,7 @@
 
                     {#each categories as category, i}
                         <li>
-                            <div class="group">
+                            <div class="group relative">
                                 {#if categoryHierarchy.subcategories[category.slug] && categoryHierarchy.subcategories[category.slug].length > 0}
                                     <!-- Parent category remains a link; chevron only expands its children -->
                                     <a
@@ -466,8 +466,9 @@
                                         type="button"
                                         onclick={() => toggleCategory(category.slug)}
                                         class="mobile-category-toggle"
-                                        aria-label={`Show ${category.display_name} subcategories`}
+                                        aria-label={`${expandedCategory === category.slug ? "Hide" : "Show"} ${category.display_name} subcategories`}
                                         aria-expanded={expandedCategory === category.slug}
+                                        aria-controls={`mobile-subcategories-${category.slug}`}
                                     >
                                         <svg
                                             class={`w-4 h-4 transition-transform duration-300 ${expandedCategory === category.slug ? "rotate-180" : ""} ${category.slug === url.split("/")[1] ? "text-white/70" : "text-white"}`}
@@ -520,6 +521,7 @@
                                 <!-- Subcategories -->
                                 {#if expandedCategory === category.slug && categoryHierarchy.subcategories[category.slug] && categoryHierarchy.subcategories[category.slug].length > 0}
                                     <div
+                                        id={`mobile-subcategories-${category.slug}`}
                                         class="mt-2 ml-4 pl-4 border-l-2 border-gray-100 space-y-1"
                                         transition:slide={{
                                             duration: 300,
