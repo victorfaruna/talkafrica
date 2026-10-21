@@ -2,6 +2,7 @@
 	import { onMount } from "svelte";
 
 	export let postId: string;
+	export let idPrefix: string = "";
 
 	interface Comment {
 		comment_id: string;
@@ -127,10 +128,10 @@
 		<form on:submit|preventDefault={submitComment}>
 			<div class="form-row">
 				<div class="form-group">
-					<label for="name">Name</label>
+					<label for="{idPrefix}name">Name</label>
 					<input
 						type="text"
-						id="name"
+						id="{idPrefix}name"
 						bind:value={userName}
 						placeholder="Your name"
 						required
@@ -139,10 +140,10 @@
 				</div>
 
 				<div class="form-group">
-					<label for="email">Email</label>
+					<label for="{idPrefix}email">Email</label>
 					<input
 						type="email"
-						id="email"
+						id="{idPrefix}email"
 						bind:value={userEmail}
 						placeholder="your@email.com"
 						required
@@ -152,9 +153,9 @@
 			</div>
 
 			<div class="form-group">
-				<label for="comment">Comment</label>
+				<label for="{idPrefix}comment">Comment</label>
 				<textarea
-					id="comment"
+					id="{idPrefix}comment"
 					bind:value={commentText}
 					placeholder="Share your thoughts..."
 					rows="4"
@@ -201,6 +202,15 @@
 </section>
 
 <style>
+	/* ── Brand colour token ── */
+	:root {
+		--brand: #FDB022;
+		--brand-dark: #d4920f;
+		--brand-light: #fef3c7;
+		--brand-tint: #fffbeb;
+		--brand-border: #fde68a;
+	}
+
 	.comment-section {
 		max-width: 800px;
 		margin: 3rem auto;
@@ -212,21 +222,25 @@
 		margin-bottom: 2rem;
 		color: #1a1a1a;
 	}
+
+	/* ── Form card ── */
 	.comment-form-card {
-		background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+		background: #ffffff;
 		border-radius: 16px;
 		padding: 2rem;
-		box-shadow: 0 4px 12px rgba(234, 88, 12, 0.1);
-		border: 2px solid #fed7aa;
+		box-shadow: none;
+		border: 1px solid #e5e7eb;
 		margin-bottom: 2rem;
 	}
 	.comment-form-card h3 {
 		margin: 0 0 1.5rem 0;
 		font-size: 1.25rem;
 		font-weight: 700;
-		color: #c2410c;
+		color: #1a1a1a;
 		font-family: var(--font-clash-grotesk);
 	}
+
+	/* ── Form layout ── */
 	.form-row {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
@@ -241,22 +255,23 @@
 	.form-group label {
 		font-weight: 600;
 		font-size: 0.9rem;
-		color: #7c2d12;
+		color: #374151;
 	}
 	.form-group input,
 	.form-group textarea {
 		padding: 0.875rem;
-		border: 2px solid #fed7aa;
+		border: 1px solid #d1d5db;
 		border-radius: 10px;
 		font-size: 1rem;
-		transition: all 0.3s;
+		transition: all 0.25s;
 		background: white;
+		color: #111827;
 	}
 	.form-group input:focus,
 	.form-group textarea:focus {
 		outline: none;
-		border-color: #ea580c;
-		box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.1);
+		border-color: var(--brand);
+		box-shadow: 0 0 0 4px rgba(253, 176, 34, 0.18);
 		transform: translateY(-1px);
 	}
 	.form-group textarea {
@@ -267,35 +282,39 @@
 	.char-count {
 		text-align: right;
 		font-size: 0.85rem;
-		color: #9a3412;
+		color: #6b7280;
 		margin-top: 0.25rem;
 		font-weight: 500;
 	}
+
+	/* ── Submit button ── */
 	.submit-btn {
-		background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
-		color: white;
+		background: var(--brand);
+		color: #1a1a1a;
 		border: none;
 		padding: 1rem 2.5rem;
 		border-radius: 10px;
 		font-size: 1rem;
 		font-weight: 700;
 		cursor: pointer;
-		transition: all 0.3s;
-		box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
+		transition: all 0.25s;
+		box-shadow: 0 4px 12px rgba(253, 176, 34, 0.35);
 		font-family: var(--font-clash-grotesk);
 		text-transform: uppercase;
 		letter-spacing: 0.5px;
 	}
 	.submit-btn:hover:not(:disabled) {
-		background: linear-gradient(135deg, #c2410c 0%, #9a3412 100%);
+		background: var(--brand-dark);
 		transform: translateY(-2px);
-		box-shadow: 0 6px 16px rgba(234, 88, 12, 0.4);
+		box-shadow: 0 6px 18px rgba(253, 176, 34, 0.45);
 	}
 	.submit-btn:disabled {
 		opacity: 0.5;
 		cursor: not-allowed;
 		transform: none;
 	}
+
+	/* ── Alerts ── */
 	.alert {
 		padding: 1rem;
 		border-radius: 8px;
@@ -311,6 +330,8 @@
 		color: #991b1b;
 		border: 1px solid #fca5a5;
 	}
+
+	/* ── Comments list ── */
 	.comments-list {
 		display: flex;
 		flex-direction: column;
@@ -320,11 +341,13 @@
 		background: white;
 		border-radius: 12px;
 		padding: 1.5rem;
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+		border: 1px solid #f3f4f6;
 		transition: all 0.2s;
 	}
 	.comment-card:hover {
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+		box-shadow: 0 4px 14px rgba(253, 176, 34, 0.15);
+		border-color: var(--brand-border);
 	}
 	.comment-header {
 		display: flex;
@@ -336,15 +359,16 @@
 		width: 48px;
 		height: 48px;
 		border-radius: 50%;
-		background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+		background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		color: white;
+		color: #1a1a1a;
 		font-weight: 700;
 		font-size: 1.25rem;
-		box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
+		box-shadow: 0 4px 12px rgba(253, 176, 34, 0.35);
 		font-family: var(--font-clash-grotesk);
+		flex-shrink: 0;
 	}
 	.user-info {
 		flex: 1;
@@ -357,7 +381,7 @@
 	}
 	.comment-date {
 		font-size: 0.85rem;
-		color: #9a3412;
+		color: #9ca3af;
 		font-weight: 500;
 	}
 	.comment-content {
@@ -372,6 +396,8 @@
 		padding: 3rem;
 		color: #6b7280;
 	}
+
+	/* ── Mobile ── */
 	@media (max-width: 640px) {
 		.form-row {
 			grid-template-columns: 1fr;

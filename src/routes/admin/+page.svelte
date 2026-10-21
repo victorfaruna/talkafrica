@@ -32,9 +32,15 @@
     }
 
     let posts: any[] = data.posts || [];
+    const isSuperAdmin = data.role === "super_admin";
+    let postView: "mine" | "all" = isSuperAdmin ? "all" : "mine";
+    const canManagePost = (post: any) =>
+        isSuperAdmin || post.author_id === data.currentAdminId;
+    $: selectedAuthor = $page.url.searchParams.get("author");
     let users: any[] = [];
     let stats = data.stats || {
         totalPosts: 0,
+        totalDrafts: 0,
         totalAdmins: 0,
         totalViews: 0,
         totalComments: 0,
@@ -42,6 +48,11 @@
         onlineUsers: 0,
         totalUsers: 0,
     };
+    let topWriters: any[] = data.topWriters || [];
+    $: topWriterMaxViews = Math.max(
+        1,
+        ...topWriters.map((writer) => Number(writer.total_views) || 0),
+    );
 
     // Posts management state
     let showDeleteModal = false;
@@ -51,6 +62,18 @@
 
     function editPost(post: any) {
         goto(`/admin/posts/new?post_id=${post.post_id}`);
+    }
+
+    function formatPostDate(value: string | Date) {
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return String(value);
+        return new Intl.DateTimeFormat("en-NG", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+        }).format(date);
     }
 
     function confirmDelete(postId: string) {
@@ -124,6 +147,8 @@
     let filterStatus: "all" | "draft" | "published" = "all";
     let searchTerm: string = "";
     $: filteredPosts = posts
+        .filter((p) => postView === "all" || canManagePost(p))
+        .filter((p) => !selectedAuthor || p.author_id === selectedAuthor)
         .filter((p) =>
             filterStatus === "all" ? true : p.status === filterStatus,
         )
@@ -188,15 +213,15 @@
         <Sidebar {activeTab} />
 
         <!-- Main Content -->
-        <main class="flex-1 p-4 sm:p-6 lg:p-8">
+        <main class="min-w-0 flex-1 p-3 sm:p-6 lg:p-8">
             {#if activeTab === "dashboard"}
                 <!-- Dashboard -->
-                <div class="space-y-8">
+                <div class="space-y-5 sm:space-y-8">
                     <div>
-                        <h2 class="text-2xl font-semibold text-gray-900 mb-2">
+                        <h2 class="mb-1 text-xl font-semibold text-gray-900 sm:mb-2 sm:text-2xl">
                             Overview
                         </h2>
-                        <p class="text-gray-600">
+                        <p class="text-sm text-gray-600 sm:text-base">
                             Welcome back! Here's what's happening with your
                             content.
                         </p>
@@ -204,7 +229,7 @@
 
                     <!-- Stats Cards -->
                     <div
-                        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+                        class="dashboard-stats grid grid-cols-2 gap-3 md:grid-cols-2 md:gap-6 lg:grid-cols-4"
                     >
                         <!-- 1. Total Posts -->
                         <div
@@ -213,10 +238,10 @@
                             <div class="flex items-center">
                                 <div class="flex-shrink-0">
                                     <div
-                                        class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center"
+                                        class="w-11 h-11 bg-[#F7941D]/10 border border-[#F7941D]/15 rounded-lg flex items-center justify-center"
                                     >
                                         <svg
-                                            class="w-6 h-6 text-blue-600"
+                                            class="w-5 h-5 text-[#F7941D]"
                                             fill="none"
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"
@@ -224,8 +249,8 @@
                                             <path
                                                 stroke-linecap="round"
                                                 stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                                stroke-width="1.8"
+                                                d="M7 3.75h7.25L18.25 7.75V20.25H7V3.75zm7 0v4.5h4.25M10 12h5.25M10 15.5h5.25"
                                             />
                                         </svg>
                                     </div>
@@ -234,7 +259,7 @@
                                     <p
                                         class="text-sm font-medium text-gray-600"
                                     >
-                                        Total Posts
+                                        {isSuperAdmin ? "Total Posts" : "My Posts"}
                                     </p>
                                     <p
                                         class="text-2xl font-semibold text-gray-900"
@@ -245,17 +270,17 @@
                             </div>
                         </div>
 
-                        <!-- 2. Online Users -->
+                        <!-- 2. Draft Posts -->
                         <div
                             class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-md transition-shadow"
                         >
                             <div class="flex items-center">
                                 <div class="flex-shrink-0">
                                     <div
-                                        class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center"
+                                        class="w-11 h-11 bg-[#F7941D]/10 border border-[#F7941D]/15 rounded-lg flex items-center justify-center"
                                     >
                                         <svg
-                                            class="w-6 h-6 text-indigo-600"
+                                            class="w-5 h-5 text-[#F7941D]"
                                             fill="none"
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"
@@ -263,8 +288,48 @@
                                             <path
                                                 stroke-linecap="round"
                                                 stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
+                                                stroke-width="1.8"
+                                                d="M6.75 3.75h7.5l4 4v12.5H6.75V3.75zm7.25 0v4.5h4.25M10 16.5l4.9-4.9 1.5 1.5-4.9 4.9-2 .5.5-2z"
+                                            />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="ml-4">
+                                    <p
+                                        class="text-sm font-medium text-gray-600"
+                                    >
+                                        {isSuperAdmin ? "Draft Posts" : "My Drafts"}
+                                    </p>
+                                    <p
+                                        class="text-2xl font-semibold text-gray-900"
+                                    >
+                                        {stats.totalDrafts}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {#if isSuperAdmin}
+                        <!-- 3. Online Users -->
+                        <div
+                            class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-md transition-shadow"
+                        >
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    <div
+                                        class="w-11 h-11 bg-[#F7941D]/10 border border-[#F7941D]/15 rounded-lg flex items-center justify-center"
+                                    >
+                                        <svg
+                                            class="w-5 h-5 text-[#F7941D]"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="1.8"
+                                                d="M9 11a3.25 3.25 0 100-6.5A3.25 3.25 0 009 11zm5.75-5.25a2.5 2.5 0 110 5M3.5 19.5v-1.25A4.25 4.25 0 017.75 14h2.5a4.25 4.25 0 014.25 4.25v1.25m1-5.25a4 4 0 015 4v1.25"
                                             />
                                         </svg>
                                     </div>
@@ -283,6 +348,7 @@
                                 </div>
                             </div>
                         </div>
+                        {/if}
 
                         <!-- 3. Views Today -->
                         <div
@@ -291,10 +357,10 @@
                             <div class="flex items-center">
                                 <div class="flex-shrink-0">
                                     <div
-                                        class="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center"
+                                        class="w-11 h-11 bg-[#F7941D]/10 border border-[#F7941D]/15 rounded-lg flex items-center justify-center"
                                     >
                                         <svg
-                                            class="w-6 h-6 text-teal-600"
+                                            class="w-5 h-5 text-[#F7941D]"
                                             fill="none"
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"
@@ -302,13 +368,13 @@
                                             <path
                                                 stroke-linecap="round"
                                                 stroke-linejoin="round"
-                                                stroke-width="2"
+                                                stroke-width="1.8"
                                                 d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                                             />
                                             <path
                                                 stroke-linecap="round"
                                                 stroke-linejoin="round"
-                                                stroke-width="2"
+                                                stroke-width="1.8"
                                                 d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                                             />
                                         </svg>
@@ -318,7 +384,7 @@
                                     <p
                                         class="text-sm font-medium text-gray-600"
                                     >
-                                        Total Views Today
+                                        {isSuperAdmin ? "Total Views Today" : "My Views Today"}
                                     </p>
                                     <p
                                         class="text-2xl font-semibold text-gray-900"
@@ -336,10 +402,10 @@
                             <div class="flex items-center">
                                 <div class="flex-shrink-0">
                                     <div
-                                        class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center"
+                                        class="w-11 h-11 bg-[#F7941D]/10 border border-[#F7941D]/15 rounded-lg flex items-center justify-center"
                                     >
                                         <svg
-                                            class="w-6 h-6 text-purple-600"
+                                            class="w-5 h-5 text-[#F7941D]"
                                             fill="none"
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"
@@ -347,14 +413,8 @@
                                             <path
                                                 stroke-linecap="round"
                                                 stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                                            />
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                                stroke-width="1.8"
+                                                d="M4 19.25V14m5.33 5.25V9.5m5.34 9.75V12m5.33 7.25V4.75"
                                             />
                                         </svg>
                                     </div>
@@ -363,7 +423,7 @@
                                     <p
                                         class="text-sm font-medium text-gray-600"
                                     >
-                                        Total Views
+                                        {isSuperAdmin ? "Total Views" : "My Total Views"}
                                     </p>
                                     <p
                                         class="text-2xl font-semibold text-gray-900"
@@ -374,6 +434,7 @@
                             </div>
                         </div>
 
+                        {#if isSuperAdmin}
                         <!-- 5. Total Admins -->
                         <div
                             class="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-md transition-shadow"
@@ -381,10 +442,10 @@
                             <div class="flex items-center">
                                 <div class="flex-shrink-0">
                                     <div
-                                        class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center"
+                                        class="w-11 h-11 bg-[#F7941D]/10 border border-[#F7941D]/15 rounded-lg flex items-center justify-center"
                                     >
                                         <svg
-                                            class="w-6 h-6 text-green-600"
+                                            class="w-5 h-5 text-[#F7941D]"
                                             fill="none"
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"
@@ -392,8 +453,8 @@
                                             <path
                                                 stroke-linecap="round"
                                                 stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
+                                                stroke-width="1.8"
+                                                d="M12 3.25l7 3v5.25c0 4.35-2.85 7.75-7 9.25-4.15-1.5-7-4.9-7-9.25V6.25l7-3zm0 8.25a2.5 2.5 0 100-5 2.5 2.5 0 000 5zm-4 5.25a4 4 0 018 0"
                                             />
                                         </svg>
                                     </div>
@@ -412,6 +473,7 @@
                                 </div>
                             </div>
                         </div>
+                        {/if}
 
                         <!-- 6. Comments -->
                         <div
@@ -420,10 +482,10 @@
                             <div class="flex items-center">
                                 <div class="flex-shrink-0">
                                     <div
-                                        class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center"
+                                        class="w-11 h-11 bg-[#F7941D]/10 border border-[#F7941D]/15 rounded-lg flex items-center justify-center"
                                     >
                                         <svg
-                                            class="w-6 h-6 text-orange-600"
+                                            class="w-5 h-5 text-[#F7941D]"
                                             fill="none"
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"
@@ -431,8 +493,8 @@
                                             <path
                                                 stroke-linecap="round"
                                                 stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                                                stroke-width="1.8"
+                                                d="M20.25 11.5a7.75 7.75 0 01-8.1 7.74 8.5 8.5 0 01-3.3-.83L4 19.75l1.35-4.15A7.75 7.75 0 1120.25 11.5zM8.5 11.5h.01m3.49 0h.01m3.49 0h.01"
                                             />
                                         </svg>
                                     </div>
@@ -441,7 +503,7 @@
                                     <p
                                         class="text-sm font-medium text-gray-600"
                                     >
-                                        Comments
+                                        {isSuperAdmin ? "Comments" : "My Comments"}
                                     </p>
                                     <p
                                         class="text-2xl font-semibold text-gray-900"
@@ -452,6 +514,40 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Top writers chart -->
+                    <section class="overflow-hidden rounded-xl border border-gray-200 bg-white">
+                        <div class="flex items-center justify-between gap-3 border-b border-gray-200 px-4 py-3 sm:px-6 sm:py-4">
+                            <div>
+                                <h3 class="text-base font-semibold text-gray-900 sm:text-lg">Top Writers This Month</h3>
+                                <p class="mt-0.5 text-xs text-gray-500">Top five writers ranked by article views.</p>
+                            </div>
+                            {#if isSuperAdmin}
+                                <a href="/admin/leaderboard" class="flex-none text-xs font-medium text-accent sm:text-sm">View all</a>
+                            {/if}
+                        </div>
+                        <div class="space-y-4 p-4 sm:p-6">
+                            {#each topWriters as writer, index}
+                                <div class="grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-1.5">
+                                    <div class="flex min-w-0 items-center gap-2">
+                                        <span class="grid h-6 w-6 flex-none place-items-center bg-gray-100 text-[11px] font-bold text-gray-600">{index + 1}</span>
+                                        <span class="truncate text-xs font-medium text-gray-800 sm:text-sm">{writer.name}</span>
+                                    </div>
+                                    <span class="text-xs font-semibold tabular-nums text-gray-900 sm:text-sm">{Number(writer.total_views).toLocaleString()} views</span>
+                                    <div class="col-span-2 ml-8 h-2.5 overflow-hidden bg-gray-100 sm:h-3">
+                                        <div
+                                            class="h-full bg-accent"
+                                            style={`width: ${Math.max(2, (Number(writer.total_views) / topWriterMaxViews) * 100)}%`}
+                                            aria-label={`${writer.name}: ${writer.total_views} views`}
+                                        ></div>
+                                    </div>
+                                    <span class="col-span-2 ml-8 text-[10px] text-gray-500 sm:text-xs">{writer.posts} posts</span>
+                                </div>
+                            {:else}
+                                <p class="py-6 text-center text-sm text-gray-500">No writer activity recorded this month.</p>
+                            {/each}
+                        </div>
+                    </section>
 
                     <!-- Recent Posts -->
                     <div class="bg-white rounded-xl border border-gray-200">
@@ -474,7 +570,7 @@
                         </div>
                         <div class="p-3 sm:p-6">
                             <div class="space-y-2 sm:space-y-4">
-                                {#each posts.slice(0, 5) as post}
+                                {#each data.recentPosts as post}
                                     <div
                                         class="flex flex-col gap-2 py-2 sm:py-3 border-b border-gray-100 last:border-0"
                                     >
@@ -504,7 +600,7 @@
                                                     >
                                                     <span
                                                         class="text-[10px] sm:text-xs text-gray-500"
-                                                        >{post.created_at}</span
+                                                        >{formatPostDate(post.created_at)}</span
                                                     >
                                                 </div>
                                             </div>
@@ -565,7 +661,7 @@
                 </div>
             {:else if activeTab === "posts"}
                 <!-- Blog Posts Management -->
-                <div class="space-y-8">
+                <div class="space-y-5 sm:space-y-8">
                     <div
                         class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
                     >
@@ -578,6 +674,12 @@
                             <p class="text-sm sm:text-base text-gray-600">
                                 Create and manage your blog posts
                             </p>
+                            {#if !isSuperAdmin}
+                                <div class="mt-4 inline-flex border border-gray-200">
+                                    <button class="px-4 py-2 text-sm {postView === 'mine' ? 'bg-accent text-white' : 'bg-white text-gray-700'}" on:click={() => postView = 'mine'}>My Posts</button>
+                                    <button class="px-4 py-2 text-sm {postView === 'all' ? 'bg-accent text-white' : 'bg-white text-gray-700'}" on:click={() => postView = 'all'}>All Posts</button>
+                                </div>
+                            {/if}
                         </div>
                         <a
                             class="flex items-center justify-center gap-2 bg-accent text-white px-4 py-2.5 rounded-lg hover:bg-accent/90 transition-colors w-full sm:w-auto"
@@ -600,20 +702,20 @@
                         </a>
                     </div>
 
-                    <div class="grid grid-cols-1 gap-6">
+                    <div class="grid grid-cols-1 gap-4 sm:gap-6">
                         <!-- Posts List -->
-                        <div class="bg-white rounded-xl border border-gray-200">
+                        <div class="min-w-0 overflow-hidden bg-white rounded-xl border border-gray-200">
                             <div
                                 class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200"
                             >
                                 <h3
                                     class="text-base sm:text-lg font-semibold text-gray-900"
                                 >
-                                    All Posts ({posts.length})
+                                    {postView === "mine" ? "My Posts" : "All Posts"} ({filteredPosts.length})
                                 </h3>
                             </div>
                             <div
-                                class="px-4 sm:px-6 py-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center"
+                                class="flex flex-col gap-2 border-b border-gray-100 px-3 py-3 sm:flex-row sm:flex-wrap sm:items-center sm:px-6"
                             >
                                 <input
                                     aria-label="Search posts"
@@ -634,7 +736,7 @@
                                         >
                                     </select>
                                     <a
-                                        class="flex flex-1 sm:flex-none items-center justify-center gap-2 bg-accent text-white px-3 py-2 rounded-lg hover:bg-accent/90 transition-colors"
+                                        class="hidden flex-1 items-center justify-center gap-2 bg-accent text-white px-3 py-2 rounded-lg hover:bg-accent/90 transition-colors sm:flex sm:flex-none"
                                         href="/admin/posts/new"
                                     >
                                         <svg
@@ -654,17 +756,17 @@
                                     </a>
                                 </div>
                             </div>
-                            <div class="max-h-96 overflow-y-auto">
+                            <div class="divide-y divide-gray-100 lg:max-h-[calc(100vh-19rem)] lg:overflow-y-auto">
                                 {#each filteredPosts as post}
                                     <div
-                                        class="p-3 sm:p-4 border-b border-gray-100 last:border-0"
+                                        class="p-3.5 sm:p-4"
                                     >
                                         <div
                                             class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3"
                                         >
-                                            <div class="flex-1">
+                                            <div class="min-w-0 flex-1">
                                                 <h4
-                                                    class="font-medium text-secondary text-sm sm:text-base line-clamp-1"
+                                                    class="line-clamp-2 text-sm font-semibold leading-snug text-secondary sm:text-base"
                                                 >
                                                     {post.title}
                                                 </h4>
@@ -673,6 +775,10 @@
                                                 >
                                                     {post.excerpt}
                                                 </p>
+                                                <p class="mt-1 truncate text-xs font-medium text-gray-500">By {post.author}</p>
+                                                {#if !canManagePost(post)}
+                                                    <span class="mt-2 inline-block bg-gray-100 px-2 py-1 text-[10px] font-semibold uppercase text-gray-600">View Only</span>
+                                                {/if}
                                                 <div
                                                     class="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-2"
                                                 >
@@ -696,8 +802,9 @@
                                                     {/if}
                                                 </div>
                                             </div>
+                                            {#if canManagePost(post)}
                                             <div
-                                                class="flex flex-col sm:flex-row gap-2 sm:gap-1 sm:ml-4 w-full sm:w-auto"
+                                                class="grid w-full grid-cols-2 gap-2 sm:ml-4 sm:flex sm:w-auto sm:flex-row sm:gap-1"
                                             >
                                                 <button
                                                     aria-label={post.status ===
@@ -706,7 +813,7 @@
                                                         : "Publish post"}
                                                     on:click={() =>
                                                         togglePublish(post)}
-                                                    class="px-3 py-2 text-xs rounded border w-full sm:w-auto {post.status ===
+                                                    class="min-h-10 w-full rounded border px-3 py-2 text-xs font-medium sm:min-h-0 sm:w-auto {post.status ===
                                                     'published'
                                                         ? 'border-yellow-300 text-yellow-700'
                                                         : 'border-green-300 text-green-700'} hover:bg-gray-50"
@@ -725,7 +832,7 @@
                                                         : "Feature post"}
                                                     on:click={() =>
                                                         toggleFeatured(post)}
-                                                    class="px-3 py-2 text-xs rounded border w-full sm:w-auto {post.featured
+                                                    class="min-h-10 w-full rounded border px-3 py-2 text-xs font-medium sm:min-h-0 sm:w-auto {post.featured
                                                         ? 'border-red-300 text-red-700'
                                                         : 'border-blue-300 text-blue-700'} hover:bg-gray-50"
                                                     title={post.featured
@@ -739,7 +846,7 @@
                                                     aria-label="Edit post"
                                                     on:click={() =>
                                                         editPost(post)}
-                                                    class="p-2.5 sm:p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors w-full sm:w-auto flex items-center justify-center gap-2"
+                                                    class="flex min-h-10 w-full items-center justify-center gap-2 rounded-lg border border-gray-200 p-2.5 text-gray-500 transition-colors hover:bg-blue-50 hover:text-blue-600 sm:min-h-0 sm:w-auto sm:border-0 sm:p-2"
                                                     title="Edit"
                                                 >
                                                     <svg
@@ -766,7 +873,7 @@
                                                         confirmDelete(
                                                             post.post_id,
                                                         )}
-                                                    class="p-2.5 sm:p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors w-full sm:w-auto flex items-center justify-center gap-2"
+                                                    class="flex min-h-10 w-full items-center justify-center gap-2 rounded-lg border border-gray-200 p-2.5 text-gray-500 transition-colors hover:bg-red-50 hover:text-red-600 sm:min-h-0 sm:w-auto sm:border-0 sm:p-2"
                                                     title="Delete"
                                                 >
                                                     <svg
@@ -788,6 +895,9 @@
                                                     >
                                                 </button>
                                             </div>
+                                            {:else}
+                                                <a class="self-center px-3 py-2 text-xs font-medium text-accent underline" href="/posts/{post.post_id}" target="_blank">View post</a>
+                                            {/if}
                                         </div>
                                     </div>
                                 {/each}
@@ -1100,6 +1210,31 @@
 {/if}
 
 <style>
+    @media (max-width: 639px) {
+        .dashboard-stats > div {
+            min-width: 0;
+            padding: 1rem;
+        }
+
+        .dashboard-stats > div > div {
+            align-items: flex-start;
+        }
+
+        .dashboard-stats > div > div > div:first-child > div {
+            width: 2.25rem;
+            height: 2.25rem;
+        }
+
+        .dashboard-stats > div > div > div:last-child {
+            min-width: 0;
+            margin-left: 0.65rem;
+        }
+
+        .dashboard-stats p {
+            overflow-wrap: anywhere;
+        }
+    }
+
     :global(.ql-toolbar) {
         border-top: 1px solid #ccc;
         border-left: 1px solid #ccc;

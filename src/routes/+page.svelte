@@ -7,7 +7,6 @@
     import Donate from "$lib/components/Donate.svelte";
     import Footer from "$lib/components/Footer.svelte";
     import Contact from "$lib/components/Contact.svelte";
-    import AboutFounder from "$lib/components/AboutFounder.svelte";
     import CategorySection from "$lib/components/CategorySection.svelte";
     import AfricansOnTheTable from "$lib/components/AfricansOnTheTable.svelte";
 
@@ -15,7 +14,7 @@
     import TrendingTicker from "$lib/components/TrendingTicker.svelte";
     import MovieRecommendations from "$lib/components/MovieRecommendations.svelte";
     import ImpactShowcase from "$lib/components/ImpactShowcase.svelte";
-    import EmployeeOfTheMonth from "$lib/components/EmployeeOfTheMonth.svelte";
+    import EmergenceSection from "$lib/components/EmergenceSection.svelte";
 
     import { onMount } from "svelte";
 
@@ -33,7 +32,7 @@
     });
 </script>
 
-<div class="app-container w-full min-h-screen overflow-x-hidden flex flex-col">
+<div class="homepage-square-edges app-container w-full min-h-screen overflow-x-hidden flex flex-col">
     <Header />
     <Hero />
     <TrendingTicker posts={data.trendingPosts} />
@@ -102,7 +101,7 @@
 
     <!-- Sports -->
     <CategorySection
-        category="sports"
+        category="sport"
         categoryName="Sports"
         posts={categoriesData.sports}
         color="var(--color-accent)"
@@ -116,13 +115,21 @@
         color="var(--color-accent)"
     />
 
+    <EmergenceSection />
+
     <!-- The Big Screen -->
     <MovieRecommendations recommendedMovies={data.recommendedMovies} />
 
     <Donate />
-    <AboutFounder />
-    <EmployeeOfTheMonth employee={data.employeeOfTheMonth} />
 
     <Contact />
     <Footer />
 </div>
+
+<style>
+    :global(.homepage-square-edges *),
+    :global(.homepage-square-edges *::before),
+    :global(.homepage-square-edges *::after) {
+        border-radius: 0 !important;
+    }
+</style>

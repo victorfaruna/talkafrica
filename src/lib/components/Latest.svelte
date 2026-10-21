@@ -55,23 +55,31 @@
                 {#each list as item}
                     <a href={item.url} class="block group">
                         <div
-                            class="item flex flex-col sm:flex-row w-full gap-5 rounded-2xl bg-white p-4 shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-gray-100 ring-1 ring-black/5"
+                            class="item flex flex-col sm:flex-row w-full gap-5 rounded-2xl border border-gray-200 bg-white p-4"
                         >
-                            <img
-                                src={getOptimizedImageUrl(item.image, { width: 400, height: 260, fit: 'fill' })}
-                                alt={item.title}
-                                class="h-[200px] sm:h-[180px] w-full sm:w-[280px] shrink-0 rounded-xl bg-gray-100 object-cover group-hover:scale-[1.02] transition-transform duration-500"
-                                loading="lazy"
-                                decoding="async"
-                            />
+                            <div
+                                class="relative h-[200px] sm:h-[180px] w-full sm:w-[280px] shrink-0 overflow-hidden rounded-xl bg-gray-100"
+                            >
+                                <img
+                                    src={getOptimizedImageUrl(item.image, { width: 400, height: 260, fit: 'fill' })}
+                                    alt={item.title}
+                                    class="h-full w-full object-cover"
+                                    loading="lazy"
+                                    decoding="async"
+                                />
+                                <div
+                                    class="pointer-events-none absolute inset-0 bg-white/25 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                                    aria-hidden="true"
+                                ></div>
+                            </div>
                             <div class="flex flex-col gap-3 py-1 pr-4">
                                 <h3
-                                    class="title text-lg lg:text-xl leading-snug font-bold text-gray-900 group-hover:text-[var(--color-accent)] transition-colors"
+                                    class="title text-lg lg:text-xl leading-snug font-bold text-gray-900"
                                 >
                                     {item.title}
                                 </h3>
                                 <p
-                                    class="description text-sm lg:text-base text-gray-500 line-clamp-3 leading-relaxed"
+                                    class="description text-sm lg:text-base text-gray-500 line-clamp-3 leading-relaxed group-hover:underline underline-offset-4 decoration-1"
                                 >
                                     {item.description}
                                 </p>

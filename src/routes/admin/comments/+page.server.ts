@@ -3,9 +3,11 @@ import { db } from '$lib/server/db';
 import { commentsTable, postTable, usersTable, movieReviewsTable } from '$lib/server/schema';
 import { eq, desc, like, or, and, sql } from 'drizzle-orm';
 
-export const load: PageServerLoad = async ({ url }) => {
+export const load: PageServerLoad = async ({ url, locals }) => {
     const status = url.searchParams.get('status') || 'all';
     const search = url.searchParams.get('search') || '';
+    const session = locals.session!;
+    const isSuperAdmin = session.role === 'super_admin';
 
     try {
         let query = db
@@ -27,14 +29,16 @@ export const load: PageServerLoad = async ({ url }) => {
             .leftJoin(usersTable, eq(commentsTable.user_id, usersTable.user_id))
             .$dynamic();
 
-        // Apply status filter
+        const filters = [];
+        if (!isSuperAdmin) filters.push(eq(postTable.author_id, session.admin_id));
+
         if (status !== 'all') {
-            query = query.where(eq(commentsTable.status, status));
+            filters.push(eq(commentsTable.status, status));
         }
 
         // Apply search filter
         if (search) {
-            query = query.where(
+            filters.push(
                 or(
                     like(commentsTable.content, `%${search}%`),
                     like(usersTable.email, `%${search}%`),
@@ -44,23 +48,19 @@ export const load: PageServerLoad = async ({ url }) => {
             );
         }
 
+        if (filters.length) query = query.where(and(...filters));
+
         const comments = await query.orderBy(desc(commentsTable.created_at));
 
         // Get counts for each status
-        const [pendingCount] = await db
+        const countStatus = async (commentStatus: string) => db
             .select({ count: db.$count(commentsTable) })
             .from(commentsTable)
-            .where(eq(commentsTable.status, 'pending'));
-
-        const [approvedCount] = await db
-            .select({ count: db.$count(commentsTable) })
-            .from(commentsTable)
-            .where(eq(commentsTable.status, 'approved'));
-
-        const [rejectedCount] = await db
-            .select({ count: db.$count(commentsTable) })
-            .from(commentsTable)
-            .where(eq(commentsTable.status, 'rejected'));
+            .innerJoin(postTable, eq(commentsTable.post_id, postTable.post_id))
+            .where(isSuperAdmin ? eq(commentsTable.status, commentStatus) : and(eq(commentsTable.status, commentStatus), eq(postTable.author_id, session.admin_id)));
+        const [[pendingCount], [approvedCount], [rejectedCount]] = await Promise.all([
+            countStatus('pending'), countStatus('approved'), countStatus('rejected')
+        ]);
 
         return {
             comments,

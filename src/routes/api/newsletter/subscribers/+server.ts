@@ -3,8 +3,10 @@ import { db } from '$lib/server/db';
 import { newsletterSubscribersTable } from '$lib/server/schema';
 import { desc } from 'drizzle-orm';
 import type { RequestHandler } from './$types';
+import { requireSuperAdmin } from '$lib/server/admin-auth';
 
-export const GET: RequestHandler = async () => {
+export const GET: RequestHandler = async ({ locals }) => {
+    requireSuperAdmin(locals);
     try {
         const subscribers = await db.select()
             .from(newsletterSubscribersTable)

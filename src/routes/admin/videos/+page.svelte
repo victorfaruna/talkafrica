@@ -6,6 +6,9 @@
     export let data;
     let videos = data.videos || [];
     let searchTerm = "";
+    const isSuperAdmin = data.role === "super_admin";
+    let videoView: "mine" | "all" = isSuperAdmin ? "all" : "mine";
+    const canManage = (video: any) => isSuperAdmin || video.author_id === data.currentAdminId;
 
     async function deleteVideo(id: string) {
         if (!confirm("Are you sure you want to delete this video?")) return;
@@ -23,9 +26,9 @@
         }
     }
 
-    $: filteredVideos = videos.filter((v: any) =>
-        v.title.toLowerCase().includes(searchTerm.toLowerCase()),
-    );
+    $: filteredVideos = videos
+        .filter((v: any) => videoView === "all" || canManage(v))
+        .filter((v: any) => v.title.toLowerCase().includes(searchTerm.toLowerCase()));
 </script>
 
 <svelte:head>
@@ -52,6 +55,12 @@
                         <p class="text-sm sm:text-base text-gray-600">
                             Upload and manage your video content
                         </p>
+                        {#if !isSuperAdmin}
+                            <div class="mt-4 inline-flex border border-gray-200">
+                                <button class="px-4 py-2 text-sm {videoView === 'mine' ? 'bg-accent text-white' : 'bg-white'}" on:click={() => videoView = 'mine'}>My Videos</button>
+                                <button class="px-4 py-2 text-sm {videoView === 'all' ? 'bg-accent text-white' : 'bg-white'}" on:click={() => videoView = 'all'}>All Videos</button>
+                            </div>
+                        {/if}
                     </div>
                     <a
                         href="/admin/videos/new"
@@ -118,6 +127,7 @@
                                             class="px-6 py-4 font-medium text-gray-900"
                                         >
                                             {video.title}
+                                            <div class="text-xs font-normal text-gray-500">By {video.author}</div>
                                             {#if video.is_featured}
                                                 <span
                                                     class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800"
@@ -135,6 +145,7 @@
                                         </td>
                                         <td class="px-6 py-4">{video.views}</td>
                                         <td class="px-6 py-4 text-right">
+                                            {#if canManage(video)}
                                             <div
                                                 class="flex items-center justify-end gap-2"
                                             >
@@ -154,6 +165,9 @@
                                                     Delete
                                                 </button>
                                             </div>
+                                            {:else}
+                                                <span class="bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-600">View Only</span>
+                                            {/if}
                                         </td>
                                     </tr>
                                 {:else}

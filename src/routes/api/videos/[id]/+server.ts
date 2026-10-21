@@ -1,6 +1,7 @@
 import { json } from "@sveltejs/kit";
 import { getVideoById, updateVideo, deleteVideo } from "$lib/server/videos";
 import type { RequestHandler } from "./$types";
+import { canManageOwner, requireAdmin } from "$lib/server/admin-auth";
 
 export const GET: RequestHandler = async ({ params }) => {
     try {
@@ -15,9 +16,13 @@ export const GET: RequestHandler = async ({ params }) => {
     }
 };
 
-export const PUT: RequestHandler = async ({ params, request }) => {
+export const PUT: RequestHandler = async ({ params, request, locals }) => {
     try {
+        const session = requireAdmin(locals);
+        const existing = await getVideoById(params.id);
+        if (!existing || !canManageOwner(session.role, session.admin_id, existing.author_id)) return json({ error: "You can only edit your own videos" }, { status: 403 });
         const data = await request.json();
+        delete data.author_id;
         const video = await updateVideo(params.id, data);
         if (!video.length) {
             return json({ error: "Video not found" }, { status: 404 });
@@ -29,8 +34,11 @@ export const PUT: RequestHandler = async ({ params, request }) => {
     }
 };
 
-export const DELETE: RequestHandler = async ({ params }) => {
+export const DELETE: RequestHandler = async ({ params, locals }) => {
     try {
+        const session = requireAdmin(locals);
+        const existing = await getVideoById(params.id);
+        if (!existing || !canManageOwner(session.role, session.admin_id, existing.author_id)) return json({ error: "You can only delete your own videos" }, { status: 403 });
         const result = await deleteVideo(params.id);
         if (!result.length) {
             return json({ error: "Video not found" }, { status: 404 });

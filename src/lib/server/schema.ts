@@ -10,6 +10,7 @@ import {
     varchar,
     date,
     real,
+    uniqueIndex,
 } from "drizzle-orm/pg-core";
 
 export const adminTable = pgTable("admin", {
@@ -22,6 +23,7 @@ export const adminTable = pgTable("admin", {
     email: varchar({ length: 255 }).notNull().unique(),
     username: varchar({ length: 255 }).unique().notNull(),
     password: varchar({ length: 255 }).notNull(),
+    role: varchar({ length: 32 }).notNull().default("admin"),
     created_at: timestamp().notNull().defaultNow(),
     updated_at: timestamp().notNull().defaultNow(),
 });
@@ -126,6 +128,7 @@ export const videosTable = pgTable("videos", {
     thumbnail_url: varchar({ length: 512 }).notNull(),
     category: varchar({ length: 128 }).notNull(),
     author: varchar({ length: 255 }).notNull().default("Admin"),
+    author_id: uuid("author_id"),
     views: integer("views").notNull().default(0),
     duration: varchar({ length: 32 }), // e.g. "5:23"
     is_featured: boolean("is_featured").notNull().default(false),
@@ -173,6 +176,15 @@ export const dailyStatsTable = pgTable("daily_stats", {
     updated_at: timestamp("updated_at").notNull().defaultNow(),
 });
 
+export const postDailyStatsTable = pgTable("post_daily_stats", {
+    id: serial("id").primaryKey(),
+    post_id: uuid("post_id").notNull(),
+    date: date("date").notNull(),
+    views: integer("views").notNull().default(0),
+}, (table) => ({
+    postDateUnique: uniqueIndex("post_daily_stats_post_date_unique").on(table.post_id, table.date),
+}));
+
 export const impactGalleryTable = pgTable("impact_gallery", {
     id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
     image_url: text("image_url").notNull(),
@@ -194,6 +206,9 @@ export const employeeOfTheMonthTable = pgTable("employee_of_the_month", {
     linkedin_url: varchar("linkedin_url", { length: 512 }),
     twitter_url: varchar("twitter_url", { length: 512 }),
     whatsapp_number: varchar("whatsapp_number", { length: 50 }),
+    selected_admin_id: uuid("selected_admin_id"),
+    selected_by: uuid("selected_by"),
+    selected_at: timestamp("selected_at"),
     created_at: timestamp("created_at").notNull().defaultNow(),
     updated_at: timestamp("updated_at").notNull().defaultNow(),
 });

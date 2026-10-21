@@ -1,8 +1,7 @@
 <script lang="ts">
-    import { fade, fly } from "svelte/transition";
-    import SEO from "$lib/components/SEO.svelte";
     import Header from "$lib/components/Header.svelte";
     import Footer from "$lib/components/Footer.svelte";
+    import CategoryHero from "$lib/components/CategoryHero.svelte";
     import { getOptimizedImageUrl } from "$lib/utils/image";
 
     interface Props {
@@ -20,397 +19,121 @@
 
     let { data }: Props = $props();
     let posts = $derived(data.posts || []);
+    let latest = $derived(posts[0] ?? null);
+    let topTrendingPost = $derived(
+        posts.reduce(
+            (top, post) => !top || (post.views || 0) > (top.views || 0) ? post : top,
+            null,
+        ),
+    );
 
-    function formatDate(dateString: string) {
-        const date = new Date(dateString);
-        return date.toLocaleDateString(undefined, {
-            year: "numeric",
-            month: "long",
+    function formatDate(value: string | Date | undefined) {
+        if (!value) return "";
+        return new Intl.DateTimeFormat("en-NG", {
+            month: "short",
             day: "numeric",
-        });
-    }
-
-    function formatViews(views: number) {
-        if (views >= 1000000) return (views / 1000000).toFixed(1) + "M";
-        if (views >= 1000) return (views / 1000).toFixed(1) + "K";
-        return views.toString();
+            year: "numeric",
+        }).format(new Date(value));
     }
 </script>
 
-
-<!-- SEO is handled by layout -->
-
 <Header />
 
-<div
-    class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-orange-50/30"
->
-    <!-- Hero Header -->
-    <header
-        class="relative bg-gradient-to-br from-orange-600 via-orange-500 to-orange-600 text-white py-24 px-4 overflow-hidden"
-    >
-        <!-- Animated Background Pattern -->
-        <div class="absolute inset-0 opacity-10">
-            <div
-                class="absolute top-20 left-10 w-72 h-72 bg-white rounded-full blur-3xl animate-pulse"
-            ></div>
-            <div
-                class="absolute bottom-20 right-10 w-96 h-96 bg-white rounded-full blur-3xl animate-pulse"
-                style="animation-delay: 1s;"
-            ></div>
-        </div>
+<div class="african-giant-page">
+    <CategoryHero
+        categoryName="African Giant of the Week"
+        posts={posts.slice(0, 10)}
+        trendingPost={topTrendingPost}
+    />
 
-        <div class="container mx-auto max-w-6xl relative z-10 text-center">
-            <div
-                class="inline-flex items-center justify-center w-24 h-24 rounded-2xl bg-white/10 backdrop-blur-sm mb-8 shadow-2xl"
-                in:fly={{ y: -20, duration: 600 }}
-            >
-                <span class="text-6xl">👑</span>
-            </div>
-            <h1
-                class="text-5xl md:text-7xl font-clash-grotesk font-bold mb-6 tracking-tight leading-tight"
-                in:fly={{ y: 20, duration: 600, delay: 100 }}
-            >
-                African Giant of the Week
-            </h1>
-            <p
-                class="text-xl md:text-2xl max-w-3xl mx-auto text-white/95 leading-relaxed font-light"
-                in:fly={{ y: 20, duration: 600, delay: 200 }}
-            >
-                Celebrating Africa's most influential leaders, innovators, and
-                changemakers who are shaping the continent's future.
-            </p>
-        </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="container mx-auto max-w-7xl px-4 py-16">
-        {#if posts.length === 0}
-            <!-- Enhanced Empty State -->
-            <div class="max-w-2xl mx-auto" in:fade>
-                <div
-                    class="bg-white rounded-3xl shadow-2xl p-16 text-center border border-orange-100/50 relative overflow-hidden"
-                >
-                    <div
-                        class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-orange-100 to-transparent rounded-full blur-3xl opacity-30 -mr-32 -mt-32"
-                    ></div>
-
-                    <div class="relative">
-                        <div
-                            class="w-28 h-28 bg-gradient-to-br from-orange-100 to-orange-50 text-orange-500 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-lg transform hover:scale-105 transition-transform"
-                        >
-                            <svg
-                                class="w-14 h-14"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-                                ></path>
-                            </svg>
-                        </div>
-                        <h3
-                            class="text-4xl font-clash-grotesk font-bold text-gray-900 mb-6"
-                        >
-                            No Giants Found Yet
-                        </h3>
-                        <p
-                            class="text-gray-600 text-xl mb-10 max-w-md mx-auto leading-relaxed"
-                        >
-                            We're currently preparing to feature our next
-                            African Giant. Check back soon to discover inspiring
-                            stories!
-                        </p>
-                        <a
-                            href="/"
-                            class="inline-flex items-center gap-3 bg-orange-500 text-white px-10 py-4 rounded-2xl font-bold text-lg hover:bg-orange-600 transition-all shadow-xl hover:shadow-2xl transform hover:-translate-y-1"
-                        >
-                            <svg
-                                class="w-6 h-6"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M10 19l-7-7m0 0l7-7m-7 7h18"
-                                />
-                            </svg>
-                            Back to Home
-                        </a>
-                    </div>
-                </div>
-            </div>
+    <main>
+        {#if !latest}
+            <section class="empty-state">
+                <span>African Giant</span>
+                <h1>Our next inspiring story is coming soon.</h1>
+                <p>Return shortly to meet another African shaping culture, industry and the world.</p>
+                <a href="/">Return home</a>
+            </section>
         {:else}
-            <!-- Featured Latest Giant -->
-            {#if posts[0]}
-                <div class="mb-20" in:fly={{ y: 40, duration: 600 }}>
-                    <div
-                        class="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100 group hover:shadow-orange-500/10 transition-all duration-500"
-                    >
-                        <div class="grid lg:grid-cols-5 gap-0">
-                            <!-- Image Column -->
-                            <div
-                                class="lg:col-span-2 relative h-96 lg:h-auto lg:min-h-[500px] overflow-hidden"
-                            >
-                                <img
-                                    src={getOptimizedImageUrl(posts[0].image, { width: 1200, height: 800 })}
-                                    alt={posts[0].title}
-                                    class="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
-                                    loading="eager"
-                                    decoding="async"
-                                    fetchpriority="high"
-                                />
-                                <div
-                                    class="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-black/40 via-black/10 to-transparent"
-                                ></div>
-
-                                <!-- Featured Badge -->
-                                <div class="absolute top-8 left-8">
-                                    <span
-                                        class="inline-flex items-center gap-2 bg-orange-500 text-white px-5 py-2.5 rounded-full text-sm font-bold shadow-2xl backdrop-blur-sm"
-                                    >
-                                        <svg
-                                            class="w-4 h-4"
-                                            fill="currentColor"
-                                            viewBox="0 0 20 20"
-                                        >
-                                            <path
-                                                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                                            />
-                                        </svg>
-                                        Latest Feature
-                                    </span>
-                                </div>
-                            </div>
-
-                            <!-- Content Column -->
-                            <div
-                                class="lg:col-span-3 p-10 lg:p-16 flex flex-col justify-center"
-                            >
-                                <div
-                                    class="flex items-center gap-4 mb-6 text-sm text-gray-500"
-                                >
-                                    <span class="flex items-center gap-2">
-                                        <svg
-                                            class="w-5 h-5 text-orange-500"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                            />
-                                        </svg>
-                                        By {posts[0].author || "Admin"}
-                                    </span>
-                                    <span>•</span>
-                                    <span class="flex items-center gap-2">
-                                        <svg
-                                            class="w-5 h-5 text-orange-500"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                                            />
-                                        </svg>
-                                        <time datetime={new Date(posts[0].created_at).toISOString().split('T')[0]}>
-                                            {formatDate(posts[0].created_at)}
-                                        </time>
-                                    </span>
-                                    <span>•</span>
-                                    <span class="flex items-center gap-2">
-                                        <svg
-                                            class="w-5 h-5 text-orange-500"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                                            />
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                                            />
-                                        </svg>
-                                        {formatViews(posts[0].views || 0)} views
-                                    </span>
-                                </div>
-
-                                <h2
-                                    class="text-3xl lg:text-5xl xl:text-6xl font-clash-grotesk font-bold text-gray-900 mb-6 leading-tight"
-                                >
-                                    <a
-                                        href="/posts/{posts[0].post_id}"
-                                        class="hover:text-orange-600 transition-colors"
-                                    >
-                                        {posts[0].title}
-                                    </a>
-                                </h2>
-
-                                <p
-                                    class="text-lg lg:text-xl text-gray-600 mb-10 leading-relaxed line-clamp-3"
-                                >
-                                    {posts[0].excerpt}
-                                </p>
-
-                                <div class="flex flex-wrap items-center gap-4">
-                                    <a
-                                        href="/posts/{posts[0].post_id}"
-                                        class="inline-flex items-center gap-3 bg-orange-500 text-white text-lg font-bold px-10 py-4 rounded-2xl hover:bg-orange-600 transition-all transform hover:-translate-y-1 shadow-xl hover:shadow-2xl"
-                                    >
-                                        Read Full Story
-                                        <svg
-                                            class="w-5 h-5"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M17 8l4 4m0 0l-4 4m4-4H3"
-                                            />
-                                        </svg>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <section class="giant-showcase" aria-labelledby="latest-giant-title">
+                <div class="showcase-texture" aria-hidden="true"></div>
+                <div class="showcase-copy">
+                    <span class="showcase-kicker">African Giant</span>
+                    <h1 id="latest-giant-title">Every giant.<br />Every story.<br />Africa in focus.</h1>
+                    <div class="short-rule" aria-hidden="true"></div>
+                    <p>
+                        Discover the people transforming African culture, creativity and influence.
+                        Each feature is thoughtfully reported to inform, celebrate and inspire.
+                    </p>
+                    <a class="showcase-cta" href={`/posts/${latest.post_id}`}>
+                        Read the latest feature <span aria-hidden="true">→</span>
+                    </a>
                 </div>
-            {/if}
 
-            <!-- Previous Features Grid -->
+                <div class="cover-stage" aria-label="Featured African Giant stories">
+                    {#if posts[2]}
+                        <a class="cover cover-back" href={`/posts/${posts[2].post_id}`} aria-label={`Read ${posts[2].title}`}>
+                            <img src={getOptimizedImageUrl(posts[2].image, { width: 520, height: 720, fit: "fill" })} alt={posts[2].title} />
+                            <span class="cover-shine" aria-hidden="true"></span>
+                            <span class="cover-brand">TA</span>
+                            <strong>{posts[2].title}</strong>
+                        </a>
+                    {/if}
+
+                    {#if posts[1]}
+                        <a class="cover cover-middle" href={`/posts/${posts[1].post_id}`} aria-label={`Read ${posts[1].title}`}>
+                            <img src={getOptimizedImageUrl(posts[1].image, { width: 600, height: 820, fit: "fill" })} alt={posts[1].title} />
+                            <span class="cover-shine" aria-hidden="true"></span>
+                            <span class="cover-brand">TalkAfrica</span>
+                            <strong>{posts[1].title}</strong>
+                        </a>
+                    {/if}
+
+                    <a class="cover cover-main" href={`/posts/${latest.post_id}`} aria-label={`Read ${latest.title}`}>
+                        <img src={getOptimizedImageUrl(latest.image, { width: 760, height: 1040, fit: "fill" })} alt={latest.title} loading="eager" fetchpriority="high" />
+                        <span class="cover-shine" aria-hidden="true"></span>
+                        <span class="cover-brand">TalkAfrica</span>
+                        <span class="cover-edition">African Giant · {formatDate(latest.created_at)}</span>
+                        <strong>{latest.title}</strong>
+                    </a>
+                </div>
+            </section>
+
             {#if posts.length > 1}
-                <div class="mb-16">
-                    <div class="flex items-center gap-4 mb-12">
-                        <div
-                            class="w-1.5 h-12 bg-gradient-to-b from-orange-500 to-orange-600 rounded-full"
-                        ></div>
-                        <h3
-                            class="text-3xl md:text-4xl font-clash-grotesk font-bold text-gray-900"
-                        >
-                            Previous Features
-                        </h3>
-                    </div>
+                <section class="archive" aria-labelledby="archive-title">
+                    <header class="archive-heading">
+                        <div>
+                            <span>Meet the changemakers</span>
+                            <h2 id="archive-title">Previous Features</h2>
+                        </div>
+                        <span>{data.pagination.totalPosts} stories</span>
+                    </header>
 
-                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {#each posts.slice(1) as post, index}
-                            <article
-                                class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden flex flex-col group border border-gray-100 hover:border-orange-200"
-                                in:fly={{
-                                    y: 40,
-                                    duration: 600,
-                                    delay: index * 100,
-                                }}
-                            >
-                                <a
-                                    href="/posts/{post.post_id}"
-                                    class="relative h-56 overflow-hidden block"
-                                >
-                                    <img
-                                        src={getOptimizedImageUrl(post.image, { width: 600, height: 400 })}
-                                        alt={post.title}
-                                        class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
-                                        loading="lazy"
-                                        decoding="async"
-                                    />
-                                    <div
-                                        class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                                    ></div>
-
-                                    <div class="absolute top-4 right-4">
-                                        <span
-                                            class="bg-white/95 backdrop-blur-sm text-xs font-bold px-3 py-1.5 rounded-full shadow-lg text-orange-600"
-                                        >
-                                            African Giant
-                                        </span>
-                                    </div>
+                    <div class="archive-grid">
+                        {#each posts.slice(1) as post}
+                            <article class="archive-card">
+                                <a class="archive-image" href={`/posts/${post.post_id}`} aria-label={`Read ${post.title}`}>
+                                    <img src={getOptimizedImageUrl(post.image, { width: 620, height: 420, fit: "fill" })} alt={post.title} loading="lazy" decoding="async" />
                                 </a>
-
-                                <div class="p-6 flex flex-col flex-1">
-                                    <div
-                                        class="flex items-center gap-3 text-sm text-gray-500 mb-4"
-                                    >
-                                        <span class="flex items-center gap-1.5">
-                                            <svg
-                                                class="w-4 h-4 text-orange-500"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                            >
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    stroke-width="2"
-                                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                                                />
-                                            </svg>
-                                            <time datetime={new Date(post.created_at).toISOString().split('T')[0]}>
-                                                {formatDate(post.created_at)}
-                                            </time>
-                                        </span>
-                                    </div>
-
-                                    <h3
-                                        class="text-xl font-bold text-gray-900 mb-3 leading-tight group-hover:text-orange-600 transition-colors line-clamp-2"
-                                    >
-                                        <a href="/posts/{post.post_id}">
-                                            {post.title}
-                                        </a>
-                                    </h3>
-
-                                    <p
-                                        class="text-gray-600 text-sm line-clamp-3 mb-6 flex-1 leading-relaxed"
-                                    >
-                                        {post.excerpt}
-                                    </p>
-
-                                    <a
-                                        href="/posts/{post.post_id}"
-                                        class="inline-flex items-center gap-2 text-orange-600 font-bold text-sm hover:text-orange-700 group/link"
-                                    >
-                                        Read Story
-                                        <svg
-                                            class="w-4 h-4 transform group-hover/link:translate-x-1 transition-transform"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M17 8l4 4m0 0l-4 4m4-4H3"
-                                            />
-                                        </svg>
-                                    </a>
+                                <div class="archive-meta">
+                                    <span>{post.author || "TalkAfrica"}</span>
+                                    <time datetime={post.created_at ? new Date(post.created_at).toISOString() : undefined}>{formatDate(post.created_at)}</time>
                                 </div>
+                                <h3><a href={`/posts/${post.post_id}`}>{post.title}</a></h3>
+                                {#if post.excerpt}<p>{post.excerpt}</p>{/if}
+                                <a class="story-link" href={`/posts/${post.post_id}`}>Read story <span aria-hidden="true">→</span></a>
                             </article>
                         {/each}
                     </div>
-                </div>
+                </section>
+            {/if}
+
+            {#if data.pagination.totalPages > 1}
+                <nav class="pagination" aria-label="African Giant article pages">
+                    {#if data.pagination.hasPrevPage}<a href={`?page=${data.pagination.currentPage - 1}`}>← Previous</a>{/if}
+                    <span>Page {data.pagination.currentPage} of {data.pagination.totalPages}</span>
+                    {#if data.pagination.hasNextPage}<a href={`?page=${data.pagination.currentPage + 1}`}>Next →</a>{/if}
+                </nav>
             {/if}
         {/if}
     </main>
@@ -419,33 +142,565 @@
 <Footer />
 
 <style>
-    .line-clamp-2 {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
+    .african-giant-page {
+        background: #fff;
+        color: #111827;
     }
 
-    .line-clamp-3 {
+    main {
+        width: min(100%, 1500px);
+        margin: 0 auto;
+        padding: 4.5rem var(--side-p) 5rem;
+    }
+
+    .giant-showcase {
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(18rem, 0.85fr) minmax(30rem, 1.35fr);
+        height: clamp(29rem, 36vw, 32rem);
+        overflow: visible;
+        background: #151515;
+        color: #fff;
+    }
+
+    .showcase-texture {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+        background:
+            radial-gradient(circle at 20% 18%, rgba(255,255,255,.055) 0 1px, transparent 2px),
+            radial-gradient(circle at 75% 68%, rgba(255,255,255,.04) 0 1px, transparent 2px),
+            linear-gradient(115deg, #191919, #0d0d0d 70%);
+        background-size: 12px 12px, 17px 17px, auto;
+    }
+
+    .showcase-copy {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        height: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        box-sizing: border-box;
+        padding: clamp(2.25rem, 3.5vw, 3.5rem);
+    }
+
+    .showcase-kicker {
+        display: block;
+        margin-bottom: 1rem;
+        color: #f59e0b;
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+    }
+
+    .showcase-copy h1 {
+        margin: 0;
+        max-width: 15ch;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(2rem, 2.8vw, 2.8rem);
+        line-height: 1.05;
+    }
+
+    .short-rule {
+        width: 3.5rem;
+        height: 3px;
+        margin: 1.35rem 0;
+        background: #fff;
+    }
+
+    .showcase-copy p {
+        max-width: 34rem;
+        margin: 0;
+        color: rgba(255,255,255,.78);
+        font-size: clamp(0.92rem, 1.2vw, 1.08rem);
+        line-height: 1.6;
+    }
+
+    .showcase-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-top: 1.4rem;
+        padding: 0.85rem 1rem;
+        background: #f59e0b;
+        color: #111827;
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        transition: background-color 180ms ease;
+    }
+
+    .showcase-cta:hover {
+        background: #fff;
+    }
+
+    .cover-stage {
+        position: relative;
+        z-index: 3;
+        height: 100%;
+    }
+
+    .cover {
+        position: absolute;
+        display: block;
+        overflow: hidden;
+        border: 7px solid #0d0d0d;
+        background: #242424;
+        box-shadow: 0 1.4rem 2.5rem rgba(0,0,0,.35);
+        color: #fff;
+        transition:
+            width 420ms cubic-bezier(.22, 1, .36, 1),
+            top 420ms cubic-bezier(.22, 1, .36, 1),
+            right 420ms cubic-bezier(.22, 1, .36, 1),
+            left 420ms cubic-bezier(.22, 1, .36, 1),
+            box-shadow 420ms ease,
+            opacity 300ms ease;
+    }
+
+    .cover::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,.82), transparent 52%);
+    }
+
+    .cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .cover-shine {
+        position: absolute;
+        z-index: 4;
+        inset: 0;
+        background: rgba(255,255,255,.25);
+        opacity: 0;
+        transition: opacity 300ms ease;
+    }
+
+    .cover:hover .cover-shine {
+        opacity: 1;
+    }
+
+    .cover-brand,
+    .cover-edition,
+    .cover strong {
+        position: absolute;
+        z-index: 5;
+        left: 1rem;
+        right: 1rem;
+    }
+
+    .cover-brand {
+        top: 0.8rem;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(1.15rem, 2.2vw, 2rem);
+        font-weight: 700;
+    }
+
+    .cover-edition {
+        top: 3.5rem;
+        color: rgba(255,255,255,.82);
+        font-size: 0.6rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+    }
+
+    .cover strong {
+        bottom: 1.2rem;
         display: -webkit-box;
+        overflow: hidden;
+        font-family: var(--font-clash-grotesk);
+        font-size: clamp(0.8rem, 1.35vw, 1.15rem);
+        line-height: 1.15;
+        -webkit-box-orient: vertical;
         -webkit-line-clamp: 3;
-        line-clamp: 3;
-        -webkit-box-orient: vertical;
+    }
+
+    .cover-main {
+        z-index: 4;
+        top: 50%;
+        left: 5%;
+        width: 52%;
+        height: auto;
+        aspect-ratio: 3 / 4;
+        transform: translateY(-50%);
+    }
+
+    .cover-middle {
+        z-index: 3;
+        top: 54%;
+        right: 16%;
+        width: 40%;
+        height: auto;
+        aspect-ratio: 3 / 4;
+        transform: translateY(-50%);
+    }
+
+    .cover-back {
+        z-index: 2;
+        top: 57%;
+        right: 2%;
+        width: 30%;
+        height: auto;
+        aspect-ratio: 3 / 4;
+        transform: translateY(-50%);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        .cover-stage:has(.cover-middle:hover) .cover-middle,
+        .cover-stage:has(.cover-middle:focus-visible) .cover-middle {
+            z-index: 6;
+            top: 50%;
+            right: 8%;
+            width: 52%;
+            box-shadow: 0 2rem 3.5rem rgba(0,0,0,.48);
+        }
+
+        .cover-stage:has(.cover-middle:hover) .cover-main,
+        .cover-stage:has(.cover-middle:focus-visible) .cover-main {
+            z-index: 3;
+            left: 2%;
+            width: 40%;
+            box-shadow: 0 1rem 2rem rgba(0,0,0,.28);
+        }
+
+        .cover-stage:has(.cover-middle:hover) .cover-back,
+        .cover-stage:has(.cover-middle:focus-visible) .cover-back {
+            opacity: .72;
+        }
+
+        .cover-stage:has(.cover-back:hover) .cover-back,
+        .cover-stage:has(.cover-back:focus-visible) .cover-back {
+            z-index: 7;
+            top: 50%;
+            right: 2%;
+            width: 52%;
+            opacity: 1;
+            box-shadow: 0 2rem 3.5rem rgba(0,0,0,.48);
+        }
+
+        .cover-stage:has(.cover-back:hover) .cover-main,
+        .cover-stage:has(.cover-back:focus-visible) .cover-main {
+            z-index: 3;
+            left: 1%;
+            width: 40%;
+            box-shadow: 0 1rem 2rem rgba(0,0,0,.28);
+        }
+
+        .cover-stage:has(.cover-back:hover) .cover-middle,
+        .cover-stage:has(.cover-back:focus-visible) .cover-middle {
+            z-index: 4;
+            right: 14%;
+            width: 34%;
+            opacity: .78;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .cover {
+            transition-duration: .01ms;
+        }
+    }
+
+    .archive {
+        margin-top: 7rem;
+    }
+
+    .archive-heading {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 1.5rem;
+        margin-bottom: 1.25rem;
+        padding-bottom: 0.85rem;
+        border-bottom: 2px solid #111827;
+    }
+
+    .archive-heading > div > span {
+        color: #f59e0b;
+        font-size: 0.68rem;
+        font-weight: 800;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+    }
+
+    .archive-heading h2 {
+        margin: .2rem 0 0;
+        font-family: var(--font-clash-grotesk);
+        font-size: clamp(1.8rem, 3vw, 2.8rem);
+        line-height: 1;
+    }
+
+    .archive-heading > span {
+        color: #6b7280;
+        font-size: .75rem;
+        text-transform: uppercase;
+    }
+
+    .archive-grid {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 1.5rem;
+    }
+
+    .archive-card {
+        grid-column: span 2;
+    }
+
+    /* When two cards remain, let them share the final row equally. */
+    .archive-card:nth-last-child(2):nth-child(3n + 1),
+    .archive-card:nth-last-child(2):nth-child(3n + 1) + .archive-card {
+        grid-column: span 3;
+    }
+
+    .archive-image {
+        position: relative;
+        display: block;
+        aspect-ratio: 3 / 2;
         overflow: hidden;
+        background: #e5e7eb;
     }
 
-    @keyframes pulse {
-        0%,
-        100% {
-            opacity: 0.1;
+    .archive-image::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(255,255,255,.25);
+        opacity: 0;
+        transition: opacity 300ms ease;
+    }
+
+    .archive-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .archive-card:hover .archive-image::after {
+        opacity: 1;
+    }
+
+    .archive-meta {
+        display: flex;
+        justify-content: space-between;
+        gap: .75rem;
+        margin-top: .7rem;
+        color: #6b7280;
+        font-size: .68rem;
+    }
+
+    .archive-meta span {
+        color: #374151;
+        font-weight: 700;
+    }
+
+    .archive-card h3 {
+        margin: .55rem 0 0;
+        font-family: var(--font-clash-grotesk);
+        font-size: clamp(1.05rem, 1.5vw, 1.35rem);
+        line-height: 1.2;
+    }
+
+    .archive-card:hover h3 a {
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 4px;
+    }
+
+    .archive-card p {
+        display: -webkit-box;
+        overflow: hidden;
+        margin: .6rem 0 0;
+        color: #667085;
+        font-size: .84rem;
+        line-height: 1.5;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+    }
+
+    .story-link {
+        display: inline-flex;
+        gap: .4rem;
+        margin-top: .75rem;
+        font-size: .72rem;
+        font-weight: 800;
+        text-transform: uppercase;
+    }
+
+    .story-link:hover {
+        color: #f59e0b;
+    }
+
+    .pagination {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 3rem;
+        padding: 1rem;
+        border-block: 1px solid #d1d5db;
+        background: #f8fafc;
+        font-size: .8rem;
+        font-weight: 700;
+    }
+
+    .pagination a:hover {
+        color: #f59e0b;
+    }
+
+    .empty-state {
+        max-width: 48rem;
+        margin: 0 auto;
+        padding: 5rem 1rem;
+        text-align: center;
+    }
+
+    .empty-state > span {
+        color: #f59e0b;
+        font-size: .7rem;
+        font-weight: 800;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+    }
+
+    .empty-state h1 {
+        margin: .75rem 0;
+        font-family: var(--font-clash-grotesk);
+        font-size: clamp(2rem, 5vw, 4rem);
+    }
+
+    .empty-state p {
+        color: #6b7280;
+    }
+
+    .empty-state a {
+        display: inline-block;
+        margin-top: 1.5rem;
+        color: #f59e0b;
+        font-weight: 800;
+    }
+
+    @media (max-width: 960px) {
+        .giant-showcase {
+            grid-template-columns: 1fr;
+            height: auto;
         }
-        50% {
-            opacity: 0.2;
+
+        .cover-stage {
+            height: 32rem;
+            min-height: 32rem;
+        }
+
+        .cover-main {
+            top: 50%;
+            left: 8%;
+            height: auto;
+            aspect-ratio: 3 / 4;
+        }
+
+        .cover-middle {
+            top: 54%;
+            right: 18%;
+            height: auto;
+            aspect-ratio: 3 / 4;
+        }
+
+        .cover-back {
+            top: 57%;
+            height: auto;
+            aspect-ratio: 3 / 4;
+        }
+
+        .archive {
+            margin-top: 4rem;
         }
     }
 
-    .animate-pulse {
-        animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    @media (max-width: 700px) {
+        main {
+            padding-top: 2.5rem;
+        }
+
+        .showcase-copy {
+            padding: 2.5rem 1.5rem;
+        }
+
+        .cover-stage {
+            height: 24rem;
+            min-height: 24rem;
+        }
+
+        .cover {
+            border-width: 4px;
+        }
+
+        .cover-main {
+            top: 50%;
+            left: 4%;
+            width: 55%;
+            height: auto;
+            aspect-ratio: 3 / 4;
+        }
+
+        .cover-middle {
+            top: 54%;
+            right: 13%;
+            width: 42%;
+            height: auto;
+            aspect-ratio: 3 / 4;
+        }
+
+        .cover-back {
+            top: 57%;
+            right: 1%;
+            width: 31%;
+            height: auto;
+            aspect-ratio: 3 / 4;
+        }
+
+        .cover-brand {
+            font-size: 1rem;
+        }
+
+        .cover-edition {
+            display: none;
+        }
+
+        .archive-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .archive-card {
+            grid-column: auto !important;
+            display: grid;
+            grid-template-columns: 7.5rem minmax(0, 1fr);
+            column-gap: .9rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #d1d5db;
+        }
+
+        .archive-card .archive-image {
+            grid-row: 1 / 6;
+            aspect-ratio: 1 / 1;
+        }
+
+        .archive-card .archive-meta {
+            margin-top: 0;
+        }
+
+        .archive-card h3 {
+            font-size: 1rem;
+        }
+
+        .archive-card p {
+            display: none;
+        }
     }
 </style>

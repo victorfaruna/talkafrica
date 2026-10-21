@@ -14,6 +14,7 @@ declare global {
                 email: string;
                 username: string;
                 name: string;
+                role: "super_admin" | "admin";
             };
         }
         // interface PageData {}

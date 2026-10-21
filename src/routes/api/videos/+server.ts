@@ -25,7 +25,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         }
 
         const data = await request.json();
-        const video = await createVideo(data);
+        const video = await createVideo({ ...data, author_id: session.admin_id, author: session.name });
         return json({ video: video[0] }, { status: 201 });
     } catch (error) {
         console.error("Error creating video:", error);

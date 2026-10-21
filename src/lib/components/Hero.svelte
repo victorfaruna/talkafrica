@@ -95,7 +95,7 @@
                     >.ng</span
                 >
             </p>
-            <p class="max-w-[90%] text-[0.7rem] lg:text-[1rem] text-primary/70">
+            <p class="max-w-[90%] text-[0.7rem] leading-relaxed text-primary/70 lg:max-w-[60%] lg:text-[1rem]">
                 TalkAfrica NG is a vibrant storytelling platform dedicated to
                 capturing the authentic voices of Africa. We tell the stories of
                 our people their hustle and bustle, their struggles, and their

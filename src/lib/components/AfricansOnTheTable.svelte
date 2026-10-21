@@ -45,7 +45,7 @@
                         >
                     </h2>
                     <div
-                        class="block relative w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 rotate-6 hover:rotate-0 transition-transform duration-500 shrink-0"
+                        class="block relative w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 rotate-6 shrink-0"
                     >
                         <div
                             class="absolute inset-0 bg-[#F7941D] rounded-2xl rotate-6 opacity-20"
@@ -76,13 +76,13 @@
                     <!-- Featured Video -->
                     {#each videos.slice(0, 1) as video}
                         <div
-                            class="group relative w-full aspect-[3/4] md:aspect-[16/9] lg:aspect-[4/3] xl:aspect-[16/9] rounded-[2rem] overflow-hidden bg-gray-900 border border-white/5 shadow-2xl transition-all duration-500 hover:shadow-[0_20px_50px_rgba(247,148,29,0.15)]"
+                            class="group relative w-full aspect-[3/4] md:aspect-[16/9] lg:aspect-[4/3] xl:aspect-[16/9] rounded-[2rem] overflow-hidden bg-gray-900 border border-white/5 shadow-2xl transition-all duration-500"
                         >
                             <!-- Image -->
                             <img
                                 src={getOptimizedImageUrl(video.thumbnail_url, { width: 1280, height: 720, fit: 'fill' })}
                                 alt={video.title}
-                                class="absolute inset-0 w-full h-full object-cover opacity-100 group-hover:scale-105 transition-all duration-700"
+                                class="absolute inset-0 w-full h-full object-cover opacity-100"
                                 loading="lazy"
                                 decoding="async"
                             />
@@ -91,13 +91,16 @@
                             <div
                                 class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"
                             ></div>
+                            <div
+                                class="pointer-events-none absolute inset-0 z-10 bg-white/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                            ></div>
 
                             <!-- Play Button (Centered) -->
                             <div
                                 class="absolute inset-0 flex items-center justify-center z-20 pointer-events-none"
                             >
                                 <div
-                                    class="w-20 h-20 md:w-24 md:h-24 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 group-hover:scale-110 group-hover:bg-[#F7941D] group-hover:border-[#F7941D] transition-all duration-300"
+                                    class="w-20 h-20 md:w-24 md:h-24 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20"
                                 >
                                     <svg
                                         class="w-8 h-8 md:w-10 md:h-10 text-white fill-current ml-1"
@@ -124,7 +127,7 @@
                                     >
                                 </div>
                                 <h3
-                                    class="font-clash-grotesk font-bold text-2xl md:text-5xl leading-tight mb-4 text-white group-hover:text-[#F7941D] transition-colors"
+                                    class="font-clash-grotesk font-bold text-2xl md:text-5xl leading-tight mb-4 text-white group-hover:underline decoration-2 underline-offset-4"
                                 >
                                     {video.title}
                                 </h3>
@@ -152,17 +155,20 @@
                     {#each posts.slice(0, 1) as post}
                         <a
                             href="/posts/{post.post_id}"
-                            class="block group relative w-full aspect-[3/4] md:aspect-[16/9] lg:aspect-[4/3] xl:aspect-[16/9] rounded-[2rem] overflow-hidden bg-gray-900 border border-white/5 shadow-2xl transition-all duration-500 hover:shadow-[0_20px_50px_rgba(247,148,29,0.15)]"
+                            class="block group relative w-full aspect-[3/4] md:aspect-[16/9] lg:aspect-[4/3] xl:aspect-[16/9] rounded-[2rem] overflow-hidden bg-gray-900 border border-white/5 shadow-2xl transition-all duration-500"
                         >
                             <img
                                 src={getOptimizedImageUrl(post.image, { width: 1280, height: 720, fit: 'fill' })}
                                 alt={post.title}
-                                class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-90 group-hover:scale-105 transition-all duration-700"
+                                class="absolute inset-0 w-full h-full object-cover opacity-80"
                                 loading="lazy"
                                 decoding="async"
                             />
                             <div
                                 class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"
+                            ></div>
+                            <div
+                                class="pointer-events-none absolute inset-0 z-10 bg-white/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                             ></div>
 
                             <div
@@ -176,7 +182,7 @@
                                     </span>
                                 </div>
                                 <h3
-                                    class="font-clash-grotesk font-bold text-2xl md:text-5xl leading-tight mb-4 text-white group-hover:text-[#F7941D] transition-colors"
+                                    class="font-clash-grotesk font-bold text-2xl md:text-5xl leading-tight mb-4 text-white group-hover:underline decoration-2 underline-offset-4"
                                 >
                                     {post.title}
                                 </h3>
@@ -244,10 +250,13 @@
                                 <img
                                     src={getOptimizedImageUrl(post.image, { width: 200, height: 200, fit: 'fill' })}
                                     alt={post.title}
-                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                    class="w-full h-full object-cover"
                                     loading="lazy"
                                     decoding="async"
                                 />
+                                <div
+                                    class="pointer-events-none absolute inset-0 bg-white/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                                ></div>
                             </div>
                             <div class="flex-1 min-w-0 pr-2">
                                 <div class="flex items-center gap-2 mb-2">
@@ -260,7 +269,7 @@
                                     >
                                 </div>
                                 <h4
-                                    class="text-white font-clash-grotesk font-semibold text-xl leading-snug group-hover:text-[#F7941D] transition-colors line-clamp-2"
+                                    class="text-white font-clash-grotesk font-semibold text-xl leading-snug group-hover:underline underline-offset-4 decoration-1 line-clamp-2"
                                 >
                                     {post.title}
                                 </h4>
@@ -291,8 +300,11 @@
                                     src={post.image ||
                                         "/images/placeholder.webp"}
                                     alt={post.title}
-                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                    class="w-full h-full object-cover"
                                 />
+                                <div
+                                    class="pointer-events-none absolute inset-0 bg-white/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                                ></div>
                             </div>
                             <div class="flex-1 min-w-0 pr-2">
                                 <div class="flex items-center gap-2 mb-2">
@@ -305,7 +317,7 @@
                                     >
                                 </div>
                                 <h4
-                                    class="text-white font-clash-grotesk font-semibold text-xl leading-snug group-hover:text-[#F7941D] transition-colors line-clamp-2"
+                                    class="text-white font-clash-grotesk font-semibold text-xl leading-snug group-hover:underline underline-offset-4 decoration-1 line-clamp-2"
                                 >
                                     {post.title}
                                 </h4>
@@ -328,20 +340,20 @@
                 <!-- View All Link -->
                 <a
                     href="/category/africans-on-the-table"
-                    class="mt-auto group flex items-center justify-between p-6 rounded-3xl border border-[#F7941D]/30 hover:bg-[#F7941D] transition-all duration-300"
+                    class="mt-auto flex items-center justify-between p-6 rounded-3xl border border-[#F7941D]/30"
                 >
                     <div>
                         <span
-                            class="block text-white font-bold text-lg group-hover:text-white"
+                            class="block text-white font-bold text-lg"
                             >View All Conversations</span
                         >
                         <span
-                            class="text-white/50 text-sm group-hover:text-white/80"
+                            class="text-white/50 text-sm"
                             >Explore more voices</span
                         >
                     </div>
                     <div
-                        class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-[#F7941D] transition-all"
+                        class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"
                     >
                         <svg
                             class="w-5 h-5"

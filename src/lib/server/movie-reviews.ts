@@ -8,7 +8,8 @@ export async function getMovieReviews(limit = 10, offset = 0, status?: string) {
         .from(movieReviewsTable)
         .orderBy(desc(movieReviewsTable.created_at))
         .limit(limit)
-        .offset(offset);
+        .offset(offset)
+        .$dynamic();
 
     if (status) {
         query = query.where(eq(movieReviewsTable.status, status));

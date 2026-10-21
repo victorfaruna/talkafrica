@@ -303,10 +303,13 @@
             class="bg-white rounded-xl border border-gray-200 p-4 sm:p-8 space-y-6 sm:space-y-8 shadow-sm"
         >
             <!-- Title Section -->
-            <div>
+            <div class="space-y-2">
+                <p class="text-xs font-bold uppercase tracking-wider text-accent">
+                    Step 1 · Article title
+                </p>
                 <label
                     for="title"
-                    class="block text-sm font-semibold text-gray-700 mb-2"
+                    class="block text-sm font-semibold text-gray-700"
                     >Title *</label
                 >
                 <input
@@ -319,10 +322,18 @@
             </div>
 
             <!-- Editor Section -->
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2"
-                    >Content *</label
-                >
+            <div class="space-y-3 border-y border-gray-200 py-6 sm:py-8">
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-wider text-accent mb-1">
+                        Step 2 · Write your article
+                    </p>
+                    <label class="block text-lg font-bold text-gray-900"
+                        >Article Content *</label
+                    >
+                    <p class="mt-1 text-sm text-gray-500">
+                        This is the main writing area. Type and format your full article here, just like a Word document. You can add text, pictures, tables, links, headings, and lists.
+                    </p>
+                </div>
                 <!-- New Rich Text Editor -->
                 <RichTextEditor
                     bind:content
@@ -332,14 +343,26 @@
                 />
             </div>
 
+            <div>
+                <p class="text-xs font-bold uppercase tracking-wider text-accent">
+                    Step 3 · Post settings
+                </p>
+                <p class="mt-1 text-sm text-gray-500">
+                    Choose where the article appears and upload its main preview image.
+                </p>
+            </div>
+
             <!-- Categories and Editor Details -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <!-- Categories -->
                 <div>
                     <label
                         class="block text-sm font-semibold text-gray-700 mb-2"
-                        >Categories</label
+                        >Article Categories</label
                     >
+                    <p class="text-xs text-gray-500 mb-2">
+                        These buttons only classify the post; they are not part of the article content.
+                    </p>
                     <div
                         class="w-full min-h-[3rem] px-3 py-3 border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-accent/50 bg-white"
                     >
@@ -355,12 +378,9 @@
                                     )}
                                     {@const displayName =
                                         cat?.display_name || catSlug}
-                                    {@const isGiant =
-                                        catSlug === "african-giant"}
                                     <span
                                         class="inline-flex items-center gap-1.5 px-3 py-1 bg-accent/10 text-accent rounded-full text-sm font-medium border border-accent/10"
                                     >
-                                        {#if isGiant}👑{/if}
                                         {displayName}
                                         <button
                                             type="button"
@@ -395,14 +415,13 @@
                                 {@const isSelected = isCategorySelected(
                                     cat.slug,
                                 )}
-                                {@const isGiant = cat.slug === "african-giant"}
                                 {#if !isSelected}
                                     <button
                                         type="button"
                                         onclick={() => toggleCategory(cat.slug)}
                                         class="px-3 py-1 border border-gray-200 bg-gray-50 rounded-lg text-sm text-gray-600 hover:bg-white hover:border-accent hover:text-accent hover:shadow-sm transition-all"
                                     >
-                                        {#if isGiant}👑{/if} + {cat.display_name}
+                                        + {cat.display_name}
                                     </button>
                                 {/if}
                             {/each}
@@ -494,7 +513,7 @@
                             >Excerpt / Description *</label
                         >
                         <p class="text-xs text-gray-500 mt-1">
-                            Brief summary that appears in previews
+                            Short preview only — this is not the article body
                         </p>
                     </div>
 
@@ -529,17 +548,17 @@
                 <div class="min-h-[20px]">
                     {#if wordCount === 0}
                         <p class="text-xs text-gray-500">
-                            💡 Start writing your excerpt...
+                            Start writing your excerpt...
                         </p>
                     {:else if wordsNeeded > 0}
                         <p class="text-xs text-red-600 font-medium">
-                            ⚠️ Add {wordsNeeded} more word{wordsNeeded !== 1
+                            Add {wordsNeeded} more word{wordsNeeded !== 1
                                 ? "s"
                                 : ""} (minimum {MIN_WORDS})
                         </p>
                     {:else if wordsOver > 0}
                         <p class="text-xs text-red-600 font-medium">
-                            ⚠️ Too long! Remove {wordsOver} word{wordsOver !== 1
+                            Too long! Remove {wordsOver} word{wordsOver !== 1
                                 ? "s"
                                 : ""} (maximum {MAX_WORDS})
                         </p>

@@ -32,6 +32,10 @@
 	"/admin/impact/new": [
 		"src/routes/admin/+layout.server.ts"
 	],
+	"/admin/leaderboard": [
+		"src/routes/admin/leaderboard/+page.server.ts",
+		"src/routes/admin/+layout.server.ts"
+	],
 	"/admin/login": [
 		"src/routes/admin/+layout.server.ts"
 	],
@@ -71,6 +75,12 @@
 	],
 	"/api/categories": [
 		"src/routes/api/categories/+server.ts"
+	],
+	"/api/comments/bulk": [
+		"src/routes/api/comments/bulk/+server.ts"
+	],
+	"/api/comment/[id]": [
+		"src/routes/api/comment/[id]/+server.ts"
 	],
 	"/api/donate": [
 		"src/routes/api/donate/+server.ts"

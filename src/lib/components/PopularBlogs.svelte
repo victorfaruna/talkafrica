@@ -8,7 +8,12 @@
     import { getOptimizedImageUrl } from "$lib/utils/image";
     $: list = (posts ?? []).slice(0, 8).map((p) => ({
         title: p.title,
-        image: p.image ?? "/images/placeholder.webp",
+        image: getOptimizedImageUrl(p.image, {
+            width: 600,
+            height: 450,
+            fit: "fill",
+            gravity: "auto",
+        }),
         url: `/posts/${p.post_id}`,
     }));
 </script>
@@ -37,17 +42,23 @@
                 >
                     <!-- Mobile: Horizontal Card | Desktop: Vertical Card -->
                     <div
-                        class="flex flex-row sm:flex-col w-full h-full gap-3 sm:gap-4 rounded-xl sm:rounded-2xl bg-white p-3 sm:p-4 shadow-sm hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1 border border-transparent hover:border-gray-100 ring-1 ring-black/5"
+                        class="flex flex-row sm:flex-col w-full h-full gap-3 sm:gap-4 rounded-xl sm:rounded-2xl bg-white p-3 sm:p-4 shadow-sm border border-gray-200"
                     >
                         <!-- Image: Left on mobile, Top on desktop -->
                         <div
-                            class="flex-shrink-0 w-[100px] sm:w-full aspect-square sm:aspect-[4/3] overflow-hidden rounded-lg sm:rounded-xl relative"
+                            class="flex-shrink-0 w-[100px] sm:w-full aspect-square sm:aspect-[4/3] overflow-hidden rounded-lg sm:rounded-xl relative bg-gray-100"
                         >
                             <img
                                 src={item.image}
                                 alt={item.title}
-                                class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                class="absolute inset-0 w-full h-full object-cover object-center"
+                                loading="lazy"
+                                decoding="async"
                             />
+                            <div
+                                class="pointer-events-none absolute inset-0 bg-white/25 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                                aria-hidden="true"
+                            ></div>
                         </div>
 
                         <!-- Content: Right on mobile, Bottom on desktop -->
@@ -55,12 +66,12 @@
                             class="flex flex-col flex-grow gap-2 sm:gap-3 justify-between min-w-0"
                         >
                             <h3
-                                class="text-sm sm:text-lg lg:text-xl font-bold text-gray-900 line-clamp-2 group-hover:text-[var(--color-accent)] transition-colors"
+                                class="text-sm sm:text-lg lg:text-xl font-bold text-gray-900 line-clamp-2 group-hover:underline underline-offset-4 decoration-1"
                             >
                                 {item.title}
                             </h3>
                             <button
-                                class="self-start text-xs sm:text-sm font-semibold text-[var(--color-accent)] flex items-center gap-1 sm:gap-2 group-hover:gap-2 sm:group-hover:gap-3 transition-all"
+                                class="self-start text-xs sm:text-sm font-semibold text-[var(--color-accent)] flex items-center gap-1 sm:gap-2"
                             >
                                 Read Article
                                 <svg

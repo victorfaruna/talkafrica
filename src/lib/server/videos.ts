@@ -41,6 +41,7 @@ export async function createVideo(data: {
     thumbnail_url: string;
     category: string;
     author: string;
+    author_id?: string;
     duration?: string;
     is_featured?: boolean;
 }) {

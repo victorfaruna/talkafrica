@@ -61,10 +61,10 @@
             <nav class="article-hero-nav">
                 <a
                     href="/"
-                    class="article-hero-back-link group text-gray-600 hover:text-orange-600"
+                    class="article-hero-back-link group text-gray-600 hover:text-[#FDB022]"
                 >
                     <span
-                        class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-orange-100 transition-colors"
+                        class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-[#FDB022]/10 transition-colors"
                     >
                         <svg
                             class="w-4 h-4"
@@ -80,7 +80,7 @@
                         </svg>
                     </span>
                     <span
-                        class="sr-only sm:not-sr-only sm:inline-block border-b border-transparent group-hover:border-orange-600/50 transition-all"
+                        class="sr-only sm:not-sr-only sm:inline-block border-b border-transparent group-hover:border-[#FDB022]/50 transition-all"
                         >Back to Home</span
                     >
                 </a>
@@ -140,8 +140,8 @@
         inset: 0;
         background: linear-gradient(
             to bottom,
-            rgba(0, 0, 0, 0.2) 0%,
-            rgba(0, 0, 0, 0.4) 40%,
+            rgba(0, 0, 0, 0.72) 0%,
+            rgba(0, 0, 0, 0.42) 38%,
             rgba(0, 0, 0, 0.8) 100%
         );
         z-index: 1;
@@ -207,14 +207,14 @@
     }
 
     .article-hero-no-image .article-hero-back-link {
-        color: #c2410c; /* Orange 700 */
-        background-color: rgba(234, 88, 12, 0.1); /* Orange/10 */
-        border-color: rgba(234, 88, 12, 0.2);
+        color: #FDB022;
+        background-color: rgba(253, 176, 34, 0.1);
+        border-color: rgba(253, 176, 34, 0.2);
     }
 
     .article-hero-no-image .article-hero-back-link:hover {
-        background-color: rgba(234, 88, 12, 0.15);
-        border-color: rgba(234, 88, 12, 0.4);
+        background-color: rgba(253, 176, 34, 0.15);
+        border-color: rgba(253, 176, 34, 0.4);
     }
 
     /* Title Typography */
@@ -228,7 +228,7 @@
     }
 
     .article-hero-title {
-        font-size: clamp(2.125rem, 5vw, 5rem);
+        font-size: clamp(1.9rem, 4vw, 4rem);
         color: white;
         text-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
     }
@@ -283,3 +283,4 @@
         }
     }
 </style>
+

@@ -37,17 +37,17 @@
     <div class="mx-auto max-w-7xl">
         <!-- Main Footer Content -->
         <div
-            class="mb-8 md:mb-12 grid grid-cols-1 gap-8 md:gap-8 md:grid-cols-2 lg:grid-cols-5"
+            class="mb-8 md:mb-12 grid grid-cols-1 gap-x-8 gap-y-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-[1.3fr_repeat(5,minmax(0,1fr))] xl:gap-x-10"
         >
             <!-- Brand Section -->
             <div class="lg:col-span-1">
                 <h3
-                    class="mb-4 font-clash-grotesk text-[1.75rem] md:text-[2rem] font-bold text-primary/90"
+                    class="mb-4 flex items-center gap-2 whitespace-nowrap font-clash-grotesk text-[1.75rem] md:text-[2rem] font-bold text-primary/90"
                 >
                     <img
                         src="/images/logo.webp"
                         alt="Talk Africa Logo"
-                        class="size-10 inline-block object-fit"
+                        class="size-10 shrink-0 object-contain"
                     />
                     {" "}
                     TalkAfrica

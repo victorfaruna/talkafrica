@@ -1,16 +1,14 @@
 <script lang="ts">
     import { onMount, onDestroy } from "svelte";
     import "swiper/css";
-    import "swiper/css/pagination";
     let swiperInstance: import("swiper").Swiper | undefined;
     let swiperEl: HTMLDivElement | null = null;
-    let paginationEl: HTMLDivElement | null = null;
     onMount(async () => {
         if (!swiperEl) return;
-        const [{ default: Swiper }, { Autoplay, Pagination }] =
+        const [{ default: Swiper }, { Autoplay }] =
             await Promise.all([import("swiper"), import("swiper/modules")]);
         swiperInstance = new Swiper(swiperEl, {
-            modules: [Autoplay, Pagination],
+            modules: [Autoplay],
 
             breakpoints: {
                 640: {
@@ -28,10 +26,6 @@
             autoplay: {
                 delay: 5000,
                 disableOnInteraction: false,
-            },
-            pagination: {
-                el: paginationEl ?? undefined,
-                clickable: true,
             },
         });
     });
@@ -152,47 +146,69 @@
     ];
 </script>
 
-<div
-    class="teams-container max-w-[1900px] mx-auto flex flex-col lg:flex-row w-screen justify-between gap-[2rem] lg:gap-[5rem] overflow-x-hidden bg-white px-[var(--side-p)] py-[6rem]"
->
-    <div class="flex flex-col gap-4">
-        <div class="dash w-[100px] border-b-2 border-accent"></div>
-        <p
-            class="w-[200px] lg:w-[400px] font-clash-grotesk text-[2rem] lg:text-[3rem] leading-none font-bold text-secondary uppercase lg:text-[5rem]"
-        >
-            Meet our talented team.
-        </p>
-    </div>
+<section class="teams-container overflow-hidden border-y border-black/15 bg-white py-16 lg:py-24">
+    <div class="mx-auto w-full max-w-[1900px] px-[var(--side-p)]">
+        <div class="mb-10 grid gap-7 border-b border-secondary pb-7 lg:grid-cols-[1fr_auto] lg:items-end">
+            <div>
+                <span class="text-[0.68rem] font-bold uppercase tracking-[0.2em] text-accent">The people behind TalkAfrica</span>
+                <h2 class="mt-3 max-w-4xl font-clash-grotesk text-[2.65rem] font-semibold leading-[0.95] tracking-[-0.04em] text-secondary sm:text-[3.6rem] lg:text-[5rem]">
+                    Meet the team shaping the stories.
+                </h2>
+            </div>
 
-    <div class="w-full">
-        <div class="swiper w-full" bind:this={swiperEl}>
+            <div class="flex items-center gap-2">
+                <button
+                    type="button"
+                    class="flex h-12 w-12 items-center justify-center border border-secondary bg-white text-secondary transition-colors hover:bg-secondary hover:text-white"
+                    aria-label="Previous team members"
+                    onclick={() => swiperInstance?.slidePrev()}
+                >
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="m15 18-6-6 6-6" /></svg>
+                </button>
+                <button
+                    type="button"
+                    class="flex h-12 w-12 items-center justify-center border border-secondary bg-secondary text-white transition-colors hover:bg-accent hover:text-secondary"
+                    aria-label="Next team members"
+                    onclick={() => swiperInstance?.slideNext()}
+                >
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="m9 18 6-6-6-6" /></svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="swiper w-full overflow-visible" bind:this={swiperEl}>
             <div class="swiper-wrapper">
-                {#each data as item}
+                {#each data as item, index}
                     <div class="swiper-slide h-auto">
-                        <div class="inner flex w-full flex-col gap-3 h-full">
-                            <div
-                                class="w-full aspect-[3/4] overflow-hidden rounded-2xl"
-                            >
+                        <article class="group flex h-full w-full flex-col">
+                            <div class="relative aspect-[3/4] overflow-hidden bg-[#eceae4]">
                                 <img
                                     src={item.image}
                                     alt={item.name}
-                                    class="h-full w-full object-cover object-center transition-transform duration-500 hover:scale-105"
+                                    class="h-full w-full object-cover object-center grayscale-[20%] transition duration-500 group-hover:scale-[1.035] group-hover:grayscale-0"
+                                    loading="lazy"
                                 />
+                                <span class="absolute left-0 top-0 bg-[#0b0b0b] px-3 py-2 text-[0.65rem] font-bold tracking-[0.14em] text-white">
+                                    {String(index + 1).padStart(2, "0")}
+                                </span>
                             </div>
-                            <div class="flex flex-col justify-start">
-                                <p
-                                    class="text-[1.2rem] leading-none font-medium text-secondary/80"
-                                >
-                                    {item.name}
-                                </p>
-                                <p class="text-[0.8rem] text-secondary/50">
-                                    {item.role || "Team Member"}
-                                </p>
+                            <div class="flex min-h-[100px] items-start justify-between gap-4 border-x border-b border-black/15 p-4">
+                                <div>
+                                    <h3 class="font-clash-grotesk text-[1.05rem] font-semibold leading-tight text-secondary">{item.name}</h3>
+                                    <p class="mt-1 text-[0.72rem] font-semibold uppercase tracking-[0.13em] text-secondary/45">{item.role || "Editorial team"}</p>
+                                </div>
+                                <span class="mt-1 h-2 w-2 flex-none bg-accent" aria-hidden="true"></span>
                             </div>
-                        </div>
+                        </article>
                     </div>
                 {/each}
             </div>
         </div>
+
+        <div class="mt-8 flex items-center gap-5">
+            <span class="text-[0.68rem] font-bold uppercase tracking-[0.18em] text-secondary/45">Swipe to explore</span>
+            <div class="h-px flex-1 bg-black/15"></div>
+            <span class="text-[0.68rem] font-bold uppercase tracking-[0.18em] text-secondary/45">{data.length} people</span>
+        </div>
     </div>
-</div>
+</section>

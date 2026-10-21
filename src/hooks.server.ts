@@ -2,8 +2,9 @@ import { db } from '$lib/server/db';
 import { sessionsTable, adminTable } from '$lib/server/schema';
 import { eq, sql } from 'drizzle-orm';
 import { randomUUID } from 'crypto';
+import type { Handle } from '@sveltejs/kit';
 
-export const handle = async ({ event, resolve }) => {
+export const handle: Handle = async ({ event, resolve }) => {
     const path = event.url.pathname;
 
     // Skip session tracking for static assets, internal paths, and API calls to avoid DB congestion
@@ -34,7 +35,8 @@ export const handle = async ({ event, resolve }) => {
                     admin_id: admin[0].admin_id,
                     email: admin[0].email,
                     username: admin[0].username,
-                    name: admin[0].name
+                    name: admin[0].name,
+                    role: admin[0].role === 'super_admin' ? 'super_admin' : 'admin'
                 };
             }
         } catch (error) {

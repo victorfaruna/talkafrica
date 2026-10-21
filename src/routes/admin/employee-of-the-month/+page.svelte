@@ -24,7 +24,7 @@
     <div class="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <h1 class="text-3xl font-bold text-gray-900 font-clash-grotesk">Employee of the Month</h1>
-            <p class="text-gray-600 mt-1">Manage the featured employee on the homepage.</p>
+            <p class="text-gray-600 mt-1">Manage the featured employee on the About Us page.</p>
         </div>
         <a href="/admin" class="text-accent hover:underline flex items-center gap-1 font-medium">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -33,6 +33,21 @@
             Back to Dashboard
         </a>
     </div>
+
+    {#if data.suggestion}
+        <div class="mb-6 border border-orange-200 bg-orange-50 p-5">
+            <p class="text-xs font-bold uppercase tracking-wider text-orange-700">Suggested from this month's leaderboard</p>
+            <div class="mt-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div><p class="text-lg font-semibold text-gray-900">{data.suggestion.name}</p><p class="text-sm text-gray-600">{Number(data.suggestion.posts).toLocaleString()} posts · {Number(data.suggestion.views).toLocaleString()} views</p></div>
+                <div class="flex items-center gap-3">
+                    {#if data.employee}
+                        <form method="POST" action="?/confirmSuggestion"><button class="bg-accent px-4 py-2 text-sm font-semibold text-white">Confirm Suggested Writer</button></form>
+                    {/if}
+                    <a href="/admin/leaderboard" class="text-sm font-semibold text-accent hover:underline">View leaderboard</a>
+                </div>
+            </div>
+        </div>
+    {/if}
 
     {#if form?.success}
         <div 

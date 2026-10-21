@@ -77,7 +77,7 @@
 
 <section
     id="headlines"
-    class="flex w-screen max-w-[1900px] mx-auto flex-col gap-[2rem] px-[var(--side-p)] pt-[2rem]"
+    class="flex w-screen max-w-[1900px] mx-auto flex-col gap-[2rem] px-[var(--side-p)]"
 >
     <!-- Grid Container with Fixed Height on Desktop -->
     <div class="flex flex-col lg:flex-row gap-4 w-full lg:h-[580px]">
@@ -88,7 +88,7 @@
             <swiper-container
                 bind:this={swiperEl}
                 init="false"
-                class="h-full w-full rounded-2xl overflow-hidden block shadow-lg"
+                class="h-full w-full overflow-hidden block shadow-lg"
             >
                 {#each featured as post}
                     <swiper-slide class="w-full h-full relative block">
@@ -118,7 +118,7 @@
                             >
                                 {#if post.category}
                                     <span
-                                        class="mb-3 inline-block rounded bg-white/20 px-2 py-1 text-xs backdrop-blur-sm text-white"
+                                        class="mb-3 inline-block bg-white/20 px-2 py-1 text-xs backdrop-blur-sm text-white"
                                     >
                                         {post.category}
                                     </span>
@@ -148,7 +148,7 @@
         >
             <!-- Top Box: activeIndex + 1 -->
             <div
-                class="relative w-full h-[180px] lg:h-auto lg:flex-1 overflow-hidden rounded-2xl shadow-md"
+                class="relative w-full h-[180px] lg:h-auto lg:flex-1 overflow-hidden shadow-md"
             >
                 {#key (activeIndex + 1) % featured.length}
                     {@const s = featured[(activeIndex + 1) % featured.length]}
@@ -176,7 +176,7 @@
                         <div class="absolute bottom-0 p-3 text-white">
                             {#if s.category}
                                 <span
-                                    class="mb-2 inline-block rounded bg-white/20 px-2 py-0.5 text-[10px] backdrop-blur-sm text-white"
+                                    class="mb-2 inline-block bg-white/20 px-2 py-0.5 text-[10px] backdrop-blur-sm text-white"
                                 >
                                     {s.category}
                                 </span>
@@ -193,7 +193,7 @@
 
             <!-- Bottom Box: activeIndex + 2 -->
             <div
-                class="relative w-full h-[180px] lg:h-auto lg:flex-1 overflow-hidden rounded-2xl shadow-md"
+                class="relative w-full h-[180px] lg:h-auto lg:flex-1 overflow-hidden shadow-md"
             >
                 {#key (activeIndex + 2) % featured.length}
                     {@const s = featured[(activeIndex + 2) % featured.length]}
@@ -225,7 +225,7 @@
                         <div class="absolute bottom-0 p-3 text-white">
                             {#if s.category}
                                 <span
-                                    class="mb-2 inline-block rounded bg-white/20 px-2 py-0.5 text-[10px] backdrop-blur-sm text-white"
+                                    class="mb-2 inline-block bg-white/20 px-2 py-0.5 text-[10px] backdrop-blur-sm text-white"
                                 >
                                     {s.category}
                                 </span>

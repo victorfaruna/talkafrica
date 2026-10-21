@@ -41,8 +41,8 @@
     <div class="flex flex-col lg:flex-row">
         <Sidebar activeTab="impact" />
 
-        <main class="flex-1 p-4 sm:p-6 lg:p-8">
-            <div class="space-y-8">
+        <main class="min-w-0 flex-1 p-3 sm:p-6 lg:p-8">
+            <div class="space-y-5 sm:space-y-8">
                 <!-- Header -->
                 <div
                     class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
@@ -51,7 +51,7 @@
                         <h2
                             class="text-xl sm:text-2xl font-semibold text-gray-900 mb-1"
                         >
-                            🖼️ Our Impact Gallery
+                            Our Impact Gallery
                         </h2>
                         <p class="text-sm text-gray-500">
                             Manage the images and stories shown in the Our
@@ -60,7 +60,7 @@
                     </div>
                     <a
                         href="/admin/impact/new"
-                        class="flex items-center justify-center gap-2 bg-accent text-white px-4 py-2.5 rounded-lg hover:bg-orange-600 transition-colors w-full sm:w-auto font-medium"
+                        class="flex items-center justify-center gap-2 bg-accent text-white px-4 py-2.5 rounded-lg w-full sm:w-auto font-medium"
                     >
                         <svg
                             class="w-4 h-4"
@@ -81,9 +81,43 @@
 
                 <!-- Table -->
                 <div
-                    class="bg-white rounded-xl border border-gray-200 overflow-hidden"
+                    class="overflow-hidden rounded-xl border border-gray-200 bg-white"
                 >
-                    <div class="overflow-x-auto">
+                    <!-- Mobile gallery cards -->
+                    <div class="divide-y divide-gray-100 sm:hidden">
+                        {#each items as item}
+                            <article class="p-4">
+                                <div class="flex min-w-0 gap-3">
+                                    <div class="h-24 w-32 flex-none overflow-hidden rounded bg-gray-200">
+                                        <img
+                                            src={item.image_url}
+                                            alt={item.caption || "Gallery preview"}
+                                            class="h-full w-full object-cover"
+                                        />
+                                    </div>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="flex items-center justify-between gap-2">
+                                            <span class="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Order {item.display_order}</span>
+                                            {#if item.tag}
+                                                <span class="max-w-full truncate rounded bg-orange-100 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-orange-800">{item.tag}</span>
+                                            {/if}
+                                        </div>
+                                        <p class="mt-2 line-clamp-3 text-sm font-medium leading-snug text-gray-900">{item.caption}</p>
+                                    </div>
+                                </div>
+                                <button
+                                    on:click={() => deleteItem(item.id)}
+                                    disabled={isDeleting}
+                                    class="mt-3 w-full rounded border border-red-200 px-3 py-2 text-xs font-medium text-red-700 disabled:opacity-50"
+                                >Delete</button>
+                            </article>
+                        {:else}
+                            <div class="px-5 py-12 text-center text-sm text-gray-500">No gallery items yet. Add your first image.</div>
+                        {/each}
+                    </div>
+
+                    <!-- Desktop gallery table -->
+                    <div class="hidden overflow-x-auto sm:block">
                         <table class="w-full text-left text-sm text-gray-600">
                             <thead class="bg-gray-50 text-gray-900 font-medium">
                                 <tr>
@@ -148,7 +182,6 @@
                                             colspan="4"
                                             class="px-6 py-12 text-center text-gray-500"
                                         >
-                                            <div class="text-4xl mb-2">🖼️</div>
                                             <div>
                                                 No gallery items yet. Add your
                                                 first image!

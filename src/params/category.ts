@@ -11,7 +11,7 @@ const RESERVED_ROUTES = new Set([
 ]);
 
 /** @type {import('@sveltejs/kit').ParamMatcher} */
-export function match(param) {
+export function match(param: string) {
     const slug = param.toLowerCase();
     
     // It must NOT be a reserved route AND it MUST be in our valid categories list

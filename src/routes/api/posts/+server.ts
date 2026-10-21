@@ -3,6 +3,7 @@ import type { RequestHandler } from "./$types";
 import { and, desc, eq, inArray, like, or } from "drizzle-orm";
 import { db } from "$lib/server/db";
 import { postTable, postCategoriesTable } from "$lib/server/schema";
+import { canManageOwner, requireAdmin } from "$lib/server/admin-auth";
 
 // GET - Fetch posts with optional filters
 export const GET: RequestHandler = async ({ url }) => {
@@ -135,8 +136,9 @@ export const GET: RequestHandler = async ({ url }) => {
 };
 
 // POST - Create new post
-export const POST: RequestHandler = async ({ request, cookies }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
     try {
+        const session = requireAdmin(locals);
         const body = await request.json();
         console.log("📝 POST /api/posts - Request body:", JSON.stringify(body, null, 2));
 
@@ -176,7 +178,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
             featured: Boolean(featured),
             isTrendingNews: Boolean(isTrendingNews), // Save to DB
             author: author || "Admin", // Legacy field, kept for now
-            author_id: body.author_id || null, // New field
+            author_id: session.admin_id,
             editor: editor || null, // Optional editor field
         };
         // const insertData = { ... };
@@ -228,8 +230,9 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 };
 
 // PUT - Update existing post by post_id
-export const PUT: RequestHandler = async ({ request }) => {
+export const PUT: RequestHandler = async ({ request, locals }) => {
     try {
+        const session = requireAdmin(locals);
         const body = await request.json();
         const { post_id, categories, category, ...update } = body;
 
@@ -239,6 +242,12 @@ export const PUT: RequestHandler = async ({ request }) => {
                 { status: 400 }
             );
         }
+
+        const [existing] = await db.select({ author_id: postTable.author_id }).from(postTable).where(eq(postTable.post_id, post_id)).limit(1);
+        if (!existing || !canManageOwner(session.role, session.admin_id, existing.author_id)) {
+            return json({ success: false, message: "You can only edit your own posts" }, { status: 403 });
+        }
+        delete update.author_id;
 
         // Handle categories update if provided
         if (categories !== undefined || category !== undefined) {
@@ -299,14 +308,20 @@ export const PUT: RequestHandler = async ({ request }) => {
 };
 
 // DELETE - Soft delete post by post_id (set deleted=true)
-export const DELETE: RequestHandler = async ({ request }) => {
+export const DELETE: RequestHandler = async ({ request, locals }) => {
     try {
+        const session = requireAdmin(locals);
         const { post_id } = await request.json();
         if (!post_id) {
             return json(
                 { success: false, message: "post_id is required" },
                 { status: 400 }
             );
+        }
+
+        const [existing] = await db.select({ author_id: postTable.author_id }).from(postTable).where(eq(postTable.post_id, post_id)).limit(1);
+        if (!existing || !canManageOwner(session.role, session.admin_id, existing.author_id)) {
+            return json({ success: false, message: "You can only delete your own posts" }, { status: 403 });
         }
 
         const [updated] = await db

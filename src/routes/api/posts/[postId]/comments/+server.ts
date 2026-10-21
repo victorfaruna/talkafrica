@@ -2,9 +2,10 @@ import { json } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
 import { commentsTable, usersTable } from '$lib/server/schema';
 import { eq } from 'drizzle-orm';
+import type { RequestHandler } from './$types';
 
 
-export async function POST({ params, request }) {
+export const POST: RequestHandler = async ({ params, request }) => {
     try {
         const { postId } = params;
         const { content, name, email } = await request.json();
@@ -72,9 +73,9 @@ export async function POST({ params, request }) {
         console.error('Error submitting comment:', error);
         return json({ success: false, message: 'Internal server error' }, { status: 500 });
     }
-}
+};
 
-export async function GET({ params }) {
+export const GET: RequestHandler = async ({ params }) => {
     try {
         const { postId } = params;
 
@@ -109,4 +110,4 @@ export async function GET({ params }) {
         console.error('Error loading comments:', error);
         return json({ success: false, message: 'Internal server error' }, { status: 500 });
     }
-}
+};

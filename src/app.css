@@ -77,6 +77,55 @@ body {
 	margin: 1.5rem auto;
 }
 
+/* Quill 2 responsive image layouts. Left/right images allow surrounding
+   paragraphs to flow beside them on desktop and become full-width on mobile. */
+.article-content::after {
+	content: "";
+	display: table;
+	clear: both;
+}
+
+.article-content [class^="ql-image-align-"] {
+	display: flex;
+	flex-wrap: wrap;
+	width: var(--resize-width, 100%);
+	max-width: 100% !important;
+	box-sizing: border-box;
+}
+
+.article-content [class^="ql-image-align-"] > img {
+	flex: 1 1 auto;
+	width: 100%;
+	height: auto !important;
+	margin: 0 !important;
+	border-radius: 0.5rem;
+}
+
+.article-content .ql-image-align-left {
+	float: left;
+	margin: 0.5rem 1.5rem 0.85rem 0;
+}
+
+.article-content .ql-image-align-center {
+	float: none;
+	margin: 2rem auto;
+}
+
+.article-content .ql-image-align-right {
+	float: right;
+	margin: 0.5rem 0 0.85rem 1.5rem;
+}
+
+.article-content [class^="ql-image-align-"][data-title]::after {
+	content: attr(data-title);
+	width: 100%;
+	padding-top: 0.5rem;
+	color: #71717a;
+	font-family: 'Poppins', sans-serif;
+	font-size: 0.8rem;
+	line-height: 1.4;
+}
+
 /* Fix for Tables - allow scrolling if too wide */
 .article-content table {
 	display: block;
@@ -326,6 +375,12 @@ body {
 	.article-content video,
 	.article-content iframe {
 		margin: 1.5em auto;
+	}
+
+	.article-content [class^="ql-image-align-"] {
+		float: none;
+		width: 100% !important;
+		margin: 1.5rem 0 !important;
 	}
 
 	.article-content h1,

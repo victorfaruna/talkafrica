@@ -2,6 +2,8 @@
     import { page } from "$app/stores";
 
     export let activeTab = "";
+    $: role = $page.data?.admin?.role || "admin";
+    $: isSuperAdmin = role === "super_admin";
 
     // Helper to determine if a link is active based on URL or prop
     function isActive(path: string, tabName: string) {
@@ -23,9 +25,9 @@
 <aside
     class="bg-white border-b border-gray-200 lg:border-b-0 lg:border-r lg:w-64 w-full lg:sticky lg:top-0 lg:self-start lg:max-h-[calc(100vh-80px)] lg:overflow-y-auto"
 >
-    <nav class="p-3 lg:p-4">
+    <nav class="mobile-nav overflow-x-auto p-2 sm:p-3 lg:overflow-visible lg:p-4">
         <ul
-            class="grid grid-cols-2 gap-2 lg:flex lg:flex-col lg:space-y-1 lg:gap-0"
+            class="flex min-w-max snap-x gap-2 lg:min-w-0 lg:flex-col lg:space-y-1 lg:gap-0"
         >
             <li>
                 <a
@@ -110,6 +112,7 @@
                 </a>
             </li>
 
+            {#if isSuperAdmin}
             <!-- MOVIES TAB -->
             <li>
                 <a
@@ -191,6 +194,18 @@
                 </a>
             </li>
 
+            <!-- LEADERBOARD TAB -->
+            <li>
+                <a
+                    href="/admin/leaderboard"
+                    class="flex items-center justify-center lg:justify-start gap-2 lg:gap-3 px-3 py-3 lg:py-2 text-xs sm:text-sm rounded-lg transition-all w-full {$page.url.pathname.startsWith('/admin/leaderboard') ? 'bg-accent text-white shadow-sm' : 'text-gray-700 hover:bg-gray-100'}"
+                >
+                    <svg class="w-4 h-4 lg:w-5 lg:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 21h8m-4-4v4M7 4h10v5a5 5 0 01-10 0V4zm0 2H4v2a4 4 0 004 4m9-6h3v2a4 4 0 01-4 4" /></svg>
+                    <span>Leaderboard</span>
+                </a>
+            </li>
+            {/if}
+
             <!-- COMMENTS TAB -->
             <li>
                 <a
@@ -219,6 +234,7 @@
                 </a>
             </li>
 
+            {#if isSuperAdmin}
             <!-- NEWSLETTER TAB -->
             <li>
                 <button
@@ -274,6 +290,7 @@
                     <span>Users</span>
                 </button>
             </li>
+            {/if}
             <li>
                 <button
                     on:click={() => (window.location.href = "/admin?tab=media")}
@@ -300,6 +317,7 @@
                     <span>Media</span>
                 </button>
             </li>
+            {#if isSuperAdmin}
             <li class="col-span-2 lg:col-span-1">
                 <button
                     on:click={() =>
@@ -333,6 +351,23 @@
                     <span>Settings</span>
                 </button>
             </li>
+            {/if}
         </ul>
     </nav>
 </aside>
+
+<style>
+    @media (max-width: 1023px) {
+        .mobile-nav {
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+        .mobile-nav::-webkit-scrollbar {
+            display: none;
+        }
+        .mobile-nav :global(li) {
+            flex: 0 0 auto;
+            scroll-snap-align: start;
+        }
+    }
+</style>

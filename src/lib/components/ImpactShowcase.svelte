@@ -69,19 +69,19 @@
         <div class="text-center mb-12 lg:mb-20">
             <div class="mb-6">
                 <span
-                    class="text-[#FDB022] text-sm md:text-base font-black uppercase tracking-[0.5em] font-poppins"
+                    class="text-[#FDB022] text-xs md:text-sm font-black uppercase tracking-[0.4em] font-poppins"
                 >
                     TalkAfrika's Legacy
                 </span>
             </div>
             <h2
-                class="text-5xl md:text-7xl lg:text-8xl font-black font-clash-grotesk text-gray-900 mb-8 tracking-tighter leading-[0.95]"
+                class="text-3xl md:text-5xl lg:text-6xl font-black font-clash-grotesk text-gray-900 mb-6 tracking-tighter leading-[1]"
             >
                 Stories That Matter,<br />
                 <span class="text-[#FDB022]">Impact That Lasts</span>
             </h2>
             <p
-                class="text-xl md:text-2xl text-gray-500 max-w-3xl mx-auto font-medium leading-relaxed"
+                class="text-base md:text-lg text-gray-500 max-w-2xl mx-auto font-medium leading-relaxed"
             >
                 Beyond headlines, we are building a legacy of truth, reach, and
                 community across the continent.

@@ -2,8 +2,8 @@ import type { PageServerLoad } from "./$types";
 
 import { error } from "@sveltejs/kit";
 import { db } from "$lib/server/db";
-import { desc, eq, and, sql } from "drizzle-orm";
-import { postTable, postCategoriesTable, adminTable, employeeOfTheMonthTable } from "$lib/server/schema";
+import { desc, eq, and, sql, gte } from "drizzle-orm";
+import { postTable, postCategoriesTable, adminTable } from "$lib/server/schema";
 import { getVideos } from "$lib/server/videos";
 import { getRecommendedMovies } from "$lib/server/movie-reviews";
 import { getImpactGalleryItems } from "$lib/server/impact-gallery";
@@ -16,16 +16,20 @@ export const load: PageServerLoad = async () => {
         );
 
         // Helper for category queries
-        const getCategoryPosts = (categorySlug: string, limit = 3) => {
+        const getCategoryPosts = (categorySlug: string, limit = 6) => {
             return db.select({
                 post_id: postTable.post_id,
                 title: postTable.title,
                 image: postTable.image,
+                excerpt: postTable.excerpt,
                 category: postTable.category,
+                author: sql<string>`coalesce(${adminTable.name}, ${postTable.author})`,
+                views: postTable.views,
                 created_at: postTable.created_at,
                 slug: postTable.post_id,
             })
                 .from(postTable)
+                .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
                 .innerJoin(
                     postCategoriesTable,
                     eq(postTable.post_id, postCategoriesTable.post_id)
@@ -49,7 +53,6 @@ export const load: PageServerLoad = async () => {
             africanGiantOfTheWeek,
             recommendedMovies,
             impactGalleryItems,
-            employeeOfTheMonth,
             politicsPosts,
             economyPosts,
             healthPosts,
@@ -124,34 +127,70 @@ export const load: PageServerLoad = async () => {
                     return [];
                 }),
 
-            // Popular
-            db.select({
-                post_id: postTable.post_id,
-                title: postTable.title,
-                content: postTable.content,
-                excerpt: postTable.excerpt,
-                image: postTable.image,
-                category: postTable.category,
-                author: sql<string>`coalesce(${adminTable.name}, ${postTable.author})`,
-                status: postTable.status,
-                featured: postTable.featured,
-                isTrendingNews: postTable.isTrendingNews,
-                deleted: postTable.deleted,
-                views: postTable.views,
-                author_id: postTable.author_id,
-                editor: postTable.editor,
-                created_at: postTable.created_at,
-                updated_at: postTable.updated_at,
-            })
-                .from(postTable)
-                .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
-                .where(baseWhere)
-                .orderBy(desc(postTable.views))
-                .limit(8)
-                .catch(err => {
+            // Popular (last 30 days by views, then fallback to all-time top viewed)
+            (async () => {
+                try {
+                    const thirtyDaysAgo = new Date();
+                    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+                    const recent = await db.select({
+                        post_id: postTable.post_id,
+                        title: postTable.title,
+                        content: postTable.content,
+                        excerpt: postTable.excerpt,
+                        image: postTable.image,
+                        category: postTable.category,
+                        author: sql<string>`coalesce(${adminTable.name}, ${postTable.author})`,
+                        status: postTable.status,
+                        featured: postTable.featured,
+                        isTrendingNews: postTable.isTrendingNews,
+                        deleted: postTable.deleted,
+                        views: postTable.views,
+                        author_id: postTable.author_id,
+                        editor: postTable.editor,
+                        created_at: postTable.created_at,
+                        updated_at: postTable.updated_at,
+                    })
+                        .from(postTable)
+                        .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
+                        .where(and(baseWhere, gte(postTable.created_at, thirtyDaysAgo)))
+                        .orderBy(desc(postTable.views), desc(postTable.created_at))
+                        .limit(8);
+
+                    // If we have enough recent posts, return them
+                    if (recent.length >= 4) return recent;
+
+                    // Otherwise fall back to all-time top viewed posts
+                    const allTime = await db.select({
+                        post_id: postTable.post_id,
+                        title: postTable.title,
+                        content: postTable.content,
+                        excerpt: postTable.excerpt,
+                        image: postTable.image,
+                        category: postTable.category,
+                        author: sql<string>`coalesce(${adminTable.name}, ${postTable.author})`,
+                        status: postTable.status,
+                        featured: postTable.featured,
+                        isTrendingNews: postTable.isTrendingNews,
+                        deleted: postTable.deleted,
+                        views: postTable.views,
+                        author_id: postTable.author_id,
+                        editor: postTable.editor,
+                        created_at: postTable.created_at,
+                        updated_at: postTable.updated_at,
+                    })
+                        .from(postTable)
+                        .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
+                        .where(baseWhere)
+                        .orderBy(desc(postTable.views), desc(postTable.created_at))
+                        .limit(8);
+
+                    return allTime;
+                } catch (err) {
                     console.error("[PageLoad] Failed to load popular:", err);
                     return [];
-                }),
+                }
+            })(),
 
             // Trending
             db.select({
@@ -176,7 +215,7 @@ export const load: PageServerLoad = async () => {
                 .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
                 .where(and(baseWhere, eq(postTable.isTrendingNews, true)))
                 .orderBy(desc(postTable.created_at))
-                .limit(5)
+                .limit(10)
                 .catch(err => {
                     console.error("[PageLoad] Failed to load trending:", err);
                     return [];
@@ -227,15 +266,6 @@ export const load: PageServerLoad = async () => {
                 return [];
             }),
 
-            // Employee of the Month
-            db.select()
-                .from(employeeOfTheMonthTable)
-                .orderBy(desc(employeeOfTheMonthTable.created_at))
-                .limit(1)
-                .catch(err => {
-                    console.error("[PageLoad] Failed to load employee of the month:", err);
-                    return [];
-                }),
 
             // Sections
             getCategoryPosts("politics"),
@@ -243,7 +273,7 @@ export const load: PageServerLoad = async () => {
             getCategoryPosts("health"),
             getCategoryPosts("technology"),
             getCategoryPosts("culture"),
-            getCategoryPosts("sports"),
+            getCategoryPosts("sport"),
             getCategoryPosts("entertainment"),
             getCategoryPosts("african-giant"),
             getCategoryPosts("africans-on-the-table"),
@@ -257,7 +287,6 @@ export const load: PageServerLoad = async () => {
             africanGiant: africanGiantOfTheWeek[0] || null,
             recommendedMovies,
             impactGalleryItems,
-            employeeOfTheMonth: employeeOfTheMonth[0] || null,
             videos,
             categories: {
                 politics: politicsPosts,

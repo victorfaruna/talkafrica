@@ -1,8 +1,10 @@
 <script lang="ts">
-    import { onMount, createEventDispatcher } from "svelte";
+    import { onMount, onDestroy, createEventDispatcher } from "svelte";
     import { fade } from "svelte/transition";
     import { browser } from "$app/environment";
     import "quill/dist/quill.snow.css";
+    import "@enzedonline/quill-blot-formatter2/dist/css/quill-blot-formatter2.css";
+    import "quill-table-better/dist/quill-table-better.css";
 
     export let content = "";
     export let placeholder = "Start writing your story...";
@@ -14,6 +16,13 @@
     let isFullscreen = false;
     let isUploading = false;
     let uploadProgress = "";
+    let touchResize: {
+        image: HTMLImageElement;
+        widthOwner: HTMLElement;
+        startX: number;
+        startWidth: number;
+        direction: number;
+    } | null = null;
 
     const dispatch = createEventDispatcher();
 
@@ -21,44 +30,122 @@
         if (!browser) return;
 
         const Quill = (await import("quill")).default;
-        // Import BlotFormatter for image resizing
-        const BlotFormatter = (await import("quill-blot-formatter")).default;
-        Quill.register("modules/blotFormatter", BlotFormatter);
+        // Quill 2-native image/video formatting: responsive sizing, alignment,
+        // touch resizing, captions, alt text and image links.
+        let BlotFormatter2: any = null;
+        let QuillTableBetter: any = null;
+        try {
+            BlotFormatter2 = (
+                await import("@enzedonline/quill-blot-formatter2")
+            ).default;
+            BlotFormatter2.registerFormats(Quill);
+            Quill.register("modules/blotFormatter2", BlotFormatter2, true);
+        } catch (error) {
+            console.warn("Image formatting tools could not be loaded", error);
+        }
+
+        try {
+            QuillTableBetter = (await import("quill-table-better")).default;
+            Quill.register("modules/table-better", QuillTableBetter, true);
+        } catch (error) {
+            console.warn("Table tools could not be loaded", error);
+        }
+
+        const Font = Quill.import("formats/font") as any;
+        Font.whitelist = ["sans-serif", "serif", "monospace"];
+        Quill.register(Font, true);
 
         // Define premium toolbar options
         const toolbarOptions = [
-            [{ header: [1, 2, 3, false] }],
+            [{ font: [] }, { header: [1, 2, 3, 4, false] }, { size: ["small", false, "large", "huge"] }],
             ["bold", "italic", "underline", "strike"],
+            [{ script: "sub" }, { script: "super" }],
             ["blockquote", "code-block"],
-            [{ list: "ordered" }, { list: "bullet" }],
-            [{ align: [] }],
+            [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
+            [{ indent: "-1" }, { indent: "+1" }, { direction: "rtl" }, { align: [] }],
             [{ color: [] }, { background: [] }],
-            ["link", "image", "video"],
+            ["link", "image", "video", ...(QuillTableBetter ? ["table-better"] : [])],
             ["clean"],
         ];
 
-        quill = new Quill(editorElement, {
-            theme: "snow",
-            placeholder,
-            modules: {
-                blotFormatter: {},
-                toolbar: {
-                    container: toolbarOptions,
-                    handlers: {
-                        image: imageHandler,
-                    },
-                },
-                history: {
-                    delay: 2000,
-                    maxStack: 500,
-                    userOnly: true,
-                },
-                clipboard: {
-                    // Prevent visual formatting issues on paste
-                    matchVisual: false,
-                },
+        const modules: Record<string, any> = {
+            toolbar: {
+                container: toolbarOptions,
+                handlers: { image: imageHandler },
             },
-        });
+            history: {
+                delay: 2000,
+                maxStack: 500,
+                userOnly: true,
+            },
+            clipboard: { matchVisual: false },
+        };
+
+        if (BlotFormatter2) {
+            modules.blotFormatter2 = {
+                align: {
+                    allowAligning: true,
+                    alignments: ["left", "center", "right"],
+                },
+                resize: {
+                    allowResizing: true,
+                    allowResizeModeChange: false,
+                    useRelativeSize: false,
+                    imageOversizeProtection: true,
+                    minimumWidthPx: 80,
+                },
+                image: {
+                    registerImageTitleBlot: true,
+                    allowAltTitleEdit: true,
+                    allowCompressor: true,
+                    linkOptions: { allowLinkEdit: true },
+                },
+                video: { registerCustomVideoBlot: true },
+            };
+        }
+
+        if (QuillTableBetter) {
+            modules.table = false;
+            modules["table-better"] = {
+                language: "en_US",
+                menus: ["column", "row", "merge", "table", "cell", "wrap", "copy", "delete"],
+                toolbarTable: true,
+            };
+            modules.keyboard = { bindings: QuillTableBetter.keyboardBindings };
+        }
+
+        try {
+            quill = new Quill(editorElement, {
+                theme: "snow",
+                placeholder,
+                modules,
+            });
+        } catch (error) {
+            // An optional extension must never leave authors without a place to type.
+            console.error("Enhanced editor failed; loading the standard editor", error);
+            editorElement.parentElement
+                ?.querySelectorAll(":scope > .ql-toolbar")
+                .forEach((toolbar) => toolbar.remove());
+            editorElement.className = "";
+            editorElement.innerHTML = "";
+
+            const fallbackToolbar = toolbarOptions.map((group) =>
+                Array.isArray(group)
+                    ? group.filter((item) => item !== "table-better")
+                    : group,
+            );
+            quill = new Quill(editorElement, {
+                theme: "snow",
+                placeholder,
+                modules: {
+                    toolbar: {
+                        container: fallbackToolbar,
+                        handlers: { image: imageHandler },
+                    },
+                    history: { delay: 2000, maxStack: 500, userOnly: true },
+                },
+            });
+        }
 
         // Set initial content
         if (content) {
@@ -78,7 +165,94 @@
         });
 
         updateCounts();
+
+        // Dedicated touch resizing for mobile browsers that do not reliably
+        // translate finger movement into pointer events for formatter handles.
+        const editorShell = editorElement.parentElement;
+        editorShell?.addEventListener("touchstart", handleResizeTouchStart, {
+            passive: false,
+        });
+        editorShell?.addEventListener("touchmove", handleResizeTouchMove, {
+            passive: false,
+        });
+        editorShell?.addEventListener("touchend", handleResizeTouchEnd, {
+            passive: false,
+        });
+
     });
+
+    onDestroy(() => {
+        const editorShell = editorElement?.parentElement;
+        editorShell?.removeEventListener("touchstart", handleResizeTouchStart);
+        editorShell?.removeEventListener("touchmove", handleResizeTouchMove);
+        editorShell?.removeEventListener("touchend", handleResizeTouchEnd);
+    });
+
+    function handleResizeTouchStart(event: TouchEvent) {
+        const handle = (event.target as HTMLElement)?.closest(
+            ".blot-formatter__resize-handle",
+        ) as HTMLElement | null;
+        if (!handle || event.touches.length !== 1 || !quill) return;
+
+        const formatter = quill.getModule("blotFormatter2") as any;
+        const target = formatter?.currentSpec?.getTargetElement?.() as
+            | HTMLElement
+            | undefined;
+        const image = target?.tagName === "IMG"
+            ? (target as HTMLImageElement)
+            : (target?.querySelector("img") as HTMLImageElement | null);
+        if (!image) return;
+
+        const alignedWrapper = image.closest(
+            '[class^="ql-image-align-"]',
+        ) as HTMLElement | null;
+        const widthOwner = alignedWrapper || image;
+
+        const position = handle.dataset.position || "bottom-right";
+        touchResize = {
+            image,
+            widthOwner,
+            startX: event.touches[0].clientX,
+            startWidth: widthOwner.getBoundingClientRect().width,
+            direction: position.includes("left") ? -1 : 1,
+        };
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    function handleResizeTouchMove(event: TouchEvent) {
+        if (!touchResize || event.touches.length !== 1) return;
+        event.preventDefault();
+        event.stopPropagation();
+
+        const editorWidth = quill.root.getBoundingClientRect().width;
+        const delta =
+            (event.touches[0].clientX - touchResize.startX) *
+            touchResize.direction;
+        const width = Math.round(
+            Math.max(80, Math.min(editorWidth, touchResize.startWidth + delta)),
+        );
+        touchResize.image.setAttribute("width", `${width}px`);
+        touchResize.image.setAttribute("height", "auto");
+        if (touchResize.widthOwner !== touchResize.image) {
+            touchResize.widthOwner.style.setProperty(
+                "--resize-width",
+                `${width}px`,
+            );
+            touchResize.widthOwner.dataset.relativeSize = "false";
+        }
+        (quill.getModule("blotFormatter2") as any)?.update?.();
+    }
+
+    function handleResizeTouchEnd(event: TouchEvent) {
+        if (!touchResize) return;
+        event.preventDefault();
+        event.stopPropagation();
+        touchResize = null;
+        quill.update("user");
+        content = quill.getSemanticHTML();
+        dispatch("change", content);
+    }
 
     $: if (quill && content !== undefined) {
         // Safe check to update content if it changes externally (e.g. initial load)
@@ -150,8 +324,19 @@
                 const result = await response.json();
 
                 if (result.success) {
-                    const range = quill.getSelection();
+                    const range = quill.getSelection(true) || {
+                        index: quill.getLength(),
+                        length: 0,
+                    };
                     quill.insertEmbed(range.index, "image", result.url);
+                    const insertedImage = quill.root.querySelectorAll("img")[
+                        quill.root.querySelectorAll("img").length - 1
+                    ] as HTMLImageElement | undefined;
+                    if (insertedImage) {
+                        insertedImage.setAttribute("width", "100%");
+                        insertedImage.setAttribute("height", "auto");
+                        insertedImage.setAttribute("alt", file.name.replace(/\.[^.]+$/, ""));
+                    }
                     quill.setSelection(range.index + 1);
                 } else {
                     alert("Upload failed: " + result.message);
@@ -174,6 +359,28 @@
         } else {
             document.body.style.overflow = "";
         }
+
+        const toolLabels: Record<string, string> = {
+            bold: "Bold", italic: "Italic", underline: "Underline", strike: "Strikethrough",
+            blockquote: "Quote", "code-block": "Code block", link: "Insert link",
+            image: "Insert image", video: "Insert video", clean: "Clear formatting",
+            list: "List", indent: "Indent", align: "Alignment", color: "Text color",
+            background: "Highlight color", script: "Subscript or superscript",
+            "table-better": "Insert table",
+        };
+        editorElement.parentElement?.querySelectorAll<HTMLElement>(".ql-toolbar button, .ql-toolbar select")
+            .forEach((control) => {
+                const toolClass = [...control.classList].find((name) => name.startsWith("ql-"));
+                if (toolClass) control.title = toolLabels[toolClass.slice(3)] || "Formatting option";
+            });
+    }
+
+    function undo() {
+        quill?.history.undo();
+    }
+
+    function redo() {
+        quill?.history.redo();
     }
 </script>
 
@@ -205,6 +412,17 @@
             </button>
         </div>
     {/if}
+
+    <div class="document-actions" aria-label="Document actions">
+        <button type="button" on:click={undo} title="Undo (Ctrl+Z)" aria-label="Undo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 7H5V3M5.5 7.5A8 8 0 1120 12" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        </button>
+        <button type="button" on:click={redo} title="Redo (Ctrl+Y)" aria-label="Redo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M15 7h4V3m-.5 4.5A8 8 0 104 12" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        </button>
+        <span class="document-actions__divider"></span>
+        <span class="document-actions__label">Document editor</span>
+    </div>
 
     <div class="editor-wrapper relative">
         {#if isUploading}
@@ -293,6 +511,46 @@
         flex: 1;
         display: flex;
         flex-direction: column;
+        background: #eef1f5;
+        padding: 0 1.25rem 1.25rem;
+    }
+
+    .document-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        min-height: 2.75rem;
+        padding: 0.4rem 0.75rem;
+        border-bottom: 1px solid #e2e8f0;
+        background: #fff;
+    }
+    .document-actions button {
+        display: grid;
+        width: 2rem;
+        height: 2rem;
+        place-items: center;
+        color: #475569;
+        border-radius: 0.35rem;
+    }
+    .document-actions button:hover {
+        color: #f7941d;
+        background: #fff7ed;
+    }
+    .document-actions svg {
+        width: 1.05rem;
+        height: 1.05rem;
+    }
+    .document-actions__divider {
+        width: 1px;
+        height: 1.25rem;
+        margin: 0 0.4rem;
+        background: #e2e8f0;
+    }
+    .document-actions__label {
+        color: #64748b;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
     }
 
     /* Customizing Quill Toolbar */
@@ -301,6 +559,60 @@
         border-bottom: 1px solid #e2e8f0 !important;
         background-color: #f8fafc;
         padding: 0.75rem !important;
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+    }
+
+    :global(.ql-toolbar .ql-formats) {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.15rem;
+        margin-right: 0 !important;
+        padding-right: 0.5rem;
+        border-right: 1px solid #dbe2ea;
+    }
+    :global(.ql-toolbar .ql-formats:last-child) {
+        padding-right: 0;
+        border-right: 0;
+    }
+    :global(.ql-toolbar button) {
+        width: 2rem !important;
+        height: 2rem !important;
+        border-radius: 0.35rem;
+    }
+    :global(.ql-toolbar button:hover),
+    :global(.ql-toolbar button.ql-active) {
+        background: #fff3d6;
+    }
+    :global(.ql-snow .ql-toolbar button:hover .ql-stroke),
+    :global(.ql-snow .ql-toolbar button.ql-active .ql-stroke),
+    :global(.ql-snow.ql-toolbar button:hover .ql-stroke),
+    :global(.ql-snow.ql-toolbar button.ql-active .ql-stroke) {
+        stroke: #f59e0b !important;
+    }
+    :global(.ql-snow .ql-toolbar button:hover .ql-fill),
+    :global(.ql-snow .ql-toolbar button.ql-active .ql-fill),
+    :global(.ql-snow.ql-toolbar button:hover .ql-fill),
+    :global(.ql-snow.ql-toolbar button.ql-active .ql-fill) {
+        fill: #f59e0b !important;
+    }
+
+    :global(.blot-formatter__overlay) {
+        border: 2px solid #fdb022 !important;
+        touch-action: none;
+    }
+    :global(.blot-formatter__resize-handle) {
+        width: 14px !important;
+        height: 14px !important;
+        border: 2px solid #fdb022 !important;
+        border-radius: 3px;
+        background: #fff !important;
+        opacity: 1 !important;
+        touch-action: none;
     }
 
     :global(.ql-container) {
@@ -310,6 +622,10 @@
         flex: 1;
         display: flex;
         flex-direction: column;
+        width: min(100%, 920px);
+        margin: 0 auto;
+        background: white;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
     }
 
     :global(.ql-editor) {
@@ -325,17 +641,94 @@
         hyphens: none !important;
         -webkit-hyphens: none !important;
         -moz-hyphens: none !important;
+        width: 100%;
+        margin: 0 auto;
+        background: #fff;
     }
+
+    :global(.ql-editor::after) {
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+    :global(.ql-editor [class^="ql-image-align-"]) {
+        display: flex;
+        flex-wrap: wrap;
+        width: var(--resize-width, 100%);
+        max-width: 100%;
+    }
+
+    :global(.ql-editor [class^="ql-image-align-"] > img) {
+        flex: 1 1 auto;
+        width: 100%;
+        height: auto;
+        margin: 0 !important;
+    }
+
+    :global(.ql-editor .ql-image-align-left) {
+        float: left;
+        margin: 0.45rem 1.25rem 0.75rem 0;
+    }
+
+    :global(.ql-editor .ql-image-align-center) {
+        float: none;
+        margin: 1.25rem auto;
+    }
+
+    :global(.ql-editor .ql-image-align-right) {
+        float: right;
+        margin: 0.45rem 0 0.75rem 1.25rem;
+    }
+
+    :global(.ql-editor [class^="ql-image-align-"][data-title]::after) {
+        content: attr(data-title);
+        width: 100%;
+        padding-top: 0.4rem;
+        color: #64748b;
+        font-size: 0.8rem;
+        line-height: 1.4;
+        text-align: inherit;
+    }
+
 
     /* Mobile Optimizations */
     @media (max-width: 640px) {
+        .editor-wrapper {
+            padding: 0;
+            background: white;
+        }
         :global(.ql-toolbar) {
             padding: 0.5rem !important;
+            position: static;
         }
         :global(.ql-editor) {
             padding: 1rem !important;
             font-size: 1rem;
             min-height: 400px;
+        }
+        :global(.ql-editor [class^="ql-image-align-"]) {
+            float: none;
+            width: 100% !important;
+            margin: 1rem 0 !important;
+        }
+        :global(.blot-formatter__resize-handle) {
+            width: 32px !important;
+            height: 32px !important;
+            border: 0 !important;
+            border-radius: 50%;
+            background: radial-gradient(circle, #fdb022 0 5px, #fff 6px 8px, transparent 9px) !important;
+        }
+    }
+
+    @media (pointer: coarse) {
+        :global(.blot-formatter__resize-handle) {
+            width: 32px !important;
+            height: 32px !important;
+            border: 0 !important;
+            border-radius: 50%;
+            background: radial-gradient(circle, #fdb022 0 5px, #fff 6px 8px, transparent 9px) !important;
+            touch-action: none !important;
         }
     }
 

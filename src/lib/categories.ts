@@ -31,7 +31,7 @@ export const CATEGORY_DEFINITIONS: Omit<Category, "id">[] = [
         display_name: "Latest News",
         description: "Breaking news and current events from across Africa",
         icon: "newspaper",
-        color: "#3B82F6",
+        color: "#FDB022",
         sort_order: 1,
         is_active: true,
     },

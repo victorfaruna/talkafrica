@@ -127,7 +127,7 @@
         }, 3000);
     }
 
-    function formatDate(dateString: string) {
+    function formatDate(dateString: string | Date) {
         const date = new Date(dateString);
         return date.toLocaleString();
     }

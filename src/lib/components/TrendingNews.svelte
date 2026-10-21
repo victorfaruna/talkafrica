@@ -2,7 +2,7 @@
     export let posts: any[] = [];
 
     $: heroPost = posts[0];
-    $: supportingPosts = posts.slice(1, 5); // Take next 4 posts
+    $: supportingPosts = posts.slice(1, 10); // Up to 9 supporting posts (desktop shows all, mobile shows 4)
 
     function formatDate(dateString: string) {
         if (!dateString) return "";
@@ -64,7 +64,7 @@
                 {#each supportingPosts as post, index}
                     <a
                         href="/posts/{post.post_id || post.id || '#'}"
-                        class="compact-card group"
+                        class="compact-card group{index >= 4 ? ' desktop-only' : ''}"
                     >
                         <div class="rank-badge compact-rank">{index + 2}</div>
                         <div class="compact-content">
@@ -333,6 +333,11 @@
 
         .compact-card {
             padding: 0.5rem 0;
+        }
+
+        /* Hide posts 5–10 on mobile — desktop-only items */
+        .compact-card.desktop-only {
+            display: none;
         }
     }
 </style>

@@ -34,6 +34,25 @@ export const load: LayoutServerLoad = async ({ cookies, url }) => {
         throw redirect(302, "/admin");
     }
 
+    const role = data?.role === "super_admin" ? "super_admin" : "admin";
+    const restrictedPaths = [
+        "/admin/movies",
+        "/admin/impact",
+        "/admin/employee-of-the-month",
+        "/admin/leaderboard",
+        "/admin/categories",
+        "/admin/debug",
+    ];
+    const restrictedTabs = ["users", "settings", "newsletter"];
+    if (
+        isAuthenticated &&
+        role !== "super_admin" &&
+        (restrictedPaths.some((path) => url.pathname.startsWith(path)) ||
+            restrictedTabs.includes(url.searchParams.get("tab") || ""))
+    ) {
+        throw redirect(303, "/admin?access=denied");
+    }
+
     return {
         isAuthenticated,
         isLoginPage,
@@ -43,6 +62,8 @@ export const load: LayoutServerLoad = async ({ cookies, url }) => {
                 email: data.email,
                 username: data.username,
                 admin_id: data.admin_id,
+                name: data.name,
+                role,
             }
             : undefined,
         authError: null,
