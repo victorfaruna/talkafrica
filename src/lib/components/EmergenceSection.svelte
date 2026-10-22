@@ -4,6 +4,43 @@
 
     let sectionElement: HTMLElement;
     let videoElement: HTMLVideoElement;
+    let videoIsVisible = false;
+    let showSoundPrompt = false;
+
+    async function playVideoWithSound() {
+        if (!videoElement || !videoIsVisible) return;
+
+        if (videoElement.ended) videoElement.currentTime = 0;
+        videoElement.muted = false;
+        showSoundPrompt = false;
+
+        try {
+            await videoElement.play();
+        } catch {
+            // Browsers commonly reject audible autoplay until the visitor taps.
+            videoElement.muted = true;
+            showSoundPrompt = true;
+            await videoElement.play().catch(() => undefined);
+        }
+    }
+
+    async function enableVideoSound() {
+        if (!videoElement) return;
+
+        videoElement.muted = false;
+        showSoundPrompt = false;
+
+        try {
+            await videoElement.play();
+        } catch {
+            videoElement.muted = true;
+            showSoundPrompt = true;
+        }
+    }
+
+    function syncSoundPrompt() {
+        showSoundPrompt = videoIsVisible && videoElement?.muted;
+    }
 
     onMount(() => {
         if (!sectionElement || !videoElement) return;
@@ -13,13 +50,11 @@
                 if (!videoElement) return;
 
                 if (entry.isIntersecting) {
-                    // Mobile browsers only permit automatic playback when muted.
-                    videoElement.muted = true;
-                    if (videoElement.ended) videoElement.currentTime = 0;
-                    void videoElement.play().catch(() => {
-                        // Keep native controls available if a browser blocks autoplay.
-                    });
+                    videoIsVisible = true;
+                    void playVideoWithSound();
                 } else {
+                    videoIsVisible = false;
+                    showSoundPrompt = false;
                     videoElement.pause();
                 }
             },
@@ -87,15 +122,25 @@
                     poster="https://res.cloudinary.com/dwwyegu5r/video/upload/so_0/IMG_0745_w0zlss.jpg"
                     title="Emergence Lagos event film"
                     preload="metadata"
-                    muted
                     playsinline
                     controls
+                    onvolumechange={syncSoundPrompt}
                 >
                     <source src="https://res.cloudinary.com/dwwyegu5r/video/upload/c_limit,w_1080,q_auto:good,vc_h264/IMG_0745_w0zlss.mp4" type="video/mp4" />
                     <source src="https://res.cloudinary.com/dwwyegu5r/video/upload/IMG_0745_w0zlss.mp4" type="video/mp4" />
                     Your browser does not support HTML video.
                 </video>
                 <span class="pointer-events-none absolute left-0 top-0 z-10 bg-[#f59e0b] px-4 py-3 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-black">Watch the highlight</span>
+                {#if showSoundPrompt}
+                    <button
+                        type="button"
+                        class="absolute bottom-14 right-3 z-10 border border-white/35 bg-black/90 px-4 py-3 text-[0.65rem] font-bold uppercase tracking-[0.16em] text-white backdrop-blur-sm transition-colors hover:border-[#f59e0b] hover:text-[#f59e0b] sm:bottom-16 sm:right-4"
+                        onclick={enableVideoSound}
+                        aria-label="Play the Emergence highlight with sound"
+                    >
+                        Tap for sound
+                    </button>
+                {/if}
             </div>
 
             <div class="flex flex-col justify-between px-0 py-9 lg:p-10 xl:p-14">
