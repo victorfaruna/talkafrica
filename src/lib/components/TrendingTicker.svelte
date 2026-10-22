@@ -2,6 +2,7 @@
     import { onMount, onDestroy } from "svelte";
     import { fade, fly } from "svelte/transition";
     import { quartOut } from "svelte/easing";
+    import { postPath } from "$lib/post-url";
 
     const { posts = [] } = $props();
 
@@ -74,7 +75,7 @@
                         out:fly={{ y: -20, duration: 400, easing: quartOut }}
                     >
                         <a
-                            href="/posts/{posts[currentIndex].post_id}"
+                            href={postPath(posts[currentIndex])}
                             class="text-gray-900 font-semibold text-sm lg:text-base truncate w-full block hover:underline underline-offset-4 decoration-1"
                         >
                             {posts[currentIndex].title}

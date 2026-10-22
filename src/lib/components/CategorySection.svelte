@@ -1,6 +1,7 @@
 <script lang="ts">
     import { getOptimizedImageUrl } from "$lib/utils/image";
     import ArrowIcon from "$lib/components/icons/ArrowIcon.svelte";
+    import { postPath } from "$lib/post-url";
 
     export let category = "politics";
     export let categoryName = "Politics";
@@ -10,7 +11,7 @@
 
     $: leadPost = posts?.[0];
 
-    const articleHref = (post: any) => `/posts/${post.slug || post.post_id}`;
+    const articleHref = (post: any) => postPath(post);
 
     const formatDate = (value: string | Date | null | undefined) => {
         if (!value) return "";

@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { postPath } from "$lib/post-url";
+
     export let posts: any[] = [];
 
     $: heroPost = posts[0];
@@ -27,7 +29,7 @@
             <!-- Hero Card (Rank #1) -->
             {#if heroPost}
                 <a
-                    href="/posts/{heroPost.post_id || heroPost.id || '#'}"
+                    href={postPath(heroPost)}
                     class="hero-card group"
                 >
                     <div class="hero-image-wrapper">
@@ -63,7 +65,7 @@
             <div class="supporting-list">
                 {#each supportingPosts as post, index}
                     <a
-                        href="/posts/{post.post_id || post.id || '#'}"
+                        href={postPath(post)}
                         class="compact-card group{index >= 4 ? ' desktop-only' : ''}"
                     >
                         <div class="rank-badge compact-rank">{index + 2}</div>

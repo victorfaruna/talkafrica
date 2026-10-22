@@ -13,6 +13,7 @@
     export let trendingPosts: Post[] = [];
 
     import { getOptimizedImageUrl } from "$lib/utils/image";
+    import { postPath } from "$lib/post-url";
 
     type ListItem = {
         title: string;
@@ -25,14 +26,14 @@
         title: p.title,
         description: p.excerpt ?? "",
         image: p.image ?? "/images/placeholder.webp",
-        url: `/posts/${p.post_id}`,
+        url: postPath(p),
     }));
 
     $: trendingList = (trendingPosts ?? []).map<ListItem>((p) => ({
         title: p.title,
         description: p.excerpt ?? "",
         image: p.image ?? "/images/placeholder.webp",
-        url: `/posts/${p.post_id}`,
+        url: postPath(p),
     }));
 
     import TrendingNews from "./TrendingNews.svelte";

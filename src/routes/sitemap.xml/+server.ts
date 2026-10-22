@@ -2,6 +2,7 @@ import { db } from "$lib/server/db";
 import { postTable, postCategoriesTable } from "$lib/server/schema";
 import { eq, and, desc } from "drizzle-orm";
 import type { RequestHandler } from "./$types";
+import { postPath } from "$lib/post-url";
 
 const siteUrl = "https://talkafricang.com";
 
@@ -23,12 +24,13 @@ const categories = [
 ];
 
 export const GET: RequestHandler = async () => {
-    let posts: { post_id: string; updated_at: Date | null; created_at: Date | null }[] = [];
+    let posts: { post_id: string; title: string; updated_at: Date | null; created_at: Date | null }[] = [];
 
     try {
         posts = await db
             .select({
                 post_id: postTable.post_id,
+                title: postTable.title,
                 updated_at: postTable.updated_at,
                 created_at: postTable.created_at,
             })
@@ -66,7 +68,7 @@ ${posts
             ? new Date(post.updated_at ?? post.created_at!).toISOString().split("T")[0]
             : new Date().toISOString().split("T")[0];
         return `  <url>
-    <loc>${siteUrl}/posts/${post.post_id}</loc>
+    <loc>${siteUrl}${postPath(post)}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

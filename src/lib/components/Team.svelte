@@ -134,11 +134,6 @@
             role: "",
         },
         {
-            name: "POPOOLA JOY CHRISTIANAH",
-            image: "/images/team/popoola-joy-christianah.jpg",
-            role: "",
-        },
-        {
             name: "Adeola Mercy Kuyebi",
             image: "/images/team/adeola-mercy-kuyebi.jpg",
             role: "",

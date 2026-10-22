@@ -1,16 +1,37 @@
 import type { PageServerLoad } from "./$types";
-import { error } from "@sveltejs/kit";
+import { error, redirect } from "@sveltejs/kit";
 import { db } from "$lib/server/db";
 import { eq, and, ne, desc, asc, lt, gt, inArray, sql } from "drizzle-orm";
 import { postTable, postCategoriesTable, dailyStatsTable, postDailyStatsTable, adminTable } from "$lib/server/schema";
+import { postPath, slugifyPostTitle } from "$lib/post-url";
+
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 export const load: PageServerLoad = async ({ params, cookies }) => {
     try {
-        const { post_id } = params;
-        
-        // 1. Fetch main post and categories in parallel
-        const [postResults, categoryResults] = await Promise.all([
-            db.select({
+        const identifier = params.post_id;
+
+        const isLegacyId = UUID_PATTERN.test(identifier);
+        let resolvedPostId = identifier;
+
+        if (!isLegacyId) {
+            const candidates = await db.select({
+                post_id: postTable.post_id,
+                title: postTable.title,
+            })
+                .from(postTable)
+                .where(and(eq(postTable.status, "published"), eq(postTable.deleted, false)))
+                .orderBy(desc(postTable.created_at));
+
+            const match = candidates.find(
+                (candidate) => slugifyPostTitle(candidate.title) === identifier.toLowerCase(),
+            );
+
+            if (!match) throw error(404, "Post not found");
+            resolvedPostId = match.post_id;
+        }
+
+        const postResults = await db.select({
                 post_id: postTable.post_id,
                 title: postTable.title,
                 content: postTable.content,
@@ -30,21 +51,28 @@ export const load: PageServerLoad = async ({ params, cookies }) => {
             })
             .from(postTable)
             .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
-            .where(and(eq(postTable.post_id, post_id), eq(postTable.deleted, false))),
-
-            db.select({ category_slug: postCategoriesTable.category_slug })
-            .from(postCategoriesTable)
-            .where(eq(postCategoriesTable.post_id, post_id))
-            .catch(() => []) // Fallback for missing table/error
-        ]);
+            .where(and(
+                eq(postTable.post_id, resolvedPostId),
+                eq(postTable.status, "published"),
+                eq(postTable.deleted, false),
+            ));
 
         const post = postResults[0];
-        let categorySlugs = categoryResults.map(c => c.category_slug);
 
-
-        if (!post || post.status !== "published") {
+        if (!post) {
             throw error(404, "Post not found");
         }
+
+        if (isLegacyId) {
+            throw redirect(301, postPath(post));
+        }
+
+        const post_id = post.post_id;
+        const categoryResults = await db.select({ category_slug: postCategoriesTable.category_slug })
+            .from(postCategoriesTable)
+            .where(eq(postCategoriesTable.post_id, post_id))
+            .catch(() => []);
+        let categorySlugs = categoryResults.map(c => c.category_slug);
 
         // Increment views (unique per user/post/day via cookie)
         const viewedCookie = cookies.get('viewed_posts') || '';

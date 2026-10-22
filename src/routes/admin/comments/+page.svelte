@@ -1,6 +1,7 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
     import { page } from "$app/stores";
+    import { postPath } from "$lib/post-url";
 
     export let data;
 
@@ -577,7 +578,7 @@
                                         >
                                         <a
                                             href={comment.postTitle
-                                                ? `/posts/${comment.post_id}`
+                                                ? postPath({ title: comment.postTitle, post_id: comment.post_id })
                                                 : `/movies/${comment.post_id}`}
                                             class="hover:text-orange-600 hover:underline truncate max-w-[150px] md:max-w-xs transition-colors"
                                             target="_blank"

@@ -2,6 +2,7 @@
 	export let post: any = null;
 	import { getOptimizedImageUrl } from "$lib/utils/image";
 	import ArrowIcon from "$lib/components/icons/ArrowIcon.svelte";
+	import { postPath } from "$lib/post-url";
 </script>
 
 <section class="bg-[#0a0a0a] py-14 text-white md:py-20">
@@ -37,7 +38,7 @@
 
 		{#if post}
 			<a
-				href="/posts/{post.post_id}"
+				href={postPath(post)}
 				class="group grid overflow-hidden border border-white/15 bg-[#111] lg:grid-cols-[minmax(0,1.55fr)_minmax(360px,0.75fr)]"
 				aria-label={`Read ${post.title}`}
 			>

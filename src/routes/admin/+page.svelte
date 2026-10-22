@@ -5,6 +5,7 @@
     import { page } from "$app/stores";
     import Header from "$lib/components/admin/Header.svelte";
     import Sidebar from "$lib/components/admin/Sidebar.svelte";
+    import { postPath } from "$lib/post-url";
 
     export let data;
 
@@ -896,7 +897,7 @@
                                                 </button>
                                             </div>
                                             {:else}
-                                                <a class="self-center px-3 py-2 text-xs font-medium text-accent underline" href="/posts/{post.post_id}" target="_blank">View post</a>
+                                                <a class="self-center px-3 py-2 text-xs font-medium text-accent underline" href={postPath(post)} target="_blank">View post</a>
                                             {/if}
                                         </div>
                                     </div>

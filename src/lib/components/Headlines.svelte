@@ -4,6 +4,7 @@
     import { fly } from "svelte/transition";
     import { quartOut } from "svelte/easing";
     import { getOptimizedImageUrl } from "$lib/utils/image";
+    import { postPath } from "$lib/post-url";
 
     type Post = {
         post_id: string;
@@ -93,7 +94,7 @@
                 {#each featured as post}
                     <swiper-slide class="w-full h-full relative block">
                         <a
-                            href={`/posts/${post.post_id}`}
+                            href={postPath(post)}
                             class="block relative w-full h-full"
                             aria-label={post.title}
                         >
@@ -154,7 +155,7 @@
                     {@const s = featured[(activeIndex + 1) % featured.length]}
                     <a
                         class="group absolute inset-0 block w-full h-full"
-                        href={`/posts/${s.post_id}`}
+                        href={postPath(s)}
                         aria-label={s.title}
                         in:fly={{ x: "-100%", duration: 800, easing: quartOut }}
                         out:fly={{ x: "100%", duration: 800, easing: quartOut }}
@@ -199,7 +200,7 @@
                     {@const s = featured[(activeIndex + 2) % featured.length]}
                     <a
                         class="group absolute inset-0 block w-full h-full"
-                        href={`/posts/${s.post_id}`}
+                        href={postPath(s)}
                         aria-label={s.title}
                         in:fly={{ x: "100%", duration: 800, easing: quartOut }}
                         out:fly={{

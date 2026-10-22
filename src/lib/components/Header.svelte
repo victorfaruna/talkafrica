@@ -2,6 +2,7 @@
     import { page } from "$app/state";
     import { fade, fly, slide } from "svelte/transition";
     import { quintOut } from "svelte/easing";
+    import { postPath } from "$lib/post-url";
     const url = $derived(page.url.pathname);
 
     let {
@@ -1061,7 +1062,7 @@
                         <div class="divide-y divide-gray-100">
                             {#each searchResults as post}
                                 <a
-                                    href="/posts/{post.post_id}"
+                                    href={postPath(post)}
                                     onclick={toggleSearchModal}
                                     class="block p-4 hover:bg-gray-50 transition-colors"
                                 >

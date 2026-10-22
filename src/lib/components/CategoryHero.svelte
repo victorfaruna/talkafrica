@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { postPath } from "$lib/post-url";
 
     type HeroPost = {
         post_id: string;
@@ -84,7 +85,7 @@
                 {#if activePost.excerpt}
                     <p class="category-hero__excerpt">{activePost.excerpt}</p>
                 {/if}
-                <a class="category-hero__cta" href={`/posts/${activePost.post_id}`}>
+                <a class="category-hero__cta" href={postPath(activePost)}>
                     Read More
                 </a>
             </div>
@@ -98,7 +99,7 @@
                     <div class="category-hero__list-window">
                     {#each visiblePosts as item}
                         <a
-                            href={`/posts/${item.post.post_id}`}
+                            href={postPath(item.post)}
                             class:active={item.index === activeIndex}
                             onmouseenter={() => (interactionIndex = item.index)}
                             onfocus={() => (interactionIndex = item.index)}

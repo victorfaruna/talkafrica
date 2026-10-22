@@ -3,6 +3,7 @@
     import { getCategoryBySlug, getSubcategories } from "$lib/categories";
     import { getOptimizedImageUrl } from "$lib/utils/image";
     import ArrowIcon from "$lib/components/icons/ArrowIcon.svelte";
+    import { postPath } from "$lib/post-url";
 
     export let category: string;
     export let categoryName: string;
@@ -20,7 +21,7 @@
             ? "/images/category/health-hero.jpg"
             : null;
 
-    const href = (post: any) => `/posts/${post.post_id}`;
+    const href = (post: any) => postPath(post);
 
     function formatDate(value: string | Date | undefined) {
         if (!value) return "";

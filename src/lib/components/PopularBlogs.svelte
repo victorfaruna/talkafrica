@@ -6,6 +6,7 @@
         excerpt?: string | null;
     }>;
     import { getOptimizedImageUrl } from "$lib/utils/image";
+    import { postPath } from "$lib/post-url";
     $: list = (posts ?? []).slice(0, 8).map((p) => ({
         title: p.title,
         image: getOptimizedImageUrl(p.image, {
@@ -14,7 +15,7 @@
             fit: "fill",
             gravity: "auto",
         }),
-        url: `/posts/${p.post_id}`,
+        url: postPath(p),
     }));
 </script>
 

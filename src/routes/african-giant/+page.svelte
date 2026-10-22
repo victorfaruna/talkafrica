@@ -4,6 +4,7 @@
     import CategoryHero from "$lib/components/CategoryHero.svelte";
     import { getOptimizedImageUrl } from "$lib/utils/image";
     import ArrowIcon from "$lib/components/icons/ArrowIcon.svelte";
+    import { postPath } from "$lib/post-url";
 
     interface Props {
         data: {
@@ -66,14 +67,14 @@
                         Discover the people transforming African culture, creativity and influence.
                         Each feature is thoughtfully reported to inform, celebrate and inspire.
                     </p>
-                    <a class="showcase-cta" href={`/posts/${latest.post_id}`}>
+                    <a class="showcase-cta" href={postPath(latest)}>
                         Read the latest feature <ArrowIcon />
                     </a>
                 </div>
 
                 <div class="cover-stage" aria-label="Featured African Giant stories">
                     {#if posts[2]}
-                        <a class="cover cover-back" href={`/posts/${posts[2].post_id}`} aria-label={`Read ${posts[2].title}`}>
+                        <a class="cover cover-back" href={postPath(posts[2])} aria-label={`Read ${posts[2].title}`}>
                             <img src={getOptimizedImageUrl(posts[2].image, { width: 520, height: 720, fit: "fill" })} alt={posts[2].title} />
                             <span class="cover-shine" aria-hidden="true"></span>
                             <span class="cover-brand">TA</span>
@@ -82,7 +83,7 @@
                     {/if}
 
                     {#if posts[1]}
-                        <a class="cover cover-middle" href={`/posts/${posts[1].post_id}`} aria-label={`Read ${posts[1].title}`}>
+                        <a class="cover cover-middle" href={postPath(posts[1])} aria-label={`Read ${posts[1].title}`}>
                             <img src={getOptimizedImageUrl(posts[1].image, { width: 600, height: 820, fit: "fill" })} alt={posts[1].title} />
                             <span class="cover-shine" aria-hidden="true"></span>
                             <span class="cover-brand">TalkAfrica</span>
@@ -90,7 +91,7 @@
                         </a>
                     {/if}
 
-                    <a class="cover cover-main" href={`/posts/${latest.post_id}`} aria-label={`Read ${latest.title}`}>
+                    <a class="cover cover-main" href={postPath(latest)} aria-label={`Read ${latest.title}`}>
                         <img src={getOptimizedImageUrl(latest.image, { width: 760, height: 1040, fit: "fill" })} alt={latest.title} loading="eager" fetchpriority="high" />
                         <span class="cover-shine" aria-hidden="true"></span>
                         <span class="cover-brand">TalkAfrica</span>
@@ -113,16 +114,16 @@
                     <div class="archive-grid">
                         {#each posts.slice(1) as post}
                             <article class="archive-card">
-                                <a class="archive-image" href={`/posts/${post.post_id}`} aria-label={`Read ${post.title}`}>
+                                <a class="archive-image" href={postPath(post)} aria-label={`Read ${post.title}`}>
                                     <img src={getOptimizedImageUrl(post.image, { width: 620, height: 420, fit: "fill" })} alt={post.title} loading="lazy" decoding="async" />
                                 </a>
                                 <div class="archive-meta">
                                     <span>{post.author || "TalkAfrica"}</span>
                                     <time datetime={post.created_at ? new Date(post.created_at).toISOString() : undefined}>{formatDate(post.created_at)}</time>
                                 </div>
-                                <h3><a href={`/posts/${post.post_id}`}>{post.title}</a></h3>
+                                <h3><a href={postPath(post)}>{post.title}</a></h3>
                                 {#if post.excerpt}<p>{post.excerpt}</p>{/if}
-                                <a class="story-link" href={`/posts/${post.post_id}`}>Read story <ArrowIcon /></a>
+                                <a class="story-link" href={postPath(post)}>Read story <ArrowIcon /></a>
                             </article>
                         {/each}
                     </div>

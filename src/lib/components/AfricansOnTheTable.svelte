@@ -2,6 +2,7 @@
     export let posts: any[] = [];
     export let videos: any[] = [];
     import { getOptimizedImageUrl } from "$lib/utils/image";
+    import { postPath } from "$lib/post-url";
 </script>
 
 <section
@@ -154,7 +155,7 @@
                     <!-- Featured Post (if no video) -->
                     {#each posts.slice(0, 1) as post}
                         <a
-                            href="/posts/{post.post_id}"
+                            href={postPath(post)}
                             class="block group relative w-full aspect-[3/4] md:aspect-[16/9] lg:aspect-[4/3] xl:aspect-[16/9] rounded-[2rem] overflow-hidden bg-gray-900 border border-white/5 shadow-2xl transition-all duration-500"
                         >
                             <img
@@ -241,7 +242,7 @@
                 {#if videos.length > 0 && posts.length > 0}
                     {#each posts.slice(0, 3) as post}
                         <a
-                            href="/posts/{post.post_id}"
+                            href={postPath(post)}
                             class="group relative flex items-center gap-5 p-4 rounded-3xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10 transition-all duration-300"
                         >
                             <div
@@ -290,7 +291,7 @@
                 {:else if posts.length > 1}
                     {#each posts.slice(1, 4) as post}
                         <a
-                            href="/posts/{post.post_id}"
+                            href={postPath(post)}
                             class="group relative flex items-center gap-5 p-4 rounded-3xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/10 transition-all duration-300"
                         >
                             <div

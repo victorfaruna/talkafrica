@@ -1,12 +1,13 @@
 <script lang="ts">
     import { getOptimizedImageUrl } from "$lib/utils/image";
     import ArrowIcon from "$lib/components/icons/ArrowIcon.svelte";
+    import { postPath } from "$lib/post-url";
 
     export let posts: any[] = [];
     export let categoryName = "Stories";
     export let pagination: any = null;
 
-    const href = (post: any) => `/posts/${post.post_id}`;
+    const href = (post: any) => postPath(post);
 
     function formatDate(value: string | Date | undefined) {
         if (!value) return "";
