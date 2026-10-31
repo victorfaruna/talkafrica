@@ -343,16 +343,33 @@
         font-size: 1.2rem;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 1023px) {
         .category-hero {
             height: auto;
-            min-height: auto;
+            min-height: 22rem;
+        }
+
+        .category-hero__empty {
+            box-sizing: border-box;
+            padding: 8rem 0 3rem;
+        }
+
+        .category-hero__empty h1 {
+            font-size: clamp(2rem, 8vw, 3rem);
+        }
+
+        .category-hero__empty p {
+            max-width: 30rem;
+            margin-top: 0.85rem;
+            font-size: 1rem;
+            line-height: 1.6;
+            text-wrap: balance;
         }
 
         .category-hero__inner {
             grid-template-columns: 1fr;
             gap: 2.5rem;
-            padding: 4.5rem 0 3rem;
+            padding: 8rem 0 3rem;
         }
 
         .category-hero__list-window {

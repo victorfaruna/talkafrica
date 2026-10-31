@@ -1,5 +1,6 @@
 <script lang="ts">
-    import { onMount, onDestroy } from "svelte";
+    import { onMount, onDestroy, tick } from "svelte";
+    import imageUrls from "$lib/hero-images.json";
     import "swiper/css";
     import "swiper/css/pagination";
 
@@ -9,35 +10,22 @@
 
     import { getOptimizedImageUrl } from "$lib/utils/image";
 
-    const heroImages = [
-        "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389880/talkafrica/hero/ta-1.jpg",
-        "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389881/talkafrica/hero/ta-10.jpg",
-        "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389587/talkafrica/hero/ta-11.jpg",
-        "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389589/talkafrica/hero/ta-12.jpg",
-        "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389591/talkafrica/hero/ta-13.jpg",
-        "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389593/talkafrica/hero/ta-14.jpg",
-        "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389595/talkafrica/hero/ta-15.jpg",
-        "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389598/talkafrica/hero/ta-16.jpg",
-        "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389603/talkafrica/hero/ta-17.jpg",
-        "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389605/talkafrica/hero/ta-18.jpg",
-        "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389607/talkafrica/hero/ta-19.jpg",
-        "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389610/talkafrica/hero/ta-2.jpg",
-        "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389613/talkafrica/hero/ta-20.jpg",
-        "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389615/talkafrica/hero/ta-21.jpg",
-        "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389618/talkafrica/hero/ta-22.jpg",
-        "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389620/talkafrica/hero/ta-3.jpg",
-        "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389623/talkafrica/hero/ta-4.jpg",
-        "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389626/talkafrica/hero/ta-5.jpg",
-        "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389628/talkafrica/hero/ta-6.jpg",
-        "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389629/talkafrica/hero/ta-7.jpg",
-        "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389631/talkafrica/hero/ta-8.jpg",
-        "https://res.cloudinary.com/dwwyegu5r/image/upload/v1775389634/talkafrica/hero/ta-9.jpg",
-    ];
+    let heroImages = [...imageUrls];
+    let destroyed = false;
 
     onMount(async () => {
-        if (!swiperEl || !paginationEl) return;
+        // Shuffle after hydration so the server and initial client markup agree.
+        const shuffled = [...imageUrls];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        heroImages = shuffled;
+        await tick();
+        if (!swiperEl || !paginationEl || heroImages.length < 2) return;
         const [{ default: Swiper }, { Autoplay, Pagination }] =
             await Promise.all([import("swiper"), import("swiper/modules")]);
+        if (destroyed) return;
 
         swiperInstance = new Swiper(swiperEl, {
             modules: [Autoplay, Pagination],
@@ -56,6 +44,7 @@
     });
 
     onDestroy(() => {
+        destroyed = true;
         swiperInstance?.destroy(true, true);
         swiperInstance = undefined;
     });
