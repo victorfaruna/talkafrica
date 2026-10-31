@@ -1,6 +1,7 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import { postPath } from "$lib/post-url";
+    import heroImages from "$lib/category-hero-images.json";
 
     type HeroPost = {
         post_id: string;
@@ -14,26 +15,7 @@
     export let posts: HeroPost[] = [];
     export let trendingPost: HeroPost | null = null;
 
-    const defaultHeroImage = "/images/big-screen-bg-v2.jpg";
-    const categoryHeroImages: Record<string, string> = {
-        politics: "/images/category/politics-hero.jpg",
-        economy: "/images/category/economy-hero.jpg",
-        health: "/images/category/health-hero.jpg",
-        technology: "/images/category/technology-hero.png",
-        basketball: "/images/category/basketball-hero.png",
-        athletics: "/images/category/athletics-hero.png",
-        tennis: "/images/category/tennis-hero.png",
-        music: "/images/category/music-hero.jpg",
-        "celebrity-gossip": "/images/category/celebrity-gossip-hero.jpg",
-        travel: "/images/category/travel-hero.jpg",
-        lifestyle: "/images/category/lifestyle-hero.png",
-        "movie-reviews": "/images/category/movie-reviews-hero.png",
-        arts: "/images/category/arts-hero.jpg",
-        "african-history": "/images/category/african-history-hero.jpg",
-        "animated-folktales": "/images/category/animated-folktales-hero.jpg",
-        "fun-facts": "/images/category/fun-facts-hero.jpg",
-        "historical-sites": "/images/category/historical-sites-hero.jpg",
-    };
+    const categoryHeroImages: Record<string, { src: string; srcset: string }> = heroImages;
 
     let rotationIndex = 0;
     let interactionIndex: number | null = null;
@@ -41,7 +23,7 @@
     $: categoryKey = categorySlug.toLowerCase() || categoryName.toLowerCase();
     $: activeIndex = interactionIndex ?? rotationIndex;
     $: activePost = posts[activeIndex] ?? trendingPost ?? posts[0];
-    $: heroImage = categoryHeroImages[categoryKey] ?? defaultHeroImage;
+    $: heroImage = categoryHeroImages[categoryKey] ?? categoryHeroImages.default;
     $: visiblePosts = posts.length
         ? Array.from({ length: Math.min(3, posts.length) }, (_, offset) => {
               const index = (rotationIndex + offset) % posts.length;
@@ -60,13 +42,26 @@
     });
 </script>
 
+<svelte:head>
+    <link
+        rel="preload"
+        as="image"
+        href={heroImage.src}
+        imagesrcset={heroImage.srcset}
+        imagesizes="100vw"
+        fetchpriority="high"
+    />
+</svelte:head>
+
 <section class="category-hero" aria-label={`${categoryName} trending stories`}>
     <img
         class="category-hero__image"
         class:category-hero__image--technology={categoryKey === "technology"}
         class:category-hero__image--african-history={categoryKey === "african-history"}
         class:category-hero__image--tennis={categoryKey === "tennis"}
-        src={heroImage}
+        src={heroImage.src}
+        srcset={heroImage.srcset}
+        sizes="100vw"
         alt=""
         loading="eager"
         decoding="async"
