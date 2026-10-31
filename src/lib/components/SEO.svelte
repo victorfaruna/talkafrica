@@ -218,10 +218,10 @@
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:secure_url" content={ogImage} />
     <meta property="og:image:url" content={ogImage} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
+    <meta property="og:image:width" content={String(page.data.imageWidth ?? 1200)} />
+    <meta property="og:image:height" content={String(page.data.imageHeight ?? 630)} />
     <meta property="og:image:type" content={ogImageType} />
-    <meta property="og:image:alt" content={title} />
+    <meta property="og:image:alt" content={page.data.imageAlt || title} />
     <meta property="og:type" content={type} />
     <meta property="og:locale" content="en_NG" />
 
@@ -231,7 +231,7 @@
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
-    <meta name="twitter:image:alt" content={title} />
+    <meta name="twitter:image:alt" content={page.data.imageAlt || title} />
 
     <!-- Schema.org / Google / WhatsApp -->
     <meta itemprop="name" content={title} />

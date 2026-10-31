@@ -68,7 +68,7 @@
                 {/each}
             </div>
             <!-- Pagination -->
-            <div class="swiper-pagination" bind:this={paginationEl}></div>
+            <div class="swiper-pagination hidden md:block" bind:this={paginationEl}></div>
         </div>
     </div>
 

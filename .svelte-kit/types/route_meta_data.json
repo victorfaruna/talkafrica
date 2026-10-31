@@ -133,6 +133,10 @@
 	"/donate": [
 		"src/routes/donate/+page.ts"
 	],
+	"/emergence": [
+		"src/routes/emergence/+page.ts",
+		"src/routes/emergence/+page.server.ts"
+	],
 	"/movies": [
 		"src/routes/movies/+page.server.ts"
 	],

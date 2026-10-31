@@ -31,7 +31,8 @@ export const nodes = [
 	() => import('./nodes/27'),
 	() => import('./nodes/28'),
 	() => import('./nodes/29'),
-	() => import('./nodes/30')
+	() => import('./nodes/30'),
+	() => import('./nodes/31')
 ];
 
 export const server_loads = [2];
@@ -58,13 +59,14 @@ export const dictionary = {
 		"/african-giant": [~21],
 		"/contact": [22],
 		"/donate": [23],
-		"/movies": [~24],
-		"/movies/[slug]": [~25],
-		"/posts/[post_id]": [~26],
-		"/privacy": [27],
-		"/terms": [28],
-		"/videos": [~29],
-		"/[category=category]": [~30]
+		"/emergence": [~24],
+		"/movies": [~25],
+		"/movies/[slug]": [~26],
+		"/posts/[post_id]": [~27],
+		"/privacy": [28],
+		"/terms": [29],
+		"/videos": [~30],
+		"/[category=category]": [~31]
 	};
 
 export const hooks = {

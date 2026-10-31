@@ -1,985 +1,253 @@
 <script lang="ts">
-    import { onMount, onDestroy } from "svelte";
-    import { browser } from "$app/environment";
+    import { onMount, tick } from "svelte";
+    import { dev } from "$app/environment";
     import { page } from "$app/stores";
+    import ArrowRight from "@lucide/svelte/icons/arrow-right";
+    import X from "@lucide/svelte/icons/x";
+    import Earth from "@lucide/svelte/icons/earth";
+    import UsersRound from "@lucide/svelte/icons/users-round";
+    import Eye from "@lucide/svelte/icons/eye";
+    import BookOpen from "@lucide/svelte/icons/book-open";
+    import Mail from "@lucide/svelte/icons/mail";
+    import Check from "@lucide/svelte/icons/check";
+    import CircleCheck from "@lucide/svelte/icons/circle-check";
+    import LoaderCircle from "@lucide/svelte/icons/loader-circle";
+    import ShieldCheck from "@lucide/svelte/icons/shield-check";
     import { getOptimizedImageUrl } from "$lib/utils/image";
 
-    let showPopup = false;
+    let dialog: HTMLDialogElement;
     let email = "";
     let isSubmitting = false;
     let isSuccess = false;
-    let cardsVisible = false;
-    let formVisible = false;
-
-    // Gallery state
-    let galleryItems: any[] = [];
-    let galleryContainer: HTMLDivElement;
-    let galleryFrame: number;
-    let galleryPaused = false;
-
-    async function fetchGallery() {
-        try {
-            const res = await fetch("/api/our-impact");
-            if (res.ok) {
-                const data = await res.json();
-                galleryItems = Array.isArray(data) ? data : [];
-            }
-        } catch (e) {
-            // fail silently — gallery is decorative
-        }
-    }
-
-    function startGalleryScroll() {
-        if (!browser || !galleryContainer) return;
-        const speed = 1.2;
-        const tick = () => {
-            if (!galleryPaused && galleryContainer) {
-                galleryContainer.scrollLeft += speed;
-                const half = galleryContainer.scrollWidth / 2;
-                if (galleryContainer.scrollLeft >= half) {
-                    galleryContainer.scrollLeft = 0;
-                }
-            }
-            galleryFrame = requestAnimationFrame(tick);
-        };
-        galleryFrame = requestAnimationFrame(tick);
-    }
-
+    let errorMessage = "";
+    let previousOverflow = "";
+    let bodyLocked = false;
+    let galleryItems: { image_url?: string; image?: string; caption?: string; tag?: string }[] = [];
     const STORAGE_KEY = "newsletter_popup_dismissed";
-    const DAYS_TO_HIDE = 7;
-
     const impactCards = [
-        {
-            badge: "REACH",
-            icon: `<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="20" stroke="#FDB022" stroke-width="2.5"/><path d="M4 24h40M24 4C18 10 14 16.5 14 24s4 14 10 20M24 4C30 10 34 16.5 34 24s-4 14-10 20" stroke="#FDB022" stroke-width="2" stroke-linecap="round"/></svg>`,
-            stat: "500K",
-            text: "Total outreach",
-        },
-        {
-            badge: "COMMUNITY",
-            icon: `<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="18" r="7" stroke="#FDB022" stroke-width="2.5"/><path d="M8 40c0-8.837 7.163-16 16-16s16 7.163 16 16" stroke="#FDB022" stroke-width="2.5" stroke-linecap="round"/><circle cx="10" cy="20" r="4.5" stroke="#FDB022" stroke-width="2"/><circle cx="38" cy="20" r="4.5" stroke="#FDB022" stroke-width="2"/></svg>`,
-            stat: "5",
-            text: "Countries connected",
-        },
-        {
-            badge: "IMPACT",
-            icon: `<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24 6L28.5 16.5H40L30.5 23L34.5 34L24 27.5L13.5 34L17.5 23L8 16.5H19.5L24 6Z" stroke="#FDB022" stroke-width="2.5" stroke-linejoin="round"/></svg>`,
-            stat: "30K",
-            text: "Total views",
-        },
-        {
-            badge: "LEGACY",
-            icon: `<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="12" width="32" height="26" rx="3" stroke="#FDB022" stroke-width="2.5"/><path d="M16 12V10a8 8 0 0116 0v2" stroke="#FDB022" stroke-width="2.5" stroke-linecap="round"/><path d="M24 22v8M20 26h8" stroke="#FDB022" stroke-width="2.5" stroke-linecap="round"/></svg>`,
-            stat: "5+",
-            text: "Years preserving African narratives",
-        },
+        { icon: Earth, stat: "500K", text: "People reached" },
+        { icon: UsersRound, stat: "5", text: "Countries connected" },
+        { icon: Eye, stat: "30K", text: "Story views" },
+        { icon: BookOpen, stat: "5+", text: "Years of storytelling" },
     ];
 
-    onMount(() => {
-        if (!browser) return;
-
-        // Don't show popup on admin pages
-        if ($page.url.pathname.startsWith("/admin")) {
-            return;
+    function unlockBody() {
+        if (bodyLocked) {
+            document.body.style.overflow = previousOverflow;
+            bodyLocked = false;
         }
-
-        // Prefetch gallery images immediately
-        fetchGallery();
-
-        // Check if popup was already dismissed
-        const dismissedDate = localStorage.getItem(STORAGE_KEY);
-        if (dismissedDate) {
-            const daysSinceDismissed =
-                (Date.now() - parseInt(dismissedDate)) / (1000 * 60 * 60 * 24);
-            if (daysSinceDismissed < DAYS_TO_HIDE) {
-                return;
-            }
-        }
-
-        // Show popup after 5 seconds
-        const timer = setTimeout(() => {
-            showPopup = true;
-            // Stagger in the cards then form
-            setTimeout(() => (cardsVisible = true), 200);
-            setTimeout(() => (formVisible = true), 700);
-            // Start gallery scroll once popup is visible
-            setTimeout(() => startGalleryScroll(), 400);
-        }, 5000);
-
-        return () => clearTimeout(timer);
-    });
-
-    onDestroy(() => {
-        if (galleryFrame) cancelAnimationFrame(galleryFrame);
-    });
+    }
 
     function closePopup() {
-        showPopup = false;
-        cardsVisible = false;
-        formVisible = false;
-        if (browser) {
-            localStorage.setItem(STORAGE_KEY, Date.now().toString());
-        }
+        dialog?.close();
+        unlockBody();
+        try { localStorage.setItem(STORAGE_KEY, Date.now().toString()); } catch { /* Storage may be unavailable. */ }
     }
 
-    function handleBackdropClick(event: any) {
-        if (event.target === event.currentTarget) {
-            closePopup();
-        }
-    }
-
-    function handleKeydown(event: KeyboardEvent) {
-        if (event.key === "Escape") closePopup();
-    }
+    onMount(() => {
+        if ($page.url.pathname.startsWith("/admin")) return;
+        const localPreview = dev && ["localhost", "127.0.0.1", "[::1]"].includes(window.location.hostname);
+        try {
+            const dismissed = Number(localStorage.getItem(STORAGE_KEY));
+            if (!localPreview && dismissed && Date.now() - dismissed < 7 * 24 * 60 * 60 * 1000) return;
+        } catch { /* Continue when storage is unavailable. */ }
+        let disposed = false;
+        const controller = new AbortController();
+        const timer = window.setTimeout(async () => {
+            if ($page.url.pathname.startsWith("/admin")) return;
+            await tick();
+            if (disposed || !dialog) return;
+            previousOverflow = document.body.style.overflow;
+            document.body.style.overflow = "hidden";
+            bodyLocked = true;
+            dialog.showModal();
+            try {
+                const response = await fetch("/api/our-impact", { signal: controller.signal });
+                if (response.ok) {
+                    const items = await response.json();
+                    if (!disposed) galleryItems = Array.isArray(items) ? items.filter(item => item.image_url || item.image).slice(0, 3) : [];
+                }
+            } catch { /* Gallery is optional. */ }
+        }, localPreview ? 300 : 5000);
+        return () => {
+            disposed = true;
+            clearTimeout(timer);
+            controller.abort();
+            dialog?.close();
+            unlockBody();
+        };
+    });
 
     async function handleSubmit() {
-        if (!email || isSubmitting) return;
-
+        if (!email.trim() || isSubmitting) return;
         isSubmitting = true;
-
+        errorMessage = "";
         try {
             const response = await fetch("/api/newsletter/subscribe", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email }),
+                body: JSON.stringify({ email: email.trim() }),
             });
-
-            if (!response.ok) {
-                const data = await response.json();
-                throw new Error(data.error || "Failed to subscribe");
-            }
-
+            if (!response.ok) throw new Error("Subscription failed");
             isSuccess = true;
-            setTimeout(() => {
-                closePopup();
-            }, 2500);
-        } catch (error) {
-            console.error("Newsletter subscription error:", error);
-            alert("Failed to subscribe. Please try again.");
+        } catch {
+            errorMessage = "We couldn't subscribe you just now. Please try again.";
         } finally {
             isSubmitting = false;
         }
     }
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
-
-{#if showPopup}
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <!-- svelte-ignore a11y-no-static-element-interactions -->
-    <div
-        class="newsletter-backdrop"
-        on:click={handleBackdropClick}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="popup-title"
-    >
-        <div class="newsletter-popup" role="document">
-            <!-- Close Button -->
-            <button
-                class="close-button"
-                on:click={closePopup}
-                aria-label="Close popup"
-                id="popup-close-btn"
-            >
-                <svg
-                    width="18"
-                    height="18"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2.5"
-                        d="M6 18L18 6M6 6l12 12"
-                    />
-                </svg>
-            </button>
-
-            {#if !isSuccess}
-                <!-- ===== IMPACT SHOWCASE SECTION ===== -->
-                <section class="impact-showcase">
-                    <div class="impact-header">
-                        <span class="legacy-label">TalkAfrika's Legacy</span>
-                        <h2 class="impact-title" id="popup-title">
-                            Stories That Matter,<br />
-                            <span class="highlight">Impact That Lasts</span>
-                        </h2>
-                        <p class="impact-desc">
-                            Beyond headlines, we are building a legacy of
-                            truth, reach, and community across the continent.
-                        </p>
-                    </div>
-
-                    <!-- 4 Impact Cards -->
-                    <div class="impact-cards" class:cards-visible={cardsVisible}>
-                        {#each impactCards as card, i}
-                            <div
-                                class="impact-card"
-                                style="transition-delay: {i * 100}ms"
-                            >
-                                <span class="impact-badge">{card.badge}</span>
-                                <div class="card-icon">
-                                    {@html card.icon}
-                                </div>
-                                <div class="card-stat">{card.stat}</div>
-                                <p class="card-text">{card.text}</p>
-                            </div>
+<dialog bind:this={dialog} class="newsletter-popup" aria-labelledby="popup-title" aria-describedby="popup-description" on:cancel|preventDefault={closePopup} on:close={unlockBody}>
+    <button class="close-button" on:click={closePopup} aria-label="Close newsletter popup" id="popup-close-btn"><X size={20} strokeWidth={1.8} /></button>
+    {#if isSuccess}
+        <div class="success-panel" role="status">
+            <span class="success-icon"><CircleCheck size={36} strokeWidth={1.6} /></span>
+            <p class="eyebrow">You're part of the story</p>
+            <h2 id="popup-title">Welcome to the community.</h2>
+            <p id="popup-description">African stories, fresh perspectives, and voices worth hearing. Look out for us in your inbox.</p>
+            <button class="subscribe-button" on:click={closePopup}>Back to the stories <ArrowRight size={18} /></button>
+        </div>
+    {:else}
+        <div class="popup-layout">
+            <section class="story-panel" aria-labelledby="impact-title">
+                <div class="story-copy">
+                    <p class="eyebrow">Voices. Culture. Community.</p>
+                    <h2 id="impact-title">Stories that matter.<br /><span>Impact that lasts.</span></h2>
+                    <p class="story-description">A continent of stories. A community that brings them to life. Be part of Africa's next chapter.</p>
+                </div>
+                <div class="impact-stats" aria-label="Our impact">
+                    {#each impactCards as card}
+                        <div class="stat">
+                            <svelte:component this={card.icon} size={19} strokeWidth={1.6} aria-hidden="true" />
+                            <strong>{card.stat}</strong>
+                            <span>{card.text}</span>
+                        </div>
+                    {/each}
+                </div>
+                {#if galleryItems.length}
+                    <div class="story-gallery" aria-label="Our community in pictures">
+                        {#each galleryItems as item}
+                            <figure>
+                                <img src={getOptimizedImageUrl(item.image_url || item.image, { width: 360, height: 270, fit: 'fill' })} alt={item.caption || "TalkAfrica community"} loading="lazy" decoding="async" />
+                                {#if item.tag}<figcaption>{item.tag}</figcaption>{/if}
+                            </figure>
                         {/each}
                     </div>
-                </section>
-
-                <!-- ===== IMAGE GALLERY STRIP ===== -->
-                {#if galleryItems.length > 0}
-                    <div
-                        class="gallery-strip-wrap"
-                        on:mouseenter={() => (galleryPaused = true)}
-                        on:mouseleave={() => (galleryPaused = false)}
-                        role="region"
-                        aria-label="TalkAfrika impact image gallery"
-                    >
-                        <div
-                            bind:this={galleryContainer}
-                            class="gallery-strip"
-                        >
-                            <!-- duplicated for seamless loop -->
-                            {#each [...galleryItems, ...galleryItems] as item}
-                                <div class="gallery-item">
-                                    <img
-                                        src={getOptimizedImageUrl(item.image_url || item.image, { width: 320, height: 220, fit: 'fill' })}
-                                        alt={item.caption}
-                                        loading="lazy"
-                                        decoding="async"
-                                    />
-                                    {#if item.tag}
-                                        <span class="gallery-tag">{item.tag}</span>
-                                    {/if}
-                                    <div class="gallery-caption">{item.caption}</div>
-                                </div>
-                            {/each}
-                        </div>
-                    </div>
                 {/if}
-
-                <!-- Divider -->
-                <div class="section-divider">
-                    <span class="divider-line"></span>
-                    <span class="divider-line"></span>
+                <p class="story-footer">From Africa. For the world.</p>
+            </section>
+            <section class="signup-panel">
+                <div class="signup-heading">
+                    <div class="mail-icon"><Mail size={24} strokeWidth={1.6} aria-hidden="true" /></div>
+                    <p class="eyebrow signup-eyebrow">The TalkAfrica newsletter</p>
                 </div>
-
-                <!-- ===== NEWSLETTER FORM SECTION ===== -->
-                <section
-                    class="newsletter-section"
-                    class:form-visible={formVisible}
-                >
-                    <h3 class="popup-title">Stay Connected with Africa</h3>
-                    <p class="popup-description">
-                        Get these stories delivered to your inbox
-                    </p>
-
-                    <!-- Benefits -->
-                    <ul class="benefits-list">
-                        <li>
-                            <span class="check-icon">
-                                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-                                    <path
-                                        fill-rule="evenodd"
-                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                        clip-rule="evenodd"
-                                    />
-                                </svg>
-                            </span>
-                            Weekly curated African content
-                        </li>
-                        <li>
-                            <span class="check-icon">
-                                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-                                    <path
-                                        fill-rule="evenodd"
-                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                        clip-rule="evenodd"
-                                    />
-                                </svg>
-                            </span>
-                            Exclusive stories &amp; interviews
-                        </li>
-                        <li>
-                            <span class="check-icon">
-                                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-                                    <path
-                                        fill-rule="evenodd"
-                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                        clip-rule="evenodd"
-                                    />
-                                </svg>
-                            </span>
-                            No spam, unsubscribe anytime
-                        </li>
-                    </ul>
-
-                    <!-- Email Form -->
-                    <form
-                        on:submit|preventDefault={handleSubmit}
-                        class="email-form"
-                        id="newsletter-form"
-                    >
-                        <input
-                            type="email"
-                            bind:value={email}
-                            placeholder="Enter your email address"
-                            required
-                            class="email-input"
-                            disabled={isSubmitting}
-                            id="newsletter-email-input"
-                            autocomplete="email"
-                        />
-                        <button
-                            type="submit"
-                            class="submit-button"
-                            disabled={isSubmitting}
-                            id="newsletter-submit-btn"
-                        >
-                            {#if isSubmitting}
-                                <svg
-                                    class="spinner"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    width="20"
-                                    height="20"
-                                >
-                                    <circle
-                                        class="opacity-25"
-                                        cx="12"
-                                        cy="12"
-                                        r="10"
-                                        stroke="currentColor"
-                                        stroke-width="4"
-                                    />
-                                    <path
-                                        class="opacity-75"
-                                        fill="currentColor"
-                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                    />
-                                </svg>
-                            {:else}
-                                Subscribe Free
-                            {/if}
-                        </button>
-                    </form>
-                </section>
-            {:else}
-                <!-- ===== SUCCESS STATE ===== -->
-                <div class="success-container">
-                    <div class="success-icon-wrap">
-                        <svg
-                            width="56"
-                            height="56"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            class="success-svg"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                            />
-                        </svg>
-                    </div>
-                    <h2 class="success-title">You're In!</h2>
-                    <p class="success-message">
-                        Welcome to TalkAfrika's community. Expect African
-                        stories, culture, and insights in your inbox soon.
-                    </p>
-                </div>
-            {/if}
+                <h2 id="popup-title">A little closer<br />to Africa.</h2>
+                <p class="signup-description" id="popup-description">The stories, people, and ideas moving the continent. Curated for your inbox.</p>
+                <ul class="benefits">
+                    <li><Check size={17} strokeWidth={2} aria-hidden="true" /> A fresh perspective, every week</li>
+                    <li><Check size={17} strokeWidth={2} aria-hidden="true" /> Original stories &amp; interviews</li>
+                    <li><Check size={17} strokeWidth={2} aria-hidden="true" /> Culture, community &amp; possibility</li>
+                </ul>
+                <form on:submit|preventDefault={handleSubmit} id="newsletter-form" aria-busy={isSubmitting}>
+                    <label for="newsletter-email-input">Your email address</label>
+                    <div class="input-wrap"><Mail size={18} strokeWidth={1.6} aria-hidden="true" /><input id="newsletter-email-input" type="email" bind:value={email} placeholder="you@example.com" autocomplete="email" required disabled={isSubmitting} aria-invalid={Boolean(errorMessage)} aria-describedby={errorMessage ? "newsletter-error" : undefined} /></div>
+                    {#if errorMessage}<p class="form-error" id="newsletter-error" role="alert">{errorMessage}</p>{/if}
+                    <button class="subscribe-button" type="submit" disabled={isSubmitting} id="newsletter-submit-btn">
+                        {#if isSubmitting}<LoaderCircle size={19} class="spinner" aria-hidden="true" /> Joining the community…{:else}Count me in <ArrowRight size={19} strokeWidth={1.8} aria-hidden="true" />{/if}
+                    </button>
+                </form>
+                <p class="privacy-note"><ShieldCheck size={15} strokeWidth={1.7} aria-hidden="true" /> Free to join. Unsubscribe anytime.</p>
+                <button class="later-button" on:click={closePopup} disabled={isSubmitting}>I'll explore for now</button>
+            </section>
         </div>
-    </div>
-{/if}
+    {/if}
+</dialog>
 
 <style>
-    /* ===================== BACKDROP ===================== */
-    .newsletter-backdrop {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.65);
-        backdrop-filter: blur(5px);
-        -webkit-backdrop-filter: blur(5px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-        padding: 0.75rem;
-        animation: fadeIn 0.3s ease-out;
-        overflow-y: hidden;
+    .newsletter-popup { width: min(960px, calc(100% - 40px)); max-width: none; max-height: calc(100dvh - 40px); margin: auto; padding: 0; border: 1px solid #ffffff38; border-radius: 20px; overflow: auto; overscroll-behavior: contain; background: #faf9f6; color: #172823; box-shadow: 0 28px 100px #0005; scrollbar-width: thin; }
+    .newsletter-popup::backdrop { background: #101b24b8; backdrop-filter: blur(6px); }
+    .newsletter-popup[open] { display: grid; grid-template-columns: minmax(0, 1fr); animation: enter 240ms ease-out; }
+    .popup-layout { grid-area: 1 / 1; display: grid; grid-template-columns: 1.08fr 1fr; }
+    .close-button { position: sticky; top: 14px; grid-area: 1 / 1; justify-self: end; align-self: start; margin: 14px; z-index: 2; width: 40px; height: 40px; display: grid; place-items: center; border: 1px solid #17282318; border-radius: 50%; background: #faf9f6; color: #34433d; cursor: pointer; }
+    .close-button:hover { background: #ecece5; }
+    .story-panel { padding: 36px; background: linear-gradient(180deg, rgba(12, 17, 14, .78), rgba(12, 17, 14, .86)), url('/images/popup-background.jpg') center / cover; color: #f7f5ed; min-width: 0; display: flex; flex-direction: column; }
+    .story-copy { margin-top: 0; }
+    .eyebrow { display: flex; align-items: center; gap: 8px; margin: 0 0 16px; font-size: 10px; line-height: 1.5; font-weight: 600; text-transform: uppercase; letter-spacing: 1.8px; }
+    .story-copy .eyebrow { color: #d4c79c; }
+    h2 { font-family: var(--font-clash-grotesk, sans-serif); font-weight: 600; letter-spacing: -1.3px; }
+    .story-copy h2 { margin: 0; font-size: clamp(28px, 3.4vw, 38px); line-height: 1.12; }
+    .story-copy h2 span { color: #f4bb57; }
+    .story-description { max-width: 350px; margin: 18px 0 0; font-size: 13px; line-height: 1.8; color: #cfdbd3; }
+    .impact-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 18px; border-top: 1px solid #ffffff26; padding-top: 24px; margin-top: 28px; }
+    .stat { display: grid; grid-template-columns: 23px 1fr; align-items: center; gap: 6px 9px; }
+    .stat :global(svg) { color: #e5bb6f; }
+    .stat strong { font-family: var(--font-clash-grotesk, sans-serif); font-size: 27px; line-height: 1; font-weight: 600; }
+    .stat span { grid-column: 2; font-size: 10px; line-height: 1.5; color: #c4d4ca; }
+    .story-gallery { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 28px; }
+    .story-gallery figure { margin: 0; position: relative; aspect-ratio: 1.1; border-radius: 7px; overflow: hidden; background: #ffffff10; }
+    .story-gallery img { width: 100%; height: 100%; object-fit: cover; }
+    .story-gallery figcaption { position: absolute; inset: auto 0 0; padding: 16px 7px 7px; background: linear-gradient(transparent, #000a); color: #fff; font-size: 8px; text-transform: uppercase; letter-spacing: .6px; }
+    .story-footer { margin: auto 0 0; padding-top: 24px; color: #bccfc2; font-size: 10px; letter-spacing: .6px; }
+    .signup-panel { padding: 64px 40px 32px; min-width: 0; }
+    .signup-heading { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; }
+    .mail-icon { width: 48px; height: 48px; flex-shrink: 0; display: grid; place-items: center; border: 1px solid #dcded4; border-radius: 13px; background: #f1f0e8; color: #2c5746; }
+    .signup-eyebrow { color: #627368; font-size: 9px; letter-spacing: 1px; margin: 0; white-space: nowrap; }
+    .signup-panel h2 { font-size: clamp(32px, 4vw, 45px); line-height: 1.04; margin: 0 0 18px; }
+    .signup-description { font-size: 13px; line-height: 1.75; color: #657068; margin: 0; }
+    .benefits { display: grid; gap: 11px; padding: 0; margin: 24px 0 28px; list-style: none; }
+    .benefits li { display: flex; gap: 9px; align-items: center; font-size: 11px; color: #3a4b41; line-height: 1.5; }
+    .benefits :global(svg) { color: #528466; flex-shrink: 0; }
+    form label { display: block; font-size: 11px; font-weight: 600; margin-bottom: 9px; }
+    .input-wrap { display: flex; align-items: center; gap: 10px; border: 1px solid #d4d8cf; border-radius: 8px; background: #fff; padding: 0 13px; color: #7b877f; }
+    .input-wrap:focus-within { border-color: #47745b; outline: 3px solid #47745b20; }
+    .input-wrap :global(svg) { flex-shrink: 0; }
+    input { width: 100%; min-width: 0; height: 49px; border: 0; background: transparent; font: inherit; font-size: 16px; color: #172823; outline: none; }
+    input::placeholder { color: #929a93; font-size: 13px; }
+    .subscribe-button { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; min-height: 50px; margin-top: 12px; padding: 12px 16px; background: #fdb022; color: #19261d; border: 1px solid #efa017; border-radius: 8px; font: inherit; font-weight: 600; font-size: 13px; cursor: pointer; transition: background 150ms; }
+    .subscribe-button:hover:not(:disabled) { background: #f5a515; }
+    button:disabled { opacity: .65; cursor: wait; }
+    .privacy-note { display: flex; gap: 6px; align-items: center; justify-content: center; color: #788279; font-size: 9px; margin: 13px 0 0; }
+    .later-button { display: block; min-height: 44px; margin: 13px auto 0; padding: 8px; border: 0; background: none; color: #657068; text-decoration: underline; text-underline-offset: 3px; font-size: 11px; cursor: pointer; }
+    button:focus-visible { outline: 3px solid #c58c29; outline-offset: 3px; }
+    .form-error { color: #a63129; font-size: 12px; line-height: 1.5; margin: 9px 0; }
+    .success-panel { grid-area: 1 / 1; padding: 64px 28px 44px; max-width: 480px; margin: auto; text-align: center; }
+    .success-icon { display: inline-grid; place-items: center; width: 72px; height: 72px; background: #e7eee4; color: #39714d; border-radius: 50%; margin-bottom: 24px; }
+    .success-panel .eyebrow { justify-content: center; color: #627368; }
+    .success-panel h2 { font-size: 36px; line-height: 1.1; margin: 0 0 16px; }
+    .success-panel > p:not(.eyebrow) { font-size: 14px; line-height: 1.8; color: #657068; }
+    .success-panel .subscribe-button { margin-top: 24px; }
+    :global(.newsletter-popup .spinner) { animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes enter { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 700px) {
+        .newsletter-popup { width: min(480px, calc(100% - 24px)); max-height: calc(100dvh - 24px); border-radius: 16px; }
+        .popup-layout { grid-template-columns: 1fr; }
+        .signup-panel { grid-row: 1; padding: 32px 24px 18px; }
+        .signup-heading { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; padding-right: 28px; }
+        .mail-icon { width: 40px; height: 40px; flex-shrink: 0; border-radius: 10px; margin-bottom: 0; }
+        .signup-panel h2 { font-size: 37px; }
+        .signup-description { max-width: 340px; }
+        .benefits { gap: 8px; margin: 18px 0 22px; }
+        .signup-eyebrow { margin: 0; font-size: clamp(7px, 2vw, 9px); letter-spacing: 1px; white-space: nowrap; }
+        .later-button { margin-top: 5px; }
+        .story-panel { padding: 24px; }
+        .story-copy { margin-top: 0; }
+        .story-copy .eyebrow { display: none; }
+        .story-copy h2 { font-size: 28px; }
+        .story-description { font-size: 12px; margin-top: 12px; }
+        .impact-stats { margin-top: 20px; padding-top: 20px; gap: 20px; }
+        .stat strong { font-size: 25px; }
+        .story-gallery { margin-top: 22px; }
+        .story-footer { padding-top: 20px; }
     }
-
-    /* ===================== POPUP SHELL ===================== */
-    .newsletter-popup {
-        position: relative;
-        background: #fff;
-        border-radius: 24px;
-        padding: 2.5rem 2.5rem 2rem;
-        width: 100%;
-        max-width: 760px;
-        max-height: min(85vh, 700px);
-        overflow-y: auto;
-        box-shadow:
-            0 30px 60px -12px rgba(0, 0, 0, 0.3),
-            0 0 0 1px rgba(253, 176, 34, 0.12);
-        animation: slideUp 0.42s cubic-bezier(0.22, 1, 0.36, 1);
-        scrollbar-width: thin;
-        scrollbar-color: rgba(253, 176, 34, 0.3) transparent;
+    @media (max-width: 360px) {
+        .signup-panel, .story-panel { padding-left: 20px; padding-right: 20px; }
+        .signup-panel h2 { font-size: 32px; }
+        .privacy-note { font-size: 8px; }
     }
-
-    .newsletter-popup::-webkit-scrollbar {
-        width: 4px;
-    }
-    .newsletter-popup::-webkit-scrollbar-thumb {
-        background: rgba(253, 176, 34, 0.35);
-        border-radius: 4px;
-    }
-
-    /* ===================== CLOSE BUTTON ===================== */
-    .close-button {
-        position: absolute;
-        top: 1.1rem;
-        right: 1.1rem;
-        width: 2.25rem;
-        height: 2.25rem;
-        border-radius: 50%;
-        background: rgba(0, 0, 0, 0.06);
-        border: none;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #555;
-        transition: all 0.2s ease;
-        z-index: 10;
-        flex-shrink: 0;
-    }
-
-    .close-button:hover {
-        background: rgba(253, 176, 34, 0.15);
-        color: #FDB022;
-        transform: scale(1.1) rotate(90deg);
-    }
-
-    /* ===================== IMPACT SHOWCASE ===================== */
-    .impact-showcase {
-        margin-bottom: 1.5rem;
-    }
-
-    .impact-header {
-        text-align: center;
-        margin-bottom: 1.25rem;
-        padding-right: 2rem; /* avoid overlap with close btn */
-    }
-
-    .legacy-label {
-        display: inline-block;
-        font-size: 0.7rem;
-        font-weight: 800;
-        letter-spacing: 0.35em;
-        text-transform: uppercase;
-        color: #FDB022;
-        font-family: 'Poppins', system-ui, sans-serif;
-        margin-bottom: 0.5rem;
-    }
-
-    .impact-title {
-        font-size: clamp(1.35rem, 3.5vw, 1.85rem);
-        font-weight: 800;
-        color: #111;
-        line-height: 1.15;
-        margin: 0.35rem 0 0.65rem;
-        font-family: var(--font-clash-grotesk, 'Clash Grotesk', system-ui, sans-serif);
-    }
-
-    .impact-title .highlight {
-        color: #FDB022;
-    }
-
-    .impact-desc {
-        font-size: 0.88rem;
-        color: #666;
-        line-height: 1.6;
-        max-width: 480px;
-        margin: 0 auto;
-    }
-
-    /* ===== IMPACT CARDS GRID ===== */
-    .impact-cards {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 0.65rem;
-        opacity: 0;
-        transform: translateY(16px);
-        transition: opacity 0.45s ease, transform 0.45s ease;
-    }
-
-    .impact-cards.cards-visible {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    .impact-card {
-        background: #fff;
-        border: 1.5px solid #f0f0f0;
-        border-radius: 12px;
-        padding: 1rem 0.75rem;
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.4rem;
-        opacity: 0;
-        transform: translateY(20px);
-        transition:
-            opacity 0.4s ease,
-            transform 0.4s ease,
-            border-color 0.25s,
-            box-shadow 0.25s;
-    }
-
-    /* Stagger via parent visibility */
-    .cards-visible .impact-card {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    .impact-card:hover {
-        border-color: #FDB022;
-        transform: translateY(-3px);
-        box-shadow: 0 8px 20px rgba(253, 176, 34, 0.15);
-    }
-
-    .impact-badge {
-        display: inline-block;
-        background: #FDB022;
-        color: #fff;
-        font-size: 0.6rem;
-        font-weight: 700;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-        padding: 3px 10px;
-        border-radius: 20px;
-        white-space: nowrap;
-    }
-
-    .card-icon {
-        width: 38px;
-        height: 38px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .card-icon :global(svg) {
-        width: 100%;
-        height: 100%;
-    }
-
-    .card-stat {
-        font-size: 1.25rem;
-        font-weight: 800;
-        color: #111;
-        line-height: 1;
-        font-family: var(--font-clash-grotesk, system-ui, sans-serif);
-    }
-
-    .card-text {
-        font-size: 0.7rem;
-        color: #777;
-        line-height: 1.4;
-        margin: 0;
-    }
-
-    /* ===================== GALLERY STRIP ===================== */
-    .gallery-strip-wrap {
-        margin: 1.25rem -2.5rem 0;
-        overflow: hidden;
-        position: relative;
-    }
-
-    /* Fade edges */
-    .gallery-strip-wrap::before,
-    .gallery-strip-wrap::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 60px;
-        z-index: 2;
-        pointer-events: none;
-    }
-    .gallery-strip-wrap::before {
-        left: 0;
-        background: linear-gradient(to right, rgba(255,255,255,0.6), transparent);
-        width: 30px;
-    }
-    .gallery-strip-wrap::after {
-        right: 0;
-        background: linear-gradient(to left, rgba(255,255,255,0.6), transparent);
-        width: 30px;
-    }
-
-    .gallery-strip {
-        display: flex;
-        gap: 0.6rem;
-        overflow-x: auto;
-        padding: 0.5rem 2.5rem 0.75rem;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-        cursor: grab;
-    }
-    .gallery-strip::-webkit-scrollbar {
-        display: none;
-    }
-
-    .gallery-item {
-        flex-shrink: 0;
-        width: 180px;
-        height: 120px;
-        border-radius: 10px;
-        overflow: hidden;
-        position: relative;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .gallery-item:hover {
-        transform: scale(1.04);
-        box-shadow: 0 8px 20px rgba(253, 176, 34, 0.2);
-    }
-    .gallery-item img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.5s ease;
-    }
-    .gallery-item:hover img {
-        transform: scale(1.08);
-    }
-
-    .gallery-tag {
-        position: absolute;
-        top: 6px;
-        left: 6px;
-        background: rgba(253, 176, 34, 0.85);
-        backdrop-filter: blur(4px);
-        color: #fff;
-        font-size: 0.55rem;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        padding: 2px 7px;
-        border-radius: 20px;
-        z-index: 2;
-    }
-
-    .gallery-caption {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        padding: 0.5rem 0.6rem 0.4rem;
-        background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%);
-        color: #fff;
-        font-size: 0.62rem;
-        font-weight: 600;
-        line-height: 1.3;
-        transform: translateY(100%);
-        transition: transform 0.3s ease;
-    }
-    .gallery-item:hover .gallery-caption {
-        transform: translateY(0);
-    }
-
-    /* ===================== DIVIDER ===================== */
-    .section-divider {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        margin: 1.25rem 0 1.25rem;
-    }
-
-    .divider-line {
-        flex: 1;
-        height: 1px;
-        background: linear-gradient(
-            to right,
-            transparent,
-            rgba(253, 176, 34, 0.3),
-            transparent
-        );
-    }
-
-    .divider-icon {
-        font-size: 1.1rem;
-        flex-shrink: 0;
-    }
-
-    /* ===================== NEWSLETTER FORM SECTION ===================== */
-    .newsletter-section {
-        opacity: 0;
-        transform: translateY(10px);
-        transition: opacity 0.4s ease, transform 0.4s ease;
-    }
-
-    .newsletter-section.form-visible {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    .popup-title {
-        font-family: var(--font-clash-grotesk, system-ui, sans-serif);
-        font-size: 1.3rem;
-        font-weight: 700;
-        color: #111;
-        text-align: center;
-        margin: 0 0 0.4rem;
-    }
-
-    .popup-description {
-        text-align: center;
-        color: #666;
-        font-size: 0.88rem;
-        line-height: 1.5;
-        margin-bottom: 1rem;
-    }
-
-    /* Benefits */
-    .benefits-list {
-        list-style: none;
-        padding: 0;
-        margin: 0 0 1.25rem;
-        display: flex;
-        gap: 1.5rem;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-
-    .benefits-list li {
-        display: flex;
-        align-items: center;
-        gap: 0.45rem;
-        font-size: 0.8rem;
-        color: #444;
-        white-space: nowrap;
-    }
-
-    .check-icon {
-        display: flex;
-        align-items: center;
-        color: #FDB022;
-        flex-shrink: 0;
-    }
-
-    /* Email Form */
-    .email-form {
-        display: flex;
-        flex-direction: column;
-        gap: 0.65rem;
-    }
-
-    .email-input {
-        width: 100%;
-        padding: 0.85rem 1.1rem;
-        border: 2px solid rgba(0, 0, 0, 0.1);
-        border-radius: 12px;
-        font-size: 0.92rem;
-        transition: border-color 0.2s, box-shadow 0.2s;
-        outline: none;
-        color: #111;
-        box-sizing: border-box;
-    }
-
-    .email-input:focus {
-        border-color: #FDB022;
-        box-shadow: 0 0 0 3px rgba(253, 176, 34, 0.12);
-    }
-
-    .email-input:disabled {
-        background: rgba(0, 0, 0, 0.04);
-        cursor: not-allowed;
-    }
-
-    .submit-button {
-        width: 100%;
-        padding: 0.875rem 1.5rem;
-        background: #FDB022;
-        color: #fff;
-        border: none;
-        border-radius: 12px;
-        font-size: 1rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.3s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        letter-spacing: 0.01em;
-    }
-
-    .submit-button:hover:not(:disabled) {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 24px rgba(253, 176, 34, 0.35);
-    }
-
-    .submit-button:active:not(:disabled) {
-        transform: translateY(0);
-    }
-
-    .submit-button:disabled {
-        opacity: 0.7;
-        cursor: not-allowed;
-    }
-
-    /* ===================== SUCCESS ===================== */
-    .success-container {
-        text-align: center;
-        padding: 3rem 1rem;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .success-icon-wrap {
-        width: 80px;
-        height: 80px;
-        background: rgba(34, 197, 94, 0.1);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .success-svg {
-        color: #22c55e;
-    }
-
-    .success-title {
-        font-family: var(--font-clash-grotesk, system-ui, sans-serif);
-        font-size: 1.8rem;
-        font-weight: 800;
-        color: #111;
-        margin: 0;
-    }
-
-    .success-message {
-        color: #666;
-        font-size: 0.92rem;
-        line-height: 1.6;
-        max-width: 380px;
-        margin: 0 auto;
-    }
-
-    /* ===================== SPINNER ===================== */
-    .spinner {
-        animation: spin 1s linear infinite;
-    }
-
-    /* ===================== ANIMATIONS ===================== */
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to   { opacity: 1; }
-    }
-
-    @keyframes slideUp {
-        from {
-            opacity: 0;
-            transform: translateY(28px) scale(0.97);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-    }
-
-    @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
-
-    /* ===================== RESPONSIVE ===================== */
-
-    /* Tablet: 2×2 grid */
-    @media (max-width: 768px) {
-        .newsletter-popup {
-            padding: 2rem 1.5rem 1.75rem;
-            border-radius: 20px;
-        }
-
-        .impact-cards {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.6rem;
-        }
-
-        .impact-title {
-            font-size: 1.4rem;
-        }
-
-        .benefits-list {
-            gap: 0.75rem;
-        }
-
-        .gallery-strip-wrap {
-            margin: 1rem -1.5rem 0;
-        }
-        .gallery-item {
-            width: 150px;
-            height: 100px;
-        }
-    }
-
-    /* Mobile: single column or 2-col compact */
-    @media (max-width: 480px) {
-        .newsletter-popup {
-            padding: 1.5rem 1rem 1.25rem;
-            border-radius: 18px;
-            max-height: 92vh;
-        }
-
-        .impact-cards {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.5rem;
-        }
-
-        .impact-card {
-            padding: 0.85rem 0.6rem;
-        }
-
-        .card-stat {
-            font-size: 1.1rem;
-        }
-
-        .impact-title {
-            font-size: 1.2rem;
-        }
-
-        .impact-desc {
-            display: none;
-        }
-
-        .benefits-list {
-            display: none;
-        }
-
-        .popup-title {
-            font-size: 1.1rem;
-        }
-
-        .gallery-strip-wrap {
-            margin: 0.5rem -1rem 0;
-        }
-        .gallery-item {
-            width: 110px;
-            height: 75px;
-        }
+    @media (prefers-reduced-motion: reduce) {
+        .newsletter-popup[open], :global(.newsletter-popup .spinner) { animation: none; }
+        .subscribe-button { transition: none; }
     }
 </style>
