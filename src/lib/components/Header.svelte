@@ -71,7 +71,7 @@
         isSearching = true;
         try {
             const response = await fetch(
-                `/api/posts?search=${encodeURIComponent(searchQuery)}`,
+                `/api/search?search=${encodeURIComponent(searchQuery)}`,
             );
             const data = await response.json();
             searchResults = data.posts || [];

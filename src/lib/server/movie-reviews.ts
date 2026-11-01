@@ -2,6 +2,18 @@ import { db } from "./db";
 import { movieReviewsTable } from "./schema";
 import { desc, eq, sql, and } from "drizzle-orm";
 
+export const movieCardFields = {
+    review_id: movieReviewsTable.review_id,
+    title: movieReviewsTable.title,
+    slug: movieReviewsTable.slug,
+    genre: movieReviewsTable.genre,
+    director: movieReviewsTable.director,
+    release_date: movieReviewsTable.release_date,
+    rating: movieReviewsTable.rating,
+    poster_url: movieReviewsTable.poster_url,
+    is_recommended: movieReviewsTable.is_recommended
+};
+
 export async function getMovieReviews(limit = 10, offset = 0, status?: string) {
     let query = db
         .select()
@@ -20,7 +32,7 @@ export async function getMovieReviews(limit = 10, offset = 0, status?: string) {
 
 export async function getPublishedMovieReviews(limit = 10, offset = 0) {
     return await db
-        .select()
+        .select(movieCardFields)
         .from(movieReviewsTable)
         .where(eq(movieReviewsTable.status, "published"))
         .orderBy(desc(movieReviewsTable.created_at))
@@ -30,7 +42,7 @@ export async function getPublishedMovieReviews(limit = 10, offset = 0) {
 
 export async function getRecommendedMovies(limit = 6) {
     return await db
-        .select()
+        .select(movieCardFields)
         .from(movieReviewsTable)
         .where(
             and(

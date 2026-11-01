@@ -6,6 +6,7 @@
     let width = 0;
     let visible = false;
     let interval: any;
+    let completionTimer: ReturnType<typeof setTimeout>;
 
     $: if (isNavigating) {
         start();
@@ -14,7 +15,8 @@
     }
 
     function start() {
-        width = 0;
+        clearTimeout(completionTimer);
+        width = 12;
         visible = true;
         clearInterval(interval);
         // Trickle animation
@@ -28,7 +30,7 @@
     function complete() {
         clearInterval(interval);
         width = 100;
-        setTimeout(() => {
+        completionTimer = setTimeout(() => {
             visible = false;
             width = 0;
         }, 300); // Fade out delay
@@ -36,6 +38,7 @@
 
     onDestroy(() => {
         clearInterval(interval);
+        clearTimeout(completionTimer);
     });
 </script>
 

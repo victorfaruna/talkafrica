@@ -1,205 +1,75 @@
 import type { PageServerLoad } from "./$types";
 import { error, redirect } from "@sveltejs/kit";
 import { db } from "$lib/server/db";
-import { eq, desc, and, inArray } from "drizzle-orm";
+import { eq, desc, and, or, inArray, exists, sql, count } from "drizzle-orm";
 import { postTable, postCategoriesTable } from "$lib/server/schema";
-import {
-    categoryExists,
-    getCategoryDisplayName,
-    getSubcategories,
-} from "$lib/categories";
+import { categoryExists, getCategoryDisplayName, getSubcategories } from "$lib/categories";
+
+const cardFields = {
+    post_id: postTable.post_id,
+    title: postTable.title,
+    excerpt: postTable.excerpt,
+    image: postTable.image,
+    category: postTable.category,
+    author: postTable.author,
+    views: postTable.views,
+    created_at: postTable.created_at,
+    featured: postTable.featured,
+};
+
+// Match both category systems inside SQL; never download every matching ID.
+const categoryFilter = (slugs: string[]) => and(
+    eq(postTable.status, "published"),
+    eq(postTable.deleted, false),
+    or(
+        inArray(postTable.category, slugs),
+        exists(
+            db.select({ one: sql`1` }).from(postCategoriesTable)
+                .where(and(
+                    eq(postCategoriesTable.post_id, postTable.post_id),
+                    inArray(postCategoriesTable.category_slug, slugs),
+                )),
+        ),
+    ),
+);
 
 export const load: PageServerLoad = async ({ params, url, depends }) => {
     const categoryParam = params.category?.toLowerCase();
-    
-    // Safety check: if this route somehow matched a static page, redirect to it
-    const reserved = ['terms', 'privacy', 'contact', 'about', 'movies', 'videos', 'donate'];
-    if (categoryParam && reserved.includes(categoryParam)) {
-        throw redirect(301, `/${categoryParam}`);
-    }
+    const reserved = ["terms", "privacy", "contact", "about", "movies", "videos", "donate"];
+    if (categoryParam && reserved.includes(categoryParam)) throw redirect(301, `/${categoryParam}`);
+    if (!categoryParam || !categoryExists(categoryParam)) error(404, "Category not found");
 
-    const page = parseInt(url.searchParams.get("page") || "1");
+    const requestedPage = Number(url.searchParams.get("page") || "1");
+    const page = Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
     const limit = 12;
-    const offset = (page - 1) * limit;
-
-    // Invalidate cache when category changes
     depends(`category:${categoryParam}`);
     depends(`posts:${categoryParam}:${page}`);
 
-    // Validate category using the centralized category system
-    if (!categoryParam || !categoryExists(categoryParam)) {
-        error(404, "Category not found");
-    }
-
-    const childCategories = getSubcategories(categoryParam);
-    const includedCategorySlugs = [
-        categoryParam,
-        ...childCategories.map((category) => category.slug),
-    ];
+    const children = getSubcategories(categoryParam);
+    const matchingPosts = categoryFilter([categoryParam, ...children.map((child) => child.slug)]);
 
     try {
-        // 1. Fetch post IDs from both current and legacy systems in parallel
-        const [categoryResults, legacyResults] = await Promise.all([
-            db.select({ post_id: postCategoriesTable.post_id })
-                .from(postCategoriesTable)
-                .where(inArray(postCategoriesTable.category_slug, includedCategorySlugs))
-                .catch(() => []), 
-            db.select({ post_id: postTable.post_id })
-                .from(postTable)
-                .where(and(inArray(postTable.category, includedCategorySlugs), eq(postTable.status, "published")))
-                .catch(() => [])
+        // Main content, counts and child sections are independent: one wave.
+        const [posts, totals, featuredPosts, trendingPosts, subcategoryGroups] = await Promise.all([
+            db.select(cardFields).from(postTable).where(matchingPosts)
+                .orderBy(desc(postTable.featured), desc(postTable.created_at))
+                .limit(limit).offset((page - 1) * limit),
+            db.select({ count: count() }).from(postTable).where(matchingPosts),
+            db.select(cardFields).from(postTable)
+                .where(and(matchingPosts, eq(postTable.featured, true)))
+                .orderBy(desc(postTable.created_at)).limit(3),
+            db.select(cardFields).from(postTable).where(matchingPosts)
+                .orderBy(desc(postTable.views)).limit(5),
+            Promise.all(children.map(async (subcategory) => ({
+                ...subcategory,
+                posts: await db.select(cardFields).from(postTable)
+                    .where(categoryFilter([subcategory.slug]))
+                    .orderBy(desc(postTable.created_at)).limit(4).catch(() => []),
+            }))),
         ]);
 
-        const postIdSet = new Set<string>();
-        categoryResults.forEach((p) => postIdSet.add(p.post_id));
-        legacyResults.forEach((p) => postIdSet.add(p.post_id));
-        const postIdsArray = Array.from(postIdSet);
-
-        if (postIdsArray.length === 0) {
-            return {
-                category: categoryParam,
-                categoryName: getCategoryDisplayName(categoryParam),
-                posts: [],
-                featuredPosts: [],
-                trendingPosts: [],
-                subcategoryGroups: childCategories.map((category) => ({
-                    ...category,
-                    posts: [],
-                })),
-                pagination: {
-                    currentPage: 1,
-                    totalPages: 1,
-                    hasNextPage: false,
-                    hasPrevPage: false,
-                    totalPosts: 0,
-                },
-                notFound: false,
-            };
-        }
-
-        // 2. Fetch all category content in parallel
-        const [posts, totalCount, featuredPosts, trendingPosts] = await Promise.all([
-            // Main posts list
-            db.select({
-                post_id: postTable.post_id,
-                title: postTable.title,
-                excerpt: postTable.excerpt,
-                image: postTable.image,
-                category: postTable.category,
-                author: postTable.author,
-                views: postTable.views,
-                created_at: postTable.created_at,
-                featured: postTable.featured,
-            })
-            .from(postTable)
-            .where(and(
-                inArray(postTable.post_id, postIdsArray),
-                eq(postTable.status, "published"),
-                eq(postTable.deleted, false)
-            ))
-            .orderBy(desc(postTable.featured), desc(postTable.created_at))
-            .limit(limit)
-            .offset(offset),
-
-            // Pagination count
-            db.select({ count: postTable.id })
-            .from(postTable)
-            .where(and(
-                inArray(postTable.post_id, postIdsArray),
-                eq(postTable.status, "published"),
-                eq(postTable.deleted, false)
-            )),
-
-            // Hero featured posts
-            db.select({
-                post_id: postTable.post_id,
-                title: postTable.title,
-                excerpt: postTable.excerpt,
-                image: postTable.image,
-                category: postTable.category,
-                author: postTable.author,
-                views: postTable.views,
-                created_at: postTable.created_at,
-            })
-            .from(postTable)
-            .where(and(
-                inArray(postTable.post_id, postIdsArray),
-                eq(postTable.status, "published"),
-                eq(postTable.featured, true),
-                eq(postTable.deleted, false)
-            ))
-            .orderBy(desc(postTable.created_at))
-            .limit(3),
-
-            // Trending sidebar
-            db.select({
-                post_id: postTable.post_id,
-                title: postTable.title,
-                excerpt: postTable.excerpt,
-                image: postTable.image,
-                views: postTable.views,
-                created_at: postTable.created_at,
-            })
-            .from(postTable)
-            .where(and(
-                inArray(postTable.post_id, postIdsArray),
-                eq(postTable.status, "published"),
-                eq(postTable.deleted, false)
-            ))
-            .orderBy(desc(postTable.views))
-            .limit(5)
-        ]);
-
-        const subcategoryGroups = await Promise.all(
-            childCategories.map(async (subcategory) => {
-                const [mappedIds, legacyIds] = await Promise.all([
-                    db.select({ post_id: postCategoriesTable.post_id })
-                        .from(postCategoriesTable)
-                        .where(eq(postCategoriesTable.category_slug, subcategory.slug))
-                        .catch(() => []),
-                    db.select({ post_id: postTable.post_id })
-                        .from(postTable)
-                        .where(and(
-                            eq(postTable.category, subcategory.slug),
-                            eq(postTable.status, "published"),
-                            eq(postTable.deleted, false),
-                        ))
-                        .catch(() => []),
-                ]);
-
-                const ids = Array.from(new Set([
-                    ...mappedIds.map((post) => post.post_id),
-                    ...legacyIds.map((post) => post.post_id),
-                ]));
-
-                if (ids.length === 0) {
-                    return { ...subcategory, posts: [] };
-                }
-
-                const categoryPosts = await db.select({
-                    post_id: postTable.post_id,
-                    title: postTable.title,
-                    excerpt: postTable.excerpt,
-                    image: postTable.image,
-                    category: postTable.category,
-                    author: postTable.author,
-                    views: postTable.views,
-                    created_at: postTable.created_at,
-                })
-                    .from(postTable)
-                    .where(and(
-                        inArray(postTable.post_id, ids),
-                        eq(postTable.status, "published"),
-                        eq(postTable.deleted, false),
-                    ))
-                    .orderBy(desc(postTable.created_at))
-                    .limit(4)
-                    .catch(() => []);
-
-                return { ...subcategory, posts: categoryPosts };
-            }),
-        );
-
+        const totalPosts = totals[0]?.count ?? 0;
+        const totalPages = Math.max(1, Math.ceil(totalPosts / limit));
         return {
             category: categoryParam,
             categoryName: getCategoryDisplayName(categoryParam),
@@ -209,32 +79,23 @@ export const load: PageServerLoad = async ({ params, url, depends }) => {
             subcategoryGroups,
             pagination: {
                 currentPage: page,
-                totalPages: Math.ceil(totalCount.length / limit),
-                hasNextPage: page < Math.ceil(totalCount.length / limit),
+                totalPages,
+                hasNextPage: page < totalPages,
                 hasPrevPage: page > 1,
-                totalPosts: totalCount.length,
+                totalPosts,
             },
             notFound: false,
         };
-    } catch (error) {
-        console.error("Error loading category page:", error);
+    } catch (cause) {
+        console.error("Error loading category page:", cause);
         return {
             category: categoryParam,
             categoryName: getCategoryDisplayName(categoryParam),
             posts: [],
             featuredPosts: [],
             trendingPosts: [],
-            subcategoryGroups: childCategories.map((category) => ({
-                ...category,
-                posts: [],
-            })),
-            pagination: {
-                currentPage: 1,
-                totalPages: 1,
-                hasNextPage: false,
-                hasPrevPage: false,
-                totalPosts: 0,
-            },
+            subcategoryGroups: children.map((subcategory) => ({ ...subcategory, posts: [] })),
+            pagination: { currentPage: 1, totalPages: 1, hasNextPage: false, hasPrevPage: false, totalPosts: 0 },
             notFound: false,
         };
     }

@@ -4,16 +4,13 @@
     import CommentSection from "$lib/components/CommentSection.svelte";
     import ShareButtons from "$lib/components/ShareButtons.svelte";
     import { browser } from "$app/environment";
+    import { page } from "$app/stores";
     import { getOptimizedImageUrl } from "$lib/utils/image";
 
     export let data;
-    let review = data.review;
-    let relatedReviews = data.relatedReviews || [];
-    let currentUrl = "";
-
-    if (browser) {
-        currentUrl = window.location.href;
-    }
+    $: review = data.review;
+    $: relatedReviews = data.relatedReviews || [];
+    $: currentUrl = browser ? $page.url.href : "";
 
     function formatDate(d: string) {
         return new Date(d).toLocaleDateString("en-US", {

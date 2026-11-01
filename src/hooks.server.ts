@@ -1,26 +1,15 @@
 import { db } from '$lib/server/db';
-import { sessionsTable, adminTable } from '$lib/server/schema';
-import { eq, sql } from 'drizzle-orm';
-import { randomUUID } from 'crypto';
+import { adminTable } from '$lib/server/schema';
+import { eq } from 'drizzle-orm';
 import type { Handle } from '@sveltejs/kit';
+import { cachePublicResponse } from '$lib/server/public-cache';
 
 export const handle: Handle = async ({ event, resolve }) => {
     const path = event.url.pathname;
 
-    // Skip session tracking for static assets, internal paths, and API calls to avoid DB congestion
-    if (
-        path.startsWith('/_app/') ||
-        path.startsWith('/images/') ||
-        path.startsWith('/favicon') ||
-        path.includes('.')
-    ) {
-        return await resolve(event);
-    }
-
-    let session_id = event.cookies.get('session_id');
-
-    // Handle Admin Session
-    const adminId = event.cookies.get('admin');
+    // Keep public page responses cookie-free; /api/track records actual visits.
+    const needsAdmin = path === '/admin' || path.startsWith('/admin/') || path.startsWith('/api/');
+    const adminId = needsAdmin ? event.cookies.get('admin') : undefined;
     if (adminId) {
         try {
             const admin = await db
@@ -44,42 +33,7 @@ export const handle: Handle = async ({ event, resolve }) => {
         }
     }
 
-    if (!session_id) {
-        session_id = randomUUID();
-        event.cookies.set('session_id', session_id, {
-            path: '/',
-            httpOnly: true,
-            secure: false, // Set to true in production
-            sameSite: 'lax',
-            maxAge: 60 * 60 * 24 * 30 // 30 days
-        });
-    }
-
-    // Throttled session tracking: only update DB if last update was > 5 mins ago
-    const lastSessionUpdate = event.cookies.get('last_session_update');
-    const now = Date.now();
-    
-    if (!lastSessionUpdate || now - parseInt(lastSessionUpdate) > 5 * 60 * 1000) {
-        // Update cookie immediately to prevent multiple triggers in same session
-        event.cookies.set('last_session_update', now.toString(), {
-            path: '/',
-            maxAge: 60 * 60, // 1 hour
-            httpOnly: true,
-            sameSite: 'lax'
-        });
-
-        // Fire and forget session tracking (unblocks request)
-        db.insert(sessionsTable).values({
-            session_id,
-            last_seen: new Date(),
-        })
-            .onConflictDoUpdate({
-                target: sessionsTable.session_id,
-                set: { last_seen: new Date() }
-            })
-            .catch(error => console.error('Failed to track session:', error));
-    }
-
     const response = await resolve(event);
+    cachePublicResponse(event.route.id, event.request, response);
     return response;
 };

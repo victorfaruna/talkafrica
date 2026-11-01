@@ -8,7 +8,7 @@ import { getVideos } from "$lib/server/videos";
 import { getRecommendedMovies } from "$lib/server/movie-reviews";
 import { getImpactGalleryItems } from "$lib/server/impact-gallery";
 
-export const load: PageServerLoad = async () => {
+export const load = (async () => {
     try {
         const baseWhere = and(
             eq(postTable.status, "published"),
@@ -73,7 +73,6 @@ export const load: PageServerLoad = async () => {
             db.select({
                 post_id: postTable.post_id,
                 title: postTable.title,
-                content: postTable.content,
                 excerpt: postTable.excerpt,
                 image: postTable.image,
                 category: postTable.category,
@@ -102,7 +101,6 @@ export const load: PageServerLoad = async () => {
             db.select({
                 post_id: postTable.post_id,
                 title: postTable.title,
-                content: postTable.content,
                 excerpt: postTable.excerpt,
                 image: postTable.image,
                 category: postTable.category,
@@ -136,7 +134,6 @@ export const load: PageServerLoad = async () => {
                     const recent = await db.select({
                         post_id: postTable.post_id,
                         title: postTable.title,
-                        content: postTable.content,
                         excerpt: postTable.excerpt,
                         image: postTable.image,
                         category: postTable.category,
@@ -164,7 +161,6 @@ export const load: PageServerLoad = async () => {
                     const allTime = await db.select({
                         post_id: postTable.post_id,
                         title: postTable.title,
-                        content: postTable.content,
                         excerpt: postTable.excerpt,
                         image: postTable.image,
                         category: postTable.category,
@@ -196,7 +192,6 @@ export const load: PageServerLoad = async () => {
             db.select({
                 post_id: postTable.post_id,
                 title: postTable.title,
-                content: postTable.content,
                 excerpt: postTable.excerpt,
                 image: postTable.image,
                 category: postTable.category,
@@ -226,7 +221,6 @@ export const load: PageServerLoad = async () => {
                 id: postTable.id,
                 post_id: postTable.post_id,
                 title: postTable.title,
-                content: postTable.content,
                 excerpt: postTable.excerpt,
                 category: postTable.category,
                 image: postTable.image,
@@ -309,4 +303,4 @@ export const load: PageServerLoad = async () => {
         }
         throw error(500, `Load failed: ${errorMessage}`);
     }
-};
+}) satisfies PageServerLoad;

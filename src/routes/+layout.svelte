@@ -5,6 +5,7 @@
 	import TopProgressBar from "$lib/components/TopProgressBar.svelte";
 	import SEO from "$lib/components/SEO.svelte";
 	import NewsletterPopup from "$lib/components/NewsletterPopup.svelte";
+	import VisitTracker from "$lib/components/VisitTracker.svelte";
 
 	let { children } = $props();
 </script>
@@ -19,4 +20,5 @@
 <SEO />
 <TopProgressBar isNavigating={!!$navigating} />
 <NewsletterPopup />
+<VisitTracker />
 {@render children?.()}

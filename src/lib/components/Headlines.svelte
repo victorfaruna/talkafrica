@@ -25,6 +25,7 @@
     // Initialize Swiper Web Components
     onMount(() => {
         register();
+        let disposed = false;
 
         const initSwiper = () => {
             const swiperParams = {
@@ -58,7 +59,11 @@
                 ],
                 on: {
                     slideChange: (s: any) => {
-                        activeIndex = s.realIndex;
+                        // Swiper can emit while Svelte is updating/removing DOM.
+                        const nextIndex = s.realIndex;
+                        queueMicrotask(() => {
+                            if (!disposed) activeIndex = nextIndex;
+                        });
                     },
                 },
             };
@@ -70,9 +75,14 @@
         };
 
         // Delay slightly to ensure DOM is ready and layout is calculated
-        requestAnimationFrame(() => {
+        const frame = requestAnimationFrame(() => {
             initSwiper();
         });
+        return () => {
+            disposed = true;
+            cancelAnimationFrame(frame);
+            swiperEl?.swiper?.destroy(true, true);
+        };
     });
 </script>
 

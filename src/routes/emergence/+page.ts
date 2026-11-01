@@ -1,6 +1,6 @@
 import type { PageLoad } from "./$types";
 
-export const load: PageLoad = ({ data }) => {
+export const load = (({ data }) => {
     return {
         ...data,
         title: "Emergence 2026 — The TalkAfrica NG Hangout",
@@ -11,4 +11,4 @@ export const load: PageLoad = ({ data }) => {
         imageHeight: 1524,
         imageAlt: "TalkAfrica NG Emergence 2026 — The TalkAfrica NG Hangout",
     };
-};
+}) satisfies PageLoad;

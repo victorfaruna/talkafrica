@@ -1,4 +1,4 @@
-import { getMovieReviewBySlug, incrementMovieViews, getRecommendedMovies } from "$lib/server/movie-reviews";
+import { getMovieReviewBySlug, movieCardFields } from "$lib/server/movie-reviews";
 import { error } from "@sveltejs/kit";
 import { and, eq, ne } from "drizzle-orm";
 import { db } from "$lib/server/db";
@@ -9,7 +9,7 @@ export const load: PageServerLoad = async ({ params }) => {
     try {
         const [review, relatedReviews] = await Promise.all([
             getMovieReviewBySlug(params.slug),
-            db.select()
+            db.select(movieCardFields)
                 .from(movieReviewsTable)
                 .where(
                     and(
@@ -28,9 +28,6 @@ export const load: PageServerLoad = async ({ params }) => {
         if (!review || review.status !== "published") {
             throw error(404, "Movie review not found");
         }
-
-        // Increment view count (fire and forget)
-        incrementMovieViews(params.slug).catch(() => { });
 
         return {
             review,

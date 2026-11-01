@@ -151,6 +151,8 @@
         if (browser) {
             window.scrollTo({ top: 0, behavior: 'instant' });
             readingProgress = 0;
+            desktopShareOpen = false;
+            linkCopied = false;
         }
     });
 
@@ -265,7 +267,6 @@
                 {#if data.prevPost}
                     <a
                         href={postPath(data.prevPost)}
-                        data-sveltekit-reload
                         class="group p-4 rounded-xl border border-gray-200 bg-white hover:border-[#FDB022] hover:bg-amber-50/30 transition-all flex flex-col justify-between"
                     >
                         <div class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider mb-1.5" style="color: #FDB022;">
@@ -283,7 +284,6 @@
                 {#if data.nextPost}
                     <a
                         href={postPath(data.nextPost)}
-                        data-sveltekit-reload
                         class="group p-4 rounded-xl border border-gray-200 bg-white hover:border-[#FDB022] hover:bg-amber-50/30 transition-all flex flex-col justify-between text-right"
                     >
                         <div class="flex items-center justify-end gap-1.5 text-xs font-semibold uppercase tracking-wider mb-1.5" style="color: #FDB022;">
@@ -343,7 +343,6 @@
                     {#each relatedPosts as relatedPost}
                         <a
                             href={postPath(relatedPost)}
-                            data-sveltekit-reload
                             class="group flex flex-col h-full bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:-translate-y-1"
                         >
                             <div
@@ -422,7 +421,9 @@
     {/if}
 
     <!-- Comments Section (Mobile) -->
-    <CommentSection postId={data.post.post_id} idPrefix="mobile-" />
+    {#key data.post.post_id}
+        <CommentSection postId={data.post.post_id} idPrefix="mobile-" />
+    {/key}
 
     <!-- Modules on Mobile / Small Screens -->
     <div class="max-w-4xl mx-auto px-4 sm:px-6 py-10 space-y-6">
@@ -436,7 +437,7 @@
                 {#if data.latestPosts && data.latestPosts.length > 0}
                     {#each data.latestPosts as latestItem, i}
                         {#if i === 0}
-                            <a href={postPath(latestItem)} data-sveltekit-reload class="group block pb-4 mb-1">
+                            <a href={postPath(latestItem)} class="group block pb-4 mb-1">
                                 <div class="w-full h-44 rounded-xl overflow-hidden bg-gray-100 mb-3">
                                     {#if latestItem.image}
                                         <img src={getOptimizedImageUrl(latestItem.image, { width: 600, height: 350 })} alt={latestItem.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
@@ -450,7 +451,7 @@
                                 {/if}
                             </a>
                         {:else}
-                            <a href={postPath(latestItem)} data-sveltekit-reload class="group flex items-start gap-3 py-3.5 hover:bg-amber-50/40 -mx-2 px-2 rounded-lg transition-colors">
+                            <a href={postPath(latestItem)} class="group flex items-start gap-3 py-3.5 hover:bg-amber-50/40 -mx-2 px-2 rounded-lg transition-colors">
                                 <div class="w-20 h-[60px] flex-shrink-0 rounded-lg overflow-hidden bg-gray-100 border border-gray-100">
                                     {#if latestItem.image}
                                         <img src={getOptimizedImageUrl(latestItem.image, { width: 160, height: 120 })} alt={latestItem.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
@@ -481,7 +482,7 @@
                 <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#FDB022]/15 text-[#b47a00]">Spotlight</span>
             </div>
             {#if data.africansOnTablePost}
-                <a href={postPath(data.africansOnTablePost)} data-sveltekit-reload class="group block">
+                <a href={postPath(data.africansOnTablePost)} class="group block">
                     <div class="relative w-full h-44 rounded-xl overflow-hidden bg-gray-100 mb-3">
                         <img src={getOptimizedImageUrl(data.africansOnTablePost.image || '/images/africans-on-the-table.jpg', { width: 600, height: 350 })} alt={data.africansOnTablePost.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
                         <div class="absolute top-2.5 left-2.5">
@@ -723,7 +724,6 @@
                         {#if data.prevPost}
                             <a
                                 href={postPath(data.prevPost)}
-                                data-sveltekit-reload
                                 class="group p-4 rounded-xl border border-gray-200 bg-white hover:border-[#FDB022] hover:bg-amber-50/30 transition-all flex flex-col justify-between"
                             >
                                 <div class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider mb-2" style="color: #FDB022;">
@@ -741,7 +741,6 @@
                         {#if data.nextPost}
                             <a
                                 href={postPath(data.nextPost)}
-                                data-sveltekit-reload
                                 class="group p-4 rounded-xl border border-gray-200 bg-white hover:border-[#FDB022] hover:bg-amber-50/30 transition-all flex flex-col justify-between text-right"
                             >
                                 <div class="flex items-center justify-end gap-1.5 text-xs font-semibold uppercase tracking-wider mb-2" style="color: #FDB022;">
@@ -768,7 +767,6 @@
                             {#each relatedPosts.slice(0, 3) as relPost}
                                 <a
                                     href={postPath(relPost)}
-                                    data-sveltekit-reload
                                     class="group flex flex-col h-full bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:-translate-y-1"
                                 >
                                     <div class="h-44 overflow-hidden relative bg-gray-100">
@@ -811,7 +809,9 @@
 
                 <!-- 7. Comments Section (Desktop) -->
                 <div class="mt-10 pt-8 border-t border-gray-200">
-                    <CommentSection postId={data.post.post_id} idPrefix="desktop-" />
+                    {#key data.post.post_id}
+                        <CommentSection postId={data.post.post_id} idPrefix="desktop-" />
+                    {/key}
                 </div>
             </div>
 
@@ -834,7 +834,6 @@
                                         <!-- Featured first article: large image on top -->
                                         <a
                                             href={postPath(latestItem)}
-                                            data-sveltekit-reload
                                             class="group block pb-4 mb-1 hover:opacity-95 transition-opacity"
                                         >
                                             <!-- Large image -->
@@ -879,7 +878,6 @@
                                         <!-- Regular thumbnail layout for the rest -->
                                         <a
                                             href={postPath(latestItem)}
-                                            data-sveltekit-reload
                                             class="group flex items-start gap-3 py-3.5 last:pb-1 hover:bg-amber-50/40 -mx-2 px-2 rounded-lg transition-colors"
                                         >
                                             <div class="w-20 h-[60px] flex-shrink-0 rounded-lg overflow-hidden bg-gray-100 border border-gray-100">
@@ -934,7 +932,6 @@
                             <!-- Featured post from Africans on the Table -->
                             <a
                                 href={postPath(data.africansOnTablePost)}
-                                data-sveltekit-reload
                                 class="group block"
                             >
                                 <div class="relative w-full h-44 rounded-xl overflow-hidden bg-gray-100 mb-3">

@@ -6,7 +6,10 @@ import { postTable, postCategoriesTable } from "$lib/server/schema";
 import { canManageOwner, requireAdmin } from "$lib/server/admin-auth";
 
 // GET - Fetch posts with optional filters
-export const GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async ({ url, locals }) => {
+    // Full article bodies and drafts belong to the editor. Public readers use
+    // the bounded /api/search endpoint instead of this unbounded response.
+    requireAdmin(locals);
     try {
         const status = url.searchParams.get("status");
         const category = url.searchParams.get("category");
