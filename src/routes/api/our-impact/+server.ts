@@ -5,10 +5,13 @@ import {
     createImpactGalleryItem,
     updateDisplayOrder
 } from "$lib/server/impact-gallery";
+import { listRange } from '$lib/server/pagination';
+import { cachedPublicData } from '$lib/server/public-data-cache';
 
-export const GET: RequestHandler = async () => {
+export const GET: RequestHandler = async ({ url, request }) => {
     try {
-        const items = await getImpactGalleryItems();
+        const { limit, offset } = listRange(url, 24);
+        const items = await cachedPublicData(`gallery:${limit}:${offset}`, () => getImpactGalleryItems(limit, offset), request);
         return json(items);
     } catch (err) {
         console.error("Error in impact-gallery GET API:", err);

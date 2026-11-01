@@ -1,13 +1,16 @@
 <script lang="ts">
     import Header from "$lib/components/admin/Header.svelte";
     import Sidebar from "$lib/components/admin/Sidebar.svelte";
+    import Pagination from "$lib/components/Pagination.svelte";
+    import { page } from "$app/stores";
     import { goto } from "$app/navigation";
 
     export let data;
-    let videos = data.videos || [];
-    let searchTerm = "";
+    let videos: any[] = [];
+    $: videos = data.videos || [];
+    $: searchTerm = data.search;
     const isSuperAdmin = data.role === "super_admin";
-    let videoView: "mine" | "all" = isSuperAdmin ? "all" : "mine";
+    $: videoView = data.view;
     const canManage = (video: any) => isSuperAdmin || video.author_id === data.currentAdminId;
 
     async function deleteVideo(id: string) {
@@ -26,9 +29,12 @@
         }
     }
 
-    $: filteredVideos = videos
-        .filter((v: any) => videoView === "all" || canManage(v))
-        .filter((v: any) => v.title.toLowerCase().includes(searchTerm.toLowerCase()));
+    $: filteredVideos = videos;
+    function setVideoView(view: string) {
+        const url = new URL($page.url);
+        url.searchParams.set('view', view); url.searchParams.delete('page');
+        goto(url.pathname + url.search);
+    }
 </script>
 
 <svelte:head>
@@ -57,8 +63,8 @@
                         </p>
                         {#if !isSuperAdmin}
                             <div class="mt-4 inline-flex border border-gray-200">
-                                <button class="px-4 py-2 text-sm {videoView === 'mine' ? 'bg-accent text-white' : 'bg-white'}" on:click={() => videoView = 'mine'}>My Videos</button>
-                                <button class="px-4 py-2 text-sm {videoView === 'all' ? 'bg-accent text-white' : 'bg-white'}" on:click={() => videoView = 'all'}>All Videos</button>
+                                <button class="px-4 py-2 text-sm {videoView === 'mine' ? 'bg-accent text-white' : 'bg-white'}" on:click={() => setVideoView('mine')}>My Videos</button>
+                                <button class="px-4 py-2 text-sm {videoView === 'all' ? 'bg-accent text-white' : 'bg-white'}" on:click={() => setVideoView('all')}>All Videos</button>
                             </div>
                         {/if}
                     </div>
@@ -87,15 +93,17 @@
                 <div
                     class="bg-white rounded-xl border border-gray-200 overflow-hidden"
                 >
-                    <div
+                    <form method="GET"
                         class="px-4 sm:px-6 py-3 flex flex-col gap-2 sm:flex-row sm:items-center border-b border-gray-200"
                     >
                         <input
                             placeholder="Search videos..."
                             class="w-full sm:w-64 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                            bind:value={searchTerm}
+                            name="search" value={searchTerm}
                         />
-                    </div>
+                        <input type="hidden" name="view" value={videoView} />
+                        <button type="submit" class="rounded border px-4 py-2">Search</button>
+                    </form>
 
                     <div class="overflow-x-auto">
                         <table class="w-full text-left text-sm text-gray-600">
@@ -185,6 +193,7 @@
                     </div>
                 </div>
             </div>
+            <Pagination pagination={data.pagination} />
         </main>
     </div>
 </div>

@@ -62,7 +62,7 @@
             bodyLocked = true;
             dialog.showModal();
             try {
-                const response = await fetch("/api/our-impact", { signal: controller.signal });
+                const response = await fetch("/api/our-impact?limit=3", { signal: controller.signal });
                 if (response.ok) {
                     const items = await response.json();
                     if (!disposed) galleryItems = Array.isArray(items) ? items.filter(item => item.image_url || item.image).slice(0, 3) : [];

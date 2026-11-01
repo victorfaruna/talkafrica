@@ -4,7 +4,6 @@ import { db } from "$lib/server/db"; // Path changed to alias
 import { adminTable } from "$lib/server/schema"; // Path changed to alias
 import { and, eq, or } from "drizzle-orm";
 
-import { supabase } from "$lib/server/supabase"; // Import shared instance
 import bcrypt from "bcryptjs"; // Static import for bcryptjs
 
 export const POST: RequestHandler = async ({ request, cookies }) => {

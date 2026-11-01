@@ -6,9 +6,9 @@ import {
     deleteMovieReview,
 } from "$lib/server/movie-reviews";
 
-export const GET: RequestHandler = async ({ params }) => {
+export const GET: RequestHandler = async ({ params, locals }) => {
     const review = await getMovieReviewById(params.id);
-    if (!review) {
+    if (!review || (!locals.session && review.status !== 'published')) {
         return json({ error: "Not found" }, { status: 404 });
     }
     return json(review);

@@ -1,7 +1,8 @@
 import { json } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
 import { commentsTable, usersTable } from '$lib/server/schema';
-import { eq } from 'drizzle-orm';
+import { and, desc, eq } from 'drizzle-orm';
+import { listRange } from '$lib/server/pagination';
 import type { RequestHandler } from './$types';
 
 
@@ -75,9 +76,10 @@ export const POST: RequestHandler = async ({ params, request }) => {
     }
 };
 
-export const GET: RequestHandler = async ({ params }) => {
+export const GET: RequestHandler = async ({ params, url }) => {
     try {
         const { postId } = params;
+        const { limit, offset } = listRange(url, 20);
 
         // Fetch comments for the post, ordered by date desc
         // We need to join with users to get author info
@@ -93,18 +95,18 @@ export const GET: RequestHandler = async ({ params }) => {
             created_at: commentsTable.created_at,
             user: {
                 name: usersTable.name,
-                email: usersTable.email
             }
         })
             .from(commentsTable)
             .leftJoin(usersTable, eq(commentsTable.user_id, usersTable.user_id))
-            .where(eq(commentsTable.post_id, postId));
+            .where(and(eq(commentsTable.post_id, postId), eq(commentsTable.status, 'approved')))
+            .orderBy(desc(commentsTable.created_at), desc(commentsTable.comment_id))
+            .limit(limit + 1).offset(offset);
 
         // Sort in code or SQL. orderBy(desc(commentsTable.created_at))
         // Let's add sort.
-        comments.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
-        return json({ success: true, comments });
+        return json({ success: true, comments: comments.slice(0, limit), hasMore: comments.length > limit });
 
     } catch (error) {
         console.error('Error loading comments:', error);

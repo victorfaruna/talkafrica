@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { onDestroy } from "svelte";
     import { page } from "$app/state";
     import { fade, fly, slide } from "svelte/transition";
     import { quintOut } from "svelte/easing";
@@ -57,10 +58,15 @@
     function toggleSearchModal() {
         searchModalOpen = !searchModalOpen;
         if (!searchModalOpen) {
+            clearTimeout(searchTimer); searchController?.abort(); isSearching = false;
             searchQuery = "";
             searchResults = [];
         }
     }
+
+    let searchTimer: ReturnType<typeof setTimeout>;
+    let searchController: AbortController | undefined;
+    onDestroy(() => { clearTimeout(searchTimer); searchController?.abort(); });
 
     async function performSearch() {
         if (searchQuery.trim().length < 2) {
@@ -68,18 +74,22 @@
             return;
         }
 
+        const term = searchQuery.trim();
+        const controller = new AbortController();
+        searchController?.abort();
+        searchController = controller;
         isSearching = true;
         try {
             const response = await fetch(
-                `/api/search?search=${encodeURIComponent(searchQuery)}`,
+                `/api/search?search=${encodeURIComponent(term)}`,
+                { signal: controller.signal },
             );
             const data = await response.json();
-            searchResults = data.posts || [];
+            if (!controller.signal.aborted) searchResults = data.posts || [];
         } catch (error) {
-            console.error("Search error:", error);
-            searchResults = [];
+            if (!controller.signal.aborted) { console.error("Search error:", error); searchResults = []; }
         } finally {
-            isSearching = false;
+            if (searchController === controller) isSearching = false;
         }
     }
 
@@ -88,8 +98,10 @@
         searchQuery = target.value;
 
         // Debounce search
-        clearTimeout((window as any).searchTimeout);
-        (window as any).searchTimeout = setTimeout(performSearch, 300);
+        clearTimeout(searchTimer);
+        searchController?.abort();
+        if (searchQuery.trim().length < 2) { searchResults = []; isSearching = false; return; }
+        searchTimer = setTimeout(performSearch, 400);
     }
 </script>
 

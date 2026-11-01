@@ -144,6 +144,7 @@
                                 src={mainVideo.video_url}
                                 poster={mainVideo.thumbnail_url}
                                 controls
+                                preload="none"
                                 class="w-full h-full object-contain"
                             >
                                 <track kind="captions" />

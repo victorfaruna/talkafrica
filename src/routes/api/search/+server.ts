@@ -3,15 +3,16 @@ import type { RequestHandler } from './$types';
 import { and, desc, eq, ilike, or } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { postTable } from '$lib/server/schema';
+import { cachedPublicData } from '$lib/server/public-data-cache';
 
 // Public search sends card fields only. /api/posts remains the editor's full API.
-export const GET: RequestHandler = async ({ url }) => {
-    const term = (url.searchParams.get('search') || '').trim().slice(0, 200);
+export const GET: RequestHandler = async ({ url, request }) => {
+    const term = (url.searchParams.get('search') || '').trim().slice(0, 200).toLowerCase();
     if (term.length < 2) return json({ posts: [] });
 
     try {
         const pattern = `%${term.replace(/[\\%_]/g, '\\$&')}%`;
-        const posts = await db.select({
+        const posts = await cachedPublicData(`search:${term}`, () => db.select({
             post_id: postTable.post_id,
             title: postTable.title,
             excerpt: postTable.excerpt,
@@ -26,7 +27,7 @@ export const GET: RequestHandler = async ({ url }) => {
                 or(ilike(postTable.title, pattern), ilike(postTable.content, pattern), ilike(postTable.excerpt, pattern))
             ))
             .orderBy(desc(postTable.created_at))
-            .limit(10);
+            .limit(10), request);
         return json({ posts });
     } catch (cause) {
         console.error('Failed to search posts:', cause);

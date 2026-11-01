@@ -1,9 +1,11 @@
 <script lang="ts">
+    import Pagination from "$lib/components/Pagination.svelte";
     import MovieCard from "$lib/components/movies/MovieCard.svelte";
     import SEO from "$lib/components/SEO.svelte";
 
     export let data;
-    let reviews = data.reviews || [];
+    let reviews: any[] = [];
+    $: reviews = data.reviews || [];
 
     $: recommended = reviews.filter((r: any) => r.is_recommended);
     $: allOther = reviews.filter((r: any) => !r.is_recommended);
@@ -97,4 +99,5 @@
             </section>
         {/if}
     {/if}
+    <Pagination pagination={data.pagination} />
 </div>

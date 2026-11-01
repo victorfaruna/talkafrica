@@ -2,8 +2,9 @@ import { db } from "$lib/server/db";
 import { employeeOfTheMonthTable } from "$lib/server/schema";
 import { desc } from "drizzle-orm";
 import type { PageServerLoad } from "./$types";
+import { cachedPublicData } from "$lib/server/public-data-cache";
 
-export const load: PageServerLoad = async () => {
+const loadContent: PageServerLoad = async () => {
     try {
         const employee = await db
             .select()
@@ -23,3 +24,5 @@ export const load: PageServerLoad = async () => {
         };
     }
 };
+
+export const load: PageServerLoad = (event) => cachedPublicData('about', () => loadContent(event), event.request);

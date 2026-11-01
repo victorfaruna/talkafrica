@@ -4,8 +4,9 @@ import { and, eq, ne } from "drizzle-orm";
 import { db } from "$lib/server/db";
 import { movieReviewsTable } from "$lib/server/schema";
 import type { PageServerLoad } from "./$types";
+import { cachedPublicData } from "$lib/server/public-data-cache";
 
-export const load: PageServerLoad = async ({ params }) => {
+const loadContent: PageServerLoad = async ({ params }) => {
     try {
         const [review, relatedReviews] = await Promise.all([
             getMovieReviewBySlug(params.slug),
@@ -41,3 +42,7 @@ export const load: PageServerLoad = async ({ params }) => {
         throw error(500, "Internal server error while loading movie review");
     }
 };
+
+export const load: PageServerLoad = (event) => cachedPublicData(
+    `movie:${event.params.slug}`, () => loadContent(event), event.request,
+);

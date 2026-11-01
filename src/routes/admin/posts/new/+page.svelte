@@ -46,52 +46,20 @@
     let wordsNeeded = $derived(Math.max(0, MIN_WORDS - wordCount));
     let wordsOver = $derived(Math.max(0, wordCount - MAX_WORDS));
 
+    // One private server load per edit navigation; no effect-driven fetch loop.
     $effect(() => {
-        if (!browser) return;
-        (async () => {
-            // Detect edit mode from query string
-            const params = new URLSearchParams(location.search);
-            const pid = params.get("post_id");
-            if (pid) {
-                editingPostId = pid;
-            }
-
-            // If editing, load post and prefill
-            if (editingPostId) {
-                try {
-                    // Optimized: Fetch only the specific post by ID instead of all posts
-                    const resp = await fetch(
-                        `/api/posts?post_id=${editingPostId}`,
-                    );
-                    const data = await resp.json();
-                    if (
-                        data.success &&
-                        Array.isArray(data.posts) &&
-                        data.posts.length > 0
-                    ) {
-                        const found = data.posts[0]; // Backend returns array with single post
-                        title = found.title || "";
-                        category = found.category || "";
-                        // Load categories array if available, otherwise use single category
-                        selectedCategories = found.categories
-                            ? [...found.categories]
-                            : found.category
-                              ? [found.category]
-                              : [];
-                        excerpt = found.excerpt || "";
-                        image = found.image || "";
-                        featured = !!found.featured;
-                        isTrendingNews = !!found.isTrendingNews;
-                        status = found.status || "draft";
-                        editor = found.editor || "";
-                        content = found.content || "";
-                        // Editor will bind to content automatically
-                    }
-                } catch (e) {
-                    console.error("Failed to load post for editing", e);
-                }
-            }
-        })();
+        const found = data.post;
+        editingPostId = found?.post_id ?? null;
+        title = found?.title || "";
+        category = found?.category || "";
+        selectedCategories = found?.categories?.length ? [...found.categories] : found?.category ? [found.category] : [];
+        excerpt = found?.excerpt || "";
+        image = found?.image || "";
+        featured = !!found?.featured;
+        isTrendingNews = !!found?.isTrendingNews;
+        status = found?.status || "draft";
+        editor = found?.editor || "";
+        content = found?.content || "";
     });
 
     // Client-side file validation
@@ -256,7 +224,7 @@
             });
             const result = await resp.json(); // Fixed: renamed from 'data' to 'result' to avoid shadowing
             if (result.success) {
-                goto("/admin");
+                goto("/admin", { invalidateAll: true });
             } else {
                 alert(
                     result.message +

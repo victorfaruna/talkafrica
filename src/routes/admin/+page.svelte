@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onMount } from "svelte";
+    import Pagination from "$lib/components/Pagination.svelte";
     import { browser } from "$app/environment";
     import { goto } from "$app/navigation";
     import { page } from "$app/stores";
@@ -32,14 +32,15 @@
         }
     }
 
-    let posts: any[] = data.posts || [];
+    let posts: any[] = [];
+    $: posts = data.posts || [];
     const isSuperAdmin = data.role === "super_admin";
-    let postView: "mine" | "all" = isSuperAdmin ? "all" : "mine";
+    $: postView = data.postFilters.view;
     const canManagePost = (post: any) =>
         isSuperAdmin || post.author_id === data.currentAdminId;
     $: selectedAuthor = $page.url.searchParams.get("author");
     let users: any[] = [];
-    let stats = data.stats || {
+    $: stats = data.stats || {
         totalPosts: 0,
         totalDrafts: 0,
         totalAdmins: 0,
@@ -49,7 +50,7 @@
         onlineUsers: 0,
         totalUsers: 0,
     };
-    let topWriters: any[] = data.topWriters || [];
+    $: topWriters = data.topWriters || [];
     $: topWriterMaxViews = Math.max(
         1,
         ...topWriters.map((writer) => Number(writer.total_views) || 0),
@@ -145,24 +146,15 @@
         }
     }
 
-    let filterStatus: "all" | "draft" | "published" = "all";
-    let searchTerm: string = "";
-    $: filteredPosts = posts
-        .filter((p) => postView === "all" || canManagePost(p))
-        .filter((p) => !selectedAuthor || p.author_id === selectedAuthor)
-        .filter((p) =>
-            filterStatus === "all" ? true : p.status === filterStatus,
-        )
-        .filter((p) =>
-            searchTerm
-                ? (p.title || "")
-                      .toLowerCase()
-                      .includes(searchTerm.toLowerCase()) ||
-                  (p.excerpt || "")
-                      .toLowerCase()
-                      .includes(searchTerm.toLowerCase())
-                : true,
-        );
+    $: filterStatus = data.postFilters.status;
+    $: searchTerm = data.postFilters.search;
+    $: filteredPosts = posts;
+    function setPostView(view: string) {
+        const url = new URL($page.url);
+        url.searchParams.set('view', view);
+        url.searchParams.delete('page');
+        goto(url.pathname + url.search);
+    }
 
     // Post creation handled in the dedicated new/edit page
 
@@ -170,18 +162,23 @@
 
     let subscribers: any[] = [];
     let loadingSubscribers = false;
+    let subscriberOffset = 0;
+    let hasMoreSubscribers = false;
+    let subscriberTotal = 0;
 
     $: if (browser && activeTab === "newsletter") {
         fetchSubscribers();
     }
 
-    async function fetchSubscribers() {
+    async function fetchSubscribers(offset = 0) {
+        if (loadingSubscribers) return;
         loadingSubscribers = true;
         try {
-            const res = await fetch("/api/newsletter/subscribers");
+            const res = await fetch(`/api/newsletter/subscribers?offset=${offset}`);
             const data = await res.json();
             if (data.success) {
                 subscribers = data.subscribers;
+                subscriberOffset = offset; hasMoreSubscribers = data.hasMore; subscriberTotal = data.total;
             } else {
                 alert("Failed to fetch subscribers: " + data.error);
             }
@@ -677,8 +674,8 @@
                             </p>
                             {#if !isSuperAdmin}
                                 <div class="mt-4 inline-flex border border-gray-200">
-                                    <button class="px-4 py-2 text-sm {postView === 'mine' ? 'bg-accent text-white' : 'bg-white text-gray-700'}" on:click={() => postView = 'mine'}>My Posts</button>
-                                    <button class="px-4 py-2 text-sm {postView === 'all' ? 'bg-accent text-white' : 'bg-white text-gray-700'}" on:click={() => postView = 'all'}>All Posts</button>
+                                    <button class="px-4 py-2 text-sm {postView === 'mine' ? 'bg-accent text-white' : 'bg-white text-gray-700'}" on:click={() => setPostView('mine')}>My Posts</button>
+                                    <button class="px-4 py-2 text-sm {postView === 'all' ? 'bg-accent text-white' : 'bg-white text-gray-700'}" on:click={() => setPostView('all')}>All Posts</button>
                                 </div>
                             {/if}
                         </div>
@@ -712,23 +709,27 @@
                                 <h3
                                     class="text-base sm:text-lg font-semibold text-gray-900"
                                 >
-                                    {postView === "mine" ? "My Posts" : "All Posts"} ({filteredPosts.length})
+                                    {postView === "mine" ? "My Posts" : "All Posts"} ({data.pagination.totalPosts})
                                 </h3>
                             </div>
-                            <div
+                            <form method="GET" action="/admin"
                                 class="flex flex-col gap-2 border-b border-gray-100 px-3 py-3 sm:flex-row sm:flex-wrap sm:items-center sm:px-6"
                             >
+                                <input type="hidden" name="tab" value="posts" />
+                                <input type="hidden" name="view" value={postView} />
+                                {#if selectedAuthor}<input type="hidden" name="author" value={selectedAuthor} />{/if}
                                 <input
                                     aria-label="Search posts"
                                     placeholder="Search posts..."
                                     class="w-full sm:flex-1 md:flex-none md:w-64 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                                    bind:value={searchTerm}
+                                    name="search" value={searchTerm}
                                 />
                                 <div class="flex gap-2 w-full sm:w-auto">
                                     <select
                                         aria-label="Filter by status"
                                         class="flex-1 sm:flex-none px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
-                                        bind:value={filterStatus}
+                                        name="status" value={filterStatus}
+                                        on:change={(event) => event.currentTarget.form?.requestSubmit()}
                                     >
                                         <option value="all">All</option>
                                         <option value="draft">Draft</option>
@@ -756,7 +757,8 @@
                                         New Post
                                     </a>
                                 </div>
-                            </div>
+                                <button type="submit" class="rounded border px-4 py-2">Search</button>
+                            </form>
                             <div class="divide-y divide-gray-100 lg:max-h-[calc(100vh-19rem)] lg:overflow-y-auto">
                                 {#each filteredPosts as post}
                                     <div
@@ -903,6 +905,7 @@
                                     </div>
                                 {/each}
                             </div>
+                            <Pagination pagination={data.pagination} />
                         </div>
                     </div>
                 </div>
@@ -976,10 +979,10 @@
                             class="px-6 py-4 border-b border-gray-200 flex justify-between items-center"
                         >
                             <h3 class="text-lg font-semibold text-gray-900">
-                                All Subscribers ({subscribers.length})
+                                All Subscribers ({subscriberTotal})
                             </h3>
                             <button
-                                on:click={fetchSubscribers}
+                                on:click={() => fetchSubscribers(subscriberOffset)}
                                 class="text-sm text-accent hover:text-accent/80 font-medium"
                             >
                                 Refresh
@@ -1027,6 +1030,10 @@
                                     </table>
                                 </div>
                             {/if}
+                            <div class="flex justify-center gap-4 p-4">
+                                {#if subscriberOffset > 0}<button disabled={loadingSubscribers} on:click={() => fetchSubscribers(subscriberOffset - 25)}>Previous</button>{/if}
+                                {#if hasMoreSubscribers}<button disabled={loadingSubscribers} on:click={() => fetchSubscribers(subscriberOffset + 25)}>Next</button>{/if}
+                            </div>
                         </div>
                     </div>
                 </div>

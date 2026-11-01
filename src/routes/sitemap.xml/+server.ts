@@ -3,6 +3,7 @@ import { postTable, postCategoriesTable } from "$lib/server/schema";
 import { eq, and, desc } from "drizzle-orm";
 import type { RequestHandler } from "./$types";
 import { postPath } from "$lib/post-url";
+import { cachedPublicData } from "$lib/server/public-data-cache";
 
 const siteUrl = "https://talkafricang.com";
 
@@ -23,11 +24,11 @@ const categories = [
     "africans-on-the-table"
 ];
 
-export const GET: RequestHandler = async () => {
+export const GET: RequestHandler = async ({ request }) => {
     let posts: { post_id: string; title: string; updated_at: Date | null; created_at: Date | null }[] = [];
 
     try {
-        posts = await db
+        posts = await cachedPublicData('sitemap-posts', () => db
             .select({
                 post_id: postTable.post_id,
                 title: postTable.title,
@@ -37,7 +38,7 @@ export const GET: RequestHandler = async () => {
             .from(postTable)
             .where(and(eq(postTable.status, "published"), eq(postTable.deleted, false)))
             .orderBy(desc(postTable.created_at))
-            .limit(1000);
+            .limit(1000), request);
     } catch (e) {
         console.error("Sitemap: failed to fetch posts", e);
     }

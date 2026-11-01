@@ -6,7 +6,14 @@ export async function getVideos(limit = 10, offset = 0, category?: string) {
     console.log(`[getVideos] Fetching videos with limit=${limit}, offset=${offset}, category=${category}`);
     try {
         let query = db
-            .select()
+            .select({
+                video_id: videosTable.video_id, title: videosTable.title,
+                video_url: videosTable.video_url, thumbnail_url: videosTable.thumbnail_url,
+                category: videosTable.category, author: videosTable.author,
+                views: videosTable.views, duration: videosTable.duration,
+                is_featured: videosTable.is_featured, created_at: videosTable.created_at,
+                description: videosTable.description,
+            })
             .from(videosTable)
             .$dynamic();
 
@@ -30,7 +37,7 @@ export async function getVideoById(id: string) {
     const result = await db
         .select()
         .from(videosTable)
-        .where(eq(videosTable.video_id, id));
+        .where(eq(videosTable.video_id, id)).limit(1);
     return result[0];
 }
 

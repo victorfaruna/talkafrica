@@ -1,14 +1,15 @@
 import { json } from "@sveltejs/kit";
 import { getVideos, createVideo } from "$lib/server/videos";
 import type { RequestHandler } from "./$types";
+import { listRange } from '$lib/server/pagination';
+import { cachedPublicData } from '$lib/server/public-data-cache';
 
-export const GET: RequestHandler = async ({ url }) => {
-    const limit = Number(url.searchParams.get("limit")) || 10;
-    const offset = Number(url.searchParams.get("offset")) || 0;
+export const GET: RequestHandler = async ({ url, request }) => {
+    const { limit, offset } = listRange(url, 10);
     const category = url.searchParams.get("category") || undefined;
 
     try {
-        const videos = await getVideos(limit, offset, category);
+        const videos = await cachedPublicData(`videos:${category ?? ''}:${limit}:${offset}`, () => getVideos(limit, offset, category), request);
         return json({ videos });
     } catch (error) {
         console.error("Error fetching videos:", error);

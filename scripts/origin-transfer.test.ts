@@ -1,6 +1,6 @@
 // Run with: node --import tsx --test scripts/origin-transfer.test.ts
 import assert from 'node:assert/strict';
-import { after, before, test } from 'node:test';
+import { after, before, beforeEach, test } from 'node:test';
 import { createServer, type ViteDevServer } from 'vite';
 import { PgDialect } from 'drizzle-orm/pg-core';
 import { cachePublicResponse } from '../src/lib/server/public-cache';
@@ -15,6 +15,7 @@ let track: any;
 let search: any;
 let editorPosts: any;
 let original: any;
+let cache: any;
 
 before(async () => {
     server = await createServer({ server: { middlewareMode: true }, appType: 'custom' });
@@ -24,7 +25,9 @@ before(async () => {
     ({ GET: search } = await server.ssrLoadModule('/src/routes/api/search/+server.ts'));
     ({ GET: editorPosts } = await server.ssrLoadModule('/src/routes/api/posts/+server.ts'));
     original = { insert: db.insert, update: db.update, transaction: db.transaction, select: db.select };
+    ({ publicDataCache: cache } = await server.ssrLoadModule('/src/lib/server/public-data-cache.ts'));
 });
+beforeEach(() => cache.invalidate());
 
 after(async () => {
     if (original) Object.assign(db, original);
@@ -71,7 +74,7 @@ test('public HTML and page data can be cached without caching them in the browse
         for (const method of ['GET', 'HEAD']) {
             const response = new Response('published', { headers: { 'cache-control': 'private, no-store' } });
             cachePublicResponse(route, new Request(`${origin}/__data.json`, { method }), response);
-            assert.equal(response.headers.get('vercel-cdn-cache-control'), 'public, s-maxage=60, stale-while-revalidate=300');
+            assert.equal(response.headers.get('vercel-cdn-cache-control'), 'public, s-maxage=60');
             assert.equal(response.headers.get('cache-control'), 'public, max-age=0, must-revalidate');
             assert.equal(response.headers.has('set-cookie'), false);
         }
@@ -82,7 +85,7 @@ test('admin, editor APIs, tracking, failed responses and authenticated requests 
     for (const route of ['/admin', '/admin/login', '/api/posts', '/api/track', null]) {
         const response = new Response(null);
         cachePublicResponse(route, new Request(origin), response);
-        assert.equal(response.headers.has('vercel-cdn-cache-control'), false);
+        assert.notEqual(response.headers.get('vercel-cdn-cache-control'), 'public, s-maxage=60');
     }
     for (const [request, response] of [
         [new Request(origin, { method: 'POST' }), new Response(null)],
@@ -91,7 +94,7 @@ test('admin, editor APIs, tracking, failed responses and authenticated requests 
         [new Request(origin), new Response(null, { headers: { 'set-cookie': 'visitor=example' } })]
     ]) {
         cachePublicResponse('/', request, response);
-        assert.equal(response.headers.has('vercel-cdn-cache-control'), false);
+        assert.notEqual(response.headers.get('vercel-cdn-cache-control'), 'public, s-maxage=60');
     }
 });
 

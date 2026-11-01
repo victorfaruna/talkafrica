@@ -1,6 +1,6 @@
 // Run with: node --import tsx --test scripts/navigation.test.ts
 import assert from 'node:assert/strict';
-import { before, after, test } from 'node:test';
+import { before, beforeEach, after, test } from 'node:test';
 import { createServer, type ViteDevServer } from 'vite';
 import { PgDialect } from 'drizzle-orm/pg-core';
 
@@ -9,6 +9,7 @@ let db: any;
 let select: any;
 let articleLoad: any;
 let categoryLoad: any;
+let cache: any;
 const dialect = new PgDialect();
 const current = { post_id: '12345678-1234-4123-8123-123456789012', title: 'Current article', category: 'technology', content: '<p>Full article</p>', created_at: new Date('2026-10-01') };
 const earlier = { post_id: '22345678-1234-4123-8123-123456789012', title: 'Earlier article' };
@@ -21,7 +22,9 @@ before(async () => {
     select = db.select;
     ({ load: articleLoad } = await server.ssrLoadModule('/src/routes/posts/[post_id]/+page.server.ts'));
     ({ load: categoryLoad } = await server.ssrLoadModule('/src/routes/[category=category]/+page.server.ts'));
+    ({ publicDataCache: cache } = await server.ssrLoadModule('/src/lib/server/public-data-cache.ts'));
 });
+beforeEach(() => cache.invalidate());
 after(async () => {
     if (db) db.select = select;
     await server?.close();
@@ -53,6 +56,7 @@ function database(fixture: { related?: any[]; previous?: any[]; next?: any[]; ol
             if ('content' in fields) return [current];
             if ('category_slug' in fields) return [{ category_slug: 'technology' }];
             if (Object.keys(fields).length === 2) {
+                if (query.where.sql.includes('normalize(')) return fixture.candidates ?? [current];
                 if (!query.limit) return fixture.candidates ?? [current];
                 if (query.where.sql.includes(' < ')) return fixture.previous ?? [earlier];
                 if (query.where.sql.includes(' > ')) return fixture.next ?? [newer];

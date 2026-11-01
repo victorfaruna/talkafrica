@@ -1,9 +1,11 @@
 <script lang="ts">
+    import Pagination from "$lib/components/Pagination.svelte";
     import Header from "$lib/components/admin/Header.svelte";
     import Sidebar from "$lib/components/admin/Sidebar.svelte";
 
     export let data;
-    let items = data.items || [];
+    let items: any[] = [];
+    $: items = data.items || [];
     let isDeleting = false;
 
     async function deleteItem(id: string | number | undefined) {
@@ -194,6 +196,7 @@
                     </div>
                 </div>
             </div>
+    <Pagination pagination={data.pagination} />
         </main>
     </div>
 </div>

@@ -1,10 +1,12 @@
 <script lang="ts">
+    import Pagination from "$lib/components/Pagination.svelte";
     import Header from "$lib/components/admin/Header.svelte";
     import Sidebar from "$lib/components/admin/Sidebar.svelte";
 
     export let data;
-    let reviews = data.reviews || [];
-    let searchTerm = "";
+    let reviews: any[] = [];
+    $: reviews = data.reviews || [];
+    $: searchTerm = data.search;
 
     async function deleteReview(id: string) {
         if (!confirm("Are you sure you want to delete this movie review?"))
@@ -23,9 +25,7 @@
         }
     }
 
-    $: filteredReviews = reviews.filter((r: any) =>
-        r.title.toLowerCase().includes(searchTerm.toLowerCase()),
-    );
+    $: filteredReviews = reviews;
 
 </script>
 
@@ -79,13 +79,14 @@
                 <div
                     class="overflow-hidden rounded-xl border border-gray-200 bg-white"
                 >
-                    <div class="px-4 sm:px-6 py-3 border-b border-gray-200">
+                    <form method="GET" class="px-4 sm:px-6 py-3 border-b border-gray-200">
                         <input
                             placeholder="Search movies..."
                             class="w-full sm:w-64 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                            bind:value={searchTerm}
+                            name="search" value={searchTerm}
                         />
-                    </div>
+                        <button type="submit" class="rounded border px-4 py-2">Search</button>
+                    </form>
 
                     <!-- Mobile movie cards -->
                     <div class="divide-y divide-gray-100 sm:hidden">
@@ -231,6 +232,7 @@
                     </div>
                 </div>
             </div>
+    <Pagination pagination={data.pagination} />
         </main>
     </div>
 </div>

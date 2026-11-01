@@ -1,22 +1,14 @@
 <script lang="ts">
 	import { onMount } from "svelte";
+	import { getCommentResource, type PublicComment } from "$lib/comments";
 
 	export let postId: string;
 	export let idPrefix: string = "";
 
-	interface Comment {
-		comment_id: string;
-		user_id: string;
-		content: string;
-		status: string;
-		created_at: string;
-		user?: {
-			name: string;
-			email: string;
-		};
-	}
-
-	let comments: Comment[] = [];
+	let comments: PublicComment[] = [];
+	let hasMore = false;
+	let loadError = "";
+	let resource: ReturnType<typeof getCommentResource>;
 	let loading = true;
 	let submitting = false;
 	let commentText = "";
@@ -25,20 +17,7 @@
 	let error = "";
 	let success = "";
 
-	async function loadComments() {
-		try {
-			const response = await fetch(`/api/posts/${postId}/comments`);
-			const data = await response.json();
-
-			if (data.success) {
-				comments = data.comments;
-			}
-		} catch (err) {
-			console.error("Failed to load comments:", err);
-		} finally {
-			loading = false;
-		}
-	}
+	const loadComments = () => resource.load("refresh");
 
 	async function submitComment() {
 		if (!commentText.trim() || !userName.trim() || !userEmail.trim()) {
@@ -107,8 +86,14 @@
 	}
 
 	onMount(() => {
-		loadComments();
-	});
+        resource = getCommentResource(postId);
+        const unsubscribe = resource.subscribe((state) => {
+            comments = state.comments; loading = state.loading;
+            hasMore = state.hasMore; loadError = state.error;
+        });
+        resource.load();
+        return unsubscribe;
+    });
 </script>
 
 <section class="comment-section">
@@ -172,7 +157,7 @@
 	</div>
 
 	<div class="comments-list">
-		{#if loading}
+		{#if loading && comments.length === 0}
 			<div class="loading">Loading comments...</div>
 		{:else if comments.length === 0}
 			<div class="no-comments">
@@ -199,6 +184,8 @@
 			{/each}
 		{/if}
 	</div>
+    {#if loadError}<p role="alert">{loadError}</p><button on:click={loadComments}>Retry</button>{/if}
+    {#if hasMore}<button class="rounded border px-4 py-2" disabled={loading} on:click={() => resource.load('more')}>Load more comments</button>{/if}
 </section>
 
 <style>

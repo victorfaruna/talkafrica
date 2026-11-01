@@ -6,9 +6,11 @@ import { desc, eq, and, sql, gte } from "drizzle-orm";
 import { postTable, postCategoriesTable, adminTable } from "$lib/server/schema";
 import { getVideos } from "$lib/server/videos";
 import { getRecommendedMovies } from "$lib/server/movie-reviews";
+import { cachedPublicData } from "$lib/server/public-data-cache";
+import { publicPostCardFields } from "$lib/server/post-cards";
 import { getImpactGalleryItems } from "$lib/server/impact-gallery";
 
-export const load = (async () => {
+const loadContent = (async () => {
     try {
         const baseWhere = and(
             eq(postTable.status, "published"),
@@ -17,17 +19,7 @@ export const load = (async () => {
 
         // Helper for category queries
         const getCategoryPosts = (categorySlug: string, limit = 6) => {
-            return db.select({
-                post_id: postTable.post_id,
-                title: postTable.title,
-                image: postTable.image,
-                excerpt: postTable.excerpt,
-                category: postTable.category,
-                author: sql<string>`coalesce(${adminTable.name}, ${postTable.author})`,
-                views: postTable.views,
-                created_at: postTable.created_at,
-                slug: postTable.post_id,
-            })
+            return db.select(publicPostCardFields)
                 .from(postTable)
                 .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
                 .innerJoin(
@@ -50,7 +42,6 @@ export const load = (async () => {
             latest,
             popular,
             trending,
-            africanGiantOfTheWeek,
             recommendedMovies,
             impactGalleryItems,
             politicsPosts,
@@ -70,23 +61,7 @@ export const load = (async () => {
             }),
 
             // Featured
-            db.select({
-                post_id: postTable.post_id,
-                title: postTable.title,
-                excerpt: postTable.excerpt,
-                image: postTable.image,
-                category: postTable.category,
-                author: sql<string>`coalesce(${adminTable.name}, ${postTable.author})`,
-                status: postTable.status,
-                featured: postTable.featured,
-                isTrendingNews: postTable.isTrendingNews,
-                deleted: postTable.deleted,
-                views: postTable.views,
-                author_id: postTable.author_id,
-                editor: postTable.editor,
-                created_at: postTable.created_at,
-                updated_at: postTable.updated_at,
-            })
+            db.select(publicPostCardFields)
                 .from(postTable)
                 .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
                 .where(and(baseWhere, eq(postTable.featured, true)))
@@ -98,23 +73,7 @@ export const load = (async () => {
                 }),
 
             // Latest
-            db.select({
-                post_id: postTable.post_id,
-                title: postTable.title,
-                excerpt: postTable.excerpt,
-                image: postTable.image,
-                category: postTable.category,
-                author: sql<string>`coalesce(${adminTable.name}, ${postTable.author})`,
-                status: postTable.status,
-                featured: postTable.featured,
-                isTrendingNews: postTable.isTrendingNews,
-                deleted: postTable.deleted,
-                views: postTable.views,
-                author_id: postTable.author_id,
-                editor: postTable.editor,
-                created_at: postTable.created_at,
-                updated_at: postTable.updated_at,
-            })
+            db.select(publicPostCardFields)
                 .from(postTable)
                 .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
                 .where(baseWhere)
@@ -131,24 +90,8 @@ export const load = (async () => {
                     const thirtyDaysAgo = new Date();
                     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-                    const recent = await db.select({
-                        post_id: postTable.post_id,
-                        title: postTable.title,
-                        excerpt: postTable.excerpt,
-                        image: postTable.image,
-                        category: postTable.category,
-                        author: sql<string>`coalesce(${adminTable.name}, ${postTable.author})`,
-                        status: postTable.status,
-                        featured: postTable.featured,
-                        isTrendingNews: postTable.isTrendingNews,
-                        deleted: postTable.deleted,
-                        views: postTable.views,
-                        author_id: postTable.author_id,
-                        editor: postTable.editor,
-                        created_at: postTable.created_at,
-                        updated_at: postTable.updated_at,
-                    })
-                        .from(postTable)
+                    const recent = await db.select(publicPostCardFields)
+                .from(postTable)
                         .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
                         .where(and(baseWhere, gte(postTable.created_at, thirtyDaysAgo)))
                         .orderBy(desc(postTable.views), desc(postTable.created_at))
@@ -158,24 +101,8 @@ export const load = (async () => {
                     if (recent.length >= 4) return recent;
 
                     // Otherwise fall back to all-time top viewed posts
-                    const allTime = await db.select({
-                        post_id: postTable.post_id,
-                        title: postTable.title,
-                        excerpt: postTable.excerpt,
-                        image: postTable.image,
-                        category: postTable.category,
-                        author: sql<string>`coalesce(${adminTable.name}, ${postTable.author})`,
-                        status: postTable.status,
-                        featured: postTable.featured,
-                        isTrendingNews: postTable.isTrendingNews,
-                        deleted: postTable.deleted,
-                        views: postTable.views,
-                        author_id: postTable.author_id,
-                        editor: postTable.editor,
-                        created_at: postTable.created_at,
-                        updated_at: postTable.updated_at,
-                    })
-                        .from(postTable)
+                    const allTime = await db.select(publicPostCardFields)
+                .from(postTable)
                         .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
                         .where(baseWhere)
                         .orderBy(desc(postTable.views), desc(postTable.created_at))
@@ -189,23 +116,7 @@ export const load = (async () => {
             })(),
 
             // Trending
-            db.select({
-                post_id: postTable.post_id,
-                title: postTable.title,
-                excerpt: postTable.excerpt,
-                image: postTable.image,
-                category: postTable.category,
-                author: sql<string>`coalesce(${adminTable.name}, ${postTable.author})`,
-                status: postTable.status,
-                featured: postTable.featured,
-                isTrendingNews: postTable.isTrendingNews,
-                deleted: postTable.deleted,
-                views: postTable.views,
-                author_id: postTable.author_id,
-                editor: postTable.editor,
-                created_at: postTable.created_at,
-                updated_at: postTable.updated_at,
-            })
+            db.select(publicPostCardFields)
                 .from(postTable)
                 .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
                 .where(and(baseWhere, eq(postTable.isTrendingNews, true)))
@@ -213,38 +124,6 @@ export const load = (async () => {
                 .limit(10)
                 .catch(err => {
                     console.error("[PageLoad] Failed to load trending:", err);
-                    return [];
-                }),
-
-            // African Giant of the Week
-            db.select({
-                id: postTable.id,
-                post_id: postTable.post_id,
-                title: postTable.title,
-                excerpt: postTable.excerpt,
-                category: postTable.category,
-                image: postTable.image,
-                status: postTable.status,
-                featured: postTable.featured,
-                isTrendingNews: postTable.isTrendingNews,
-                deleted: postTable.deleted,
-                views: postTable.views,
-                author: sql<string>`coalesce(${adminTable.name}, ${postTable.author})`,
-                editor: postTable.editor,
-                created_at: postTable.created_at,
-                updated_at: postTable.updated_at,
-            })
-                .from(postTable)
-                .leftJoin(adminTable, eq(postTable.author_id, adminTable.admin_id))
-                .innerJoin(
-                    postCategoriesTable,
-                    eq(postTable.post_id, postCategoriesTable.post_id)
-                )
-                .where(and(baseWhere, eq(postCategoriesTable.category_slug, "african-giant")))
-                .orderBy(desc(postTable.created_at))
-                .limit(1)
-                .catch(err => {
-                    console.error("[PageLoad] Failed to load african giant of the week:", err);
                     return [];
                 }),
 
@@ -278,7 +157,7 @@ export const load = (async () => {
             featuredPosts: featured,
             latestPosts: latest,
             trendingPosts: trending,
-            africanGiant: africanGiantOfTheWeek[0] || null,
+            africanGiant: africanGiantSectionPosts[0] || null,
             recommendedMovies,
             impactGalleryItems,
             videos,
@@ -304,3 +183,5 @@ export const load = (async () => {
         throw error(500, `Load failed: ${errorMessage}`);
     }
 }) satisfies PageServerLoad;
+
+export const load = ((event?: { request?: Request }) => cachedPublicData("homepage", loadContent, event?.request)) satisfies PageServerLoad;

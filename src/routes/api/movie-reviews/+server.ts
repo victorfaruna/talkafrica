@@ -3,15 +3,19 @@ import type { RequestHandler } from "./$types";
 import {
     getMovieReviews,
     createMovieReview,
+    getPublishedMovieReviews,
 } from "$lib/server/movie-reviews";
+import { listRange } from '$lib/server/pagination';
+import { cachedPublicData } from '$lib/server/public-data-cache';
 
-export const GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async ({ url, locals, request }) => {
     try {
-        const limit = parseInt(url.searchParams.get("limit") ?? "10");
-        const offset = parseInt(url.searchParams.get("offset") ?? "0");
+        const { limit, offset } = listRange(url, 10);
         const status = url.searchParams.get("status") ?? undefined;
 
-        const reviews = await getMovieReviews(limit, offset, status);
+        const reviews = locals.session
+            ? await getMovieReviews(limit, offset, status)
+            : await cachedPublicData(`movies-api:${limit}:${offset}`, () => getPublishedMovieReviews(limit, offset), request);
         return json(reviews);
     } catch (err) {
         console.error("Error in movie-reviews GET API:", err);

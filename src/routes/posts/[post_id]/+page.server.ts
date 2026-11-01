@@ -3,7 +3,11 @@ import { error, redirect } from "@sveltejs/kit";
 import { db } from "$lib/server/db";
 import { eq, and, or, ne, desc, asc, lt, gt, inArray, exists, sql } from "drizzle-orm";
 import { postTable, postCategoriesTable, adminTable } from "$lib/server/schema";
-import { postPath, slugifyPostTitle } from "$lib/post-url";
+import { postPath } from "$lib/post-url";
+import { postSlug } from "$lib/server/post-slug";
+import { publicArticleContent } from "$lib/server/article-media";
+import { cachedPublicData } from "$lib/server/public-data-cache";
+import { lazyArticleImages } from "$lib/utils/article-html";
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -30,7 +34,7 @@ const inMappedCategory = (slugs: string[]) => exists(
         )),
 );
 
-export const load: PageServerLoad = async ({ params }) => {
+const loadContent: PageServerLoad = async ({ params }) => {
     try {
         const identifier = params.post_id;
         const isLegacyId = UUID_PATTERN.test(identifier);
@@ -40,11 +44,10 @@ export const load: PageServerLoad = async ({ params }) => {
         if (!isLegacyId) {
             const candidates = await db.select({ post_id: postTable.post_id, title: postTable.title })
                 .from(postTable)
-                .where(published)
-                .orderBy(desc(postTable.created_at));
-            const match = candidates.find(
-                (candidate) => slugifyPostTitle(candidate.title) === identifier.toLowerCase(),
-            );
+                .where(and(published, eq(postSlug, identifier.toLowerCase())))
+                .orderBy(desc(postTable.created_at))
+                .limit(1);
+            const match = candidates[0];
             if (!match) throw error(404, "Post not found");
             resolvedPostId = match.post_id;
         }
@@ -53,7 +56,7 @@ export const load: PageServerLoad = async ({ params }) => {
         const [postResults, categoryResults] = await Promise.all([
             db.select({
                 ...cardFields,
-                content: postTable.content,
+                content: publicArticleContent(postTable.content, postTable.post_id, 'posts'),
                 status: postTable.status,
                 featured: postTable.featured,
                 isTrendingNews: postTable.isTrendingNews,
@@ -123,7 +126,7 @@ export const load: PageServerLoad = async ({ params }) => {
         }
 
         return {
-            post: { ...post, categories: categorySlugs },
+            post: { ...post, content: lazyArticleImages(post.content), categories: categorySlugs },
             relatedPosts: related.length ? related : latestPosts.slice(0, 3),
             prevPost,
             nextPost,
@@ -136,3 +139,7 @@ export const load: PageServerLoad = async ({ params }) => {
         throw error(500, "Failed to load post");
     }
 };
+
+export const load: PageServerLoad = (event) => cachedPublicData(
+    `article:${event.params.post_id}`, () => loadContent(event), event.request,
+);

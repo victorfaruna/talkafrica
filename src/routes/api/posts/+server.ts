@@ -4,20 +4,21 @@ import { and, desc, eq, inArray, like, or } from "drizzle-orm";
 import { db } from "$lib/server/db";
 import { postTable, postCategoriesTable } from "$lib/server/schema";
 import { canManageOwner, requireAdmin } from "$lib/server/admin-auth";
+import { listRange } from '$lib/server/pagination';
+import { storeInlineImages } from '$lib/server/store-inline-images';
 
 // GET - Fetch posts with optional filters
 export const GET: RequestHandler = async ({ url, locals }) => {
     // Full article bodies and drafts belong to the editor. Public readers use
     // the bounded /api/search endpoint instead of this unbounded response.
-    requireAdmin(locals);
+    const session = requireAdmin(locals);
     try {
         const status = url.searchParams.get("status");
         const category = url.searchParams.get("category");
         const featured = url.searchParams.get("featured");
         const search = url.searchParams.get("search");
         const postId = url.searchParams.get("post_id");
-        const limitParam = url.searchParams.get("limit");
-        const limit = limitParam ? parseInt(limitParam) : undefined;
+        const { limit, offset } = listRange(url, 25);
         const includeDeleted = url.searchParams.get("includeDeleted") === "true";
 
         let query = db
@@ -25,7 +26,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
                 id: postTable.id,
                 post_id: postTable.post_id,
                 title: postTable.title,
-                content: postTable.content,
+                ...(postId ? { content: postTable.content } : {}),
                 excerpt: postTable.excerpt,
                 category: postTable.category,
                 image: postTable.image,
@@ -59,6 +60,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         // Add post_id filter for fetching a specific post
         if (postId) {
             filters.push(eq(postTable.post_id, postId));
+            if (session.role !== 'super_admin') filters.push(eq(postTable.author_id, session.admin_id));
         }
 
         // Add search filter if search parameter is present
@@ -88,9 +90,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 
         query = query.orderBy(desc(postTable.created_at));
 
-        if (limit) {
-            query = query.limit(limit);
-        }
+        query = query.limit(postId ? 1 : limit).offset(postId ? 0 : offset);
 
         const results = await query;
 
@@ -143,7 +143,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     try {
         const session = requireAdmin(locals);
         const body = await request.json();
-        console.log("📝 POST /api/posts - Request body:", JSON.stringify(body, null, 2));
 
         const {
             title,
@@ -173,7 +172,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
         const insertData = {
             title,
-            content,
+            content: await storeInlineImages(content),
             excerpt,
             category: categoryArray[0] || null, // Keep for backward compatibility
             image,
@@ -190,7 +189,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         const [created] = await db
             .insert(postTable)
             .values(insertData)
-            .returning();
+            .returning({ post_id: postTable.post_id, title: postTable.title, status: postTable.status });
 
         console.log("✅ Post created successfully:", created.post_id);
 
@@ -251,6 +250,7 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
             return json({ success: false, message: "You can only edit your own posts" }, { status: 403 });
         }
         delete update.author_id;
+        if (typeof update.content === 'string') update.content = await storeInlineImages(update.content);
 
         // Handle categories update if provided
         if (categories !== undefined || category !== undefined) {
@@ -278,7 +278,7 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
             .update(postTable)
             .set({ ...update, updated_at: new Date() })
             .where(eq(postTable.post_id, post_id))
-            .returning();
+            .returning({ post_id: postTable.post_id, title: postTable.title, status: postTable.status, featured: postTable.featured, updated_at: postTable.updated_at });
 
         if (!updated) {
             return json(

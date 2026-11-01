@@ -11,12 +11,13 @@ export interface ImpactGalleryItem {
     created_at?: Date | string | null;
 }
 
-export async function getImpactGalleryItems(): Promise<ImpactGalleryItem[]> {
+export async function getImpactGalleryItems(limit = 24, offset = 0): Promise<ImpactGalleryItem[]> {
     try {
         const items = await db
             .select()
             .from(impactGalleryTable)
-            .orderBy(asc(impactGalleryTable.display_order), desc(impactGalleryTable.created_at));
+            .orderBy(asc(impactGalleryTable.display_order), desc(impactGalleryTable.created_at))
+            .limit(limit).offset(offset);
 
         return items as ImpactGalleryItem[];
     } catch (error) {

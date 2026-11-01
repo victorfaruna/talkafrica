@@ -284,7 +284,7 @@
 
     <!-- Comments -->
     <div class="mt-16 pt-16 border-t border-gray-100">
-        <CommentSection postId={review.review_id} />
+        {#key review.review_id}<CommentSection postId={review.review_id} />{/key}
     </div>
 
     <!-- Related Recommendations -->

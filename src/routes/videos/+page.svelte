@@ -1,9 +1,11 @@
 <script lang="ts">
+    import Pagination from "$lib/components/Pagination.svelte";
     import Header from "$lib/components/Header.svelte";
     import Footer from "$lib/components/Footer.svelte";
 
     export let data;
-    let videos = data.videos || [];
+    let videos: any[] = [];
+    $: videos = data.videos || [];
 
     function isoDate(dateString: string | Date | undefined) {
         if (!dateString) return "";
@@ -95,6 +97,7 @@
                     {/each}
                 </div>
             {/if}
+            <Pagination pagination={data.pagination} />
         </div>
     </main>
 

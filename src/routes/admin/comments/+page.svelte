@@ -1,4 +1,5 @@
 <script lang="ts">
+    import Pagination from "$lib/components/Pagination.svelte";
     import { goto } from "$app/navigation";
     import { page } from "$app/stores";
     import { postPath } from "$lib/post-url";
@@ -136,6 +137,7 @@
     function changeFilter(status: string) {
         const url = new URL(window.location.href);
         url.searchParams.set("status", status);
+        url.searchParams.delete("page");
         goto(url.toString());
     }
 
@@ -654,6 +656,8 @@
         {/if}
     </div>
 </div>
+
+<Pagination pagination={data.pagination} />
 
 <style>
     /* Custom utility classes */

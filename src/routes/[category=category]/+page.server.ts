@@ -4,6 +4,8 @@ import { db } from "$lib/server/db";
 import { eq, desc, and, or, inArray, exists, sql, count } from "drizzle-orm";
 import { postTable, postCategoriesTable } from "$lib/server/schema";
 import { categoryExists, getCategoryDisplayName, getSubcategories } from "$lib/categories";
+import { cachedPublicData } from "$lib/server/public-data-cache";
+import { pageNumber } from "$lib/server/pagination";
 
 const cardFields = {
     post_id: postTable.post_id,
@@ -33,17 +35,14 @@ const categoryFilter = (slugs: string[]) => and(
     ),
 );
 
-export const load: PageServerLoad = async ({ params, url, depends }) => {
+const loadContent: PageServerLoad = async ({ params, url }) => {
     const categoryParam = params.category?.toLowerCase();
     const reserved = ["terms", "privacy", "contact", "about", "movies", "videos", "donate"];
     if (categoryParam && reserved.includes(categoryParam)) throw redirect(301, `/${categoryParam}`);
     if (!categoryParam || !categoryExists(categoryParam)) error(404, "Category not found");
 
-    const requestedPage = Number(url.searchParams.get("page") || "1");
-    const page = Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
+    const page = pageNumber(url);
     const limit = 12;
-    depends(`category:${categoryParam}`);
-    depends(`posts:${categoryParam}:${page}`);
 
     const children = getSubcategories(categoryParam);
     const matchingPosts = categoryFilter([categoryParam, ...children.map((child) => child.slug)]);
@@ -99,4 +98,12 @@ export const load: PageServerLoad = async ({ params, url, depends }) => {
             notFound: false,
         };
     }
+};
+
+export const load: PageServerLoad = (event) => {
+    event.depends(`category:${event.params.category?.toLowerCase()}`);
+    event.depends(`posts:${event.params.category?.toLowerCase()}:${pageNumber(event.url)}`);
+    return cachedPublicData(
+        `category:${event.params.category}:${pageNumber(event.url)}`, () => loadContent(event), event.request,
+    );
 };
