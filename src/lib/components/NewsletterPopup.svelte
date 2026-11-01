@@ -171,7 +171,7 @@
     .popup-layout { grid-area: 1 / 1; display: grid; grid-template-columns: 1.08fr 1fr; }
     .close-button { position: sticky; top: 14px; grid-area: 1 / 1; justify-self: end; align-self: start; margin: 14px; z-index: 2; width: 40px; height: 40px; display: grid; place-items: center; border: 1px solid #17282318; border-radius: 50%; background: #faf9f6; color: #34433d; cursor: pointer; }
     .close-button:hover { background: #ecece5; }
-    .story-panel { padding: 36px; background: linear-gradient(180deg, rgba(12, 17, 14, .78), rgba(12, 17, 14, .86)), url('/images/popup-background.jpg') center / cover; color: #f7f5ed; min-width: 0; display: flex; flex-direction: column; }
+    .story-panel { padding: 36px; background: linear-gradient(180deg, #17251e, #101a15); color: #f7f5ed; min-width: 0; display: flex; flex-direction: column; }
     .story-copy { margin-top: 0; }
     .eyebrow { display: flex; align-items: center; gap: 8px; margin: 0 0 16px; font-size: 10px; line-height: 1.5; font-weight: 600; text-transform: uppercase; letter-spacing: 1.8px; }
     .story-copy .eyebrow { color: #d4c79c; }
@@ -223,13 +223,16 @@
     @media (max-width: 700px) {
         .newsletter-popup { width: min(480px, calc(100% - 24px)); max-height: calc(100dvh - 24px); border-radius: 16px; }
         .popup-layout { grid-template-columns: 1fr; }
-        .signup-panel { grid-row: 1; padding: 32px 24px 18px; }
+        .signup-panel { grid-row: 1; padding: 32px 24px 18px; background: linear-gradient(180deg, rgba(12, 17, 14, .78), rgba(12, 17, 14, .86)), url('/images/popup-background.jpg') center / cover; color: #f7f5ed; }
         .signup-heading { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; padding-right: 28px; }
-        .mail-icon { width: 40px; height: 40px; flex-shrink: 0; border-radius: 10px; margin-bottom: 0; }
+        .mail-icon { width: 40px; height: 40px; flex-shrink: 0; border-radius: 10px; margin-bottom: 0; background: #ffffff10; border-color: #ffffff38; color: #e5bb6f; }
         .signup-panel h2 { font-size: 37px; }
-        .signup-description { max-width: 340px; }
+        .signup-description { max-width: 340px; color: #cfdbd3; }
         .benefits { gap: 8px; margin: 18px 0 22px; }
-        .signup-eyebrow { margin: 0; font-size: clamp(7px, 2vw, 9px); letter-spacing: 1px; white-space: nowrap; }
+        .signup-eyebrow { margin: 0; font-size: clamp(7px, 2vw, 9px); letter-spacing: 1px; white-space: nowrap; color: #d4c79c; }
+        .benefits li { color: #e2e9e3; }
+        .benefits :global(svg) { color: #e5bb6f; }
+        .privacy-note, .later-button { color: #c4d4ca; }
         .later-button { margin-top: 5px; }
         .story-panel { padding: 24px; }
         .story-copy { margin-top: 0; }
