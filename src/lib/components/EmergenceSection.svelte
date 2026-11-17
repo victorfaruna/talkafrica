@@ -188,17 +188,17 @@
                     onkeydown={handleVideoKeydown}
                 >
                     <div class="min-w-0 w-full flex-none snap-start snap-always" role="group" aria-roledescription="slide" aria-label="1 of 2" inert={activeVideoIndex !== 0}>
-                        <div class="relative aspect-video min-h-[260px] bg-black sm:min-h-[420px] lg:min-h-[480px]">
+                        <div class="relative aspect-video min-h-[260px] w-full min-w-0 max-w-full overflow-hidden bg-black sm:min-h-[420px] lg:min-h-[480px]">
                             <img
                                 src="https://i.ytimg.com/vi/VUaD2crgBaQ/hqdefault.jpg"
                                 alt="Emergence the Talk Africa NG hangout video thumbnail"
-                                class="absolute inset-0 h-full w-full object-contain"
+                                class="absolute inset-0 h-full w-full object-contain object-center"
                                 loading="lazy"
                             />
                             {#if activeVideoIndex === 0 && videoIsVisible}
                                 <iframe
                                     class="absolute inset-0 h-full w-full border-0"
-                                    src="https://www.youtube-nocookie.com/embed/VUaD2crgBaQ?rel=0"
+                                    src="https://www.youtube-nocookie.com/embed/VUaD2crgBaQ?rel=0&autoplay=1&mute=1&playsinline=1"
                                     title={videoTitles[0]}
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                     referrerpolicy="strict-origin-when-cross-origin"
@@ -214,10 +214,10 @@
                     </div>
 
                     <div class="min-w-0 w-full flex-none snap-start snap-always" role="group" aria-roledescription="slide" aria-label="2 of 2" inert={activeVideoIndex !== 1}>
-                        <div class="relative aspect-video min-h-[260px] bg-black sm:min-h-[420px] lg:min-h-[480px]">
+                        <div class="relative aspect-video min-h-[260px] w-full min-w-0 max-w-full overflow-hidden bg-black sm:min-h-[420px] lg:min-h-[480px]">
                             <video
                                 bind:this={videoElement}
-                                class="absolute inset-0 h-full w-full border-0 bg-black object-contain"
+                                class="absolute inset-0 h-full w-full border-0 bg-black object-contain object-center"
                                 poster="https://res.cloudinary.com/dwwyegu5r/video/upload/so_0/IMG_0745_w0zlss.jpg"
                                 title={videoTitles[1]}
                                 preload="none"
