@@ -2,13 +2,19 @@
     import { onMount } from "svelte";
     import ArrowIcon from "$lib/components/icons/ArrowIcon.svelte";
 
-    let sectionElement: HTMLElement;
+    const videoTitles = [
+        "Emergence the Talk Africa NG hangout",
+        "Emergence Lagos event film",
+    ];
+
+    let videoCarousel: HTMLDivElement;
     let videoElement: HTMLVideoElement;
+    let activeVideoIndex = 0;
     let videoIsVisible = false;
     let showSoundPrompt = false;
 
     async function playVideoWithSound() {
-        if (!videoElement || !videoIsVisible) return;
+        if (!videoElement || !videoIsVisible || activeVideoIndex !== 1) return;
 
         if (videoElement.ended) videoElement.currentTime = 0;
         videoElement.muted = false;
@@ -16,34 +22,78 @@
 
         try {
             await videoElement.play();
+            if (!videoIsVisible || activeVideoIndex !== 1) videoElement.pause();
         } catch {
+            if (!videoIsVisible || activeVideoIndex !== 1) return;
+
             // Browsers commonly reject audible autoplay until the visitor taps.
             videoElement.muted = true;
             showSoundPrompt = true;
             await videoElement.play().catch(() => undefined);
+            if (!videoIsVisible || activeVideoIndex !== 1) videoElement.pause();
         }
     }
 
     async function enableVideoSound() {
-        if (!videoElement) return;
+        if (!videoElement || !videoIsVisible || activeVideoIndex !== 1) return;
 
         videoElement.muted = false;
         showSoundPrompt = false;
 
         try {
             await videoElement.play();
+            if (!videoIsVisible || activeVideoIndex !== 1) videoElement.pause();
         } catch {
+            if (!videoIsVisible || activeVideoIndex !== 1) return;
+
             videoElement.muted = true;
             showSoundPrompt = true;
         }
     }
 
     function syncSoundPrompt() {
-        showSoundPrompt = videoIsVisible && videoElement?.muted;
+        showSoundPrompt = videoIsVisible && activeVideoIndex === 1 && videoElement?.muted;
+    }
+
+    function syncActiveVideo() {
+        if (!videoCarousel?.clientWidth) return;
+
+        const nextIndex = Math.max(
+            0,
+            Math.min(videoTitles.length - 1, Math.round(videoCarousel.scrollLeft / videoCarousel.clientWidth)),
+        );
+        if (nextIndex === activeVideoIndex) return;
+
+        activeVideoIndex = nextIndex;
+        if (activeVideoIndex === 1) {
+            void playVideoWithSound();
+        } else {
+            videoElement?.pause();
+            showSoundPrompt = false;
+        }
+    }
+
+    function goToVideo(index: number) {
+        if (!videoCarousel || index < 0 || index >= videoTitles.length) return;
+
+        videoCarousel.scrollTo({
+            left: index * videoCarousel.clientWidth,
+            behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+        });
+    }
+
+    function handleVideoKeydown(event: KeyboardEvent) {
+        // Leave the embedded players' own keyboard controls alone.
+        if (event.target !== event.currentTarget) return;
+
+        if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+            event.preventDefault();
+            goToVideo(activeVideoIndex + (event.key === "ArrowLeft" ? -1 : 1));
+        }
     }
 
     onMount(() => {
-        if (!sectionElement || !videoElement) return;
+        if (!videoCarousel || !videoElement) return;
 
         const observer = new IntersectionObserver(
             ([entry]) => {
@@ -66,10 +116,20 @@
             },
         );
 
-        observer.observe(sectionElement);
+        observer.observe(videoCarousel);
+
+        const resizeObserver = new ResizeObserver(() => {
+            // Keep the selected film aligned after a rotation or layout change.
+            videoCarousel.scrollTo({
+                left: activeVideoIndex * videoCarousel.clientWidth,
+                behavior: "instant",
+            });
+        });
+        resizeObserver.observe(videoCarousel);
 
         return () => {
             observer.disconnect();
+            resizeObserver.disconnect();
             videoElement?.pause();
         };
     });
@@ -88,7 +148,6 @@
 
 <section
     id="emergence"
-    bind:this={sectionElement}
     class="emergence-section scroll-mt-20 overflow-hidden bg-[#0b0b0b] py-16 text-white lg:scroll-mt-24 lg:py-24"
     aria-labelledby="emergence-heading"
 >
@@ -114,33 +173,104 @@
             </div>
         </div>
 
-        <div class="grid border-b border-white/20 lg:grid-cols-[1.28fr_0.72fr]">
-            <div class="relative min-h-[360px] overflow-hidden border-white/20 bg-black sm:min-h-[520px] lg:min-h-[560px] lg:border-r">
-                <video
-                    bind:this={videoElement}
-                    class="absolute inset-0 h-full w-full border-0 bg-black object-contain"
-                    poster="https://res.cloudinary.com/dwwyegu5r/video/upload/so_0/IMG_0745_w0zlss.jpg"
-                    title="Emergence Lagos event film"
-                    preload="metadata"
-                    playsinline
-                    controls
-                    onvolumechange={syncSoundPrompt}
+        <div class="grid border-b border-white/20 lg:grid-cols-[minmax(0,1.28fr)_minmax(0,0.72fr)]">
+            <div class="relative min-w-0 self-start overflow-hidden border-white/20 bg-black lg:border-r">
+                <!-- svelte-ignore a11y_no_noninteractive_tabindex a11y_no_noninteractive_element_interactions (This scrollable carousel region needs keyboard focus for arrow navigation.) -->
+                <div
+                    id="emergence-videos"
+                    bind:this={videoCarousel}
+                    class="emergence-videos flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[#f59e0b]"
+                    role="region"
+                    aria-roledescription="carousel"
+                    aria-label="Emergence videos"
+                    tabindex="0"
+                    onscroll={syncActiveVideo}
+                    onkeydown={handleVideoKeydown}
                 >
-                    <source src="https://res.cloudinary.com/dwwyegu5r/video/upload/c_limit,w_1080,q_auto:good,vc_h264/IMG_0745_w0zlss.mp4" type="video/mp4" />
-                    <source src="https://res.cloudinary.com/dwwyegu5r/video/upload/IMG_0745_w0zlss.mp4" type="video/mp4" />
-                    Your browser does not support HTML video.
-                </video>
-                <span class="pointer-events-none absolute left-0 top-0 z-10 bg-[#f59e0b] px-4 py-3 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-black">Watch the highlight</span>
-                {#if showSoundPrompt}
+                    <div class="min-w-0 w-full flex-none snap-start snap-always" role="group" aria-roledescription="slide" aria-label="1 of 2" inert={activeVideoIndex !== 0}>
+                        <div class="relative aspect-video min-h-[260px] bg-black sm:min-h-[420px] lg:min-h-[480px]">
+                            <img
+                                src="https://i.ytimg.com/vi/VUaD2crgBaQ/hqdefault.jpg"
+                                alt="Emergence the Talk Africa NG hangout video thumbnail"
+                                class="absolute inset-0 h-full w-full object-contain"
+                                loading="lazy"
+                            />
+                            {#if activeVideoIndex === 0 && videoIsVisible}
+                                <iframe
+                                    class="absolute inset-0 h-full w-full border-0"
+                                    src="https://www.youtube-nocookie.com/embed/VUaD2crgBaQ?rel=0"
+                                    title={videoTitles[0]}
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    referrerpolicy="strict-origin-when-cross-origin"
+                                    allowfullscreen
+                                ></iframe>
+                            {/if}
+                        </div>
+                        <div class="min-h-[106px] border-t border-white/20 px-4 py-4 pr-32 sm:px-5 sm:pr-36">
+                            <p class="text-[0.6rem] font-bold uppercase tracking-[0.16em] text-[#f59e0b]">Watch Emergence <span class="ml-2 text-white/45">01 / 02</span></p>
+                            <p class="mt-2 text-sm font-semibold leading-5">{videoTitles[0]}</p>
+                            <p class="mt-1 text-xs text-white/45">Swipe or scroll for the next film</p>
+                        </div>
+                    </div>
+
+                    <div class="min-w-0 w-full flex-none snap-start snap-always" role="group" aria-roledescription="slide" aria-label="2 of 2" inert={activeVideoIndex !== 1}>
+                        <div class="relative aspect-video min-h-[260px] bg-black sm:min-h-[420px] lg:min-h-[480px]">
+                            <video
+                                bind:this={videoElement}
+                                class="absolute inset-0 h-full w-full border-0 bg-black object-contain"
+                                poster="https://res.cloudinary.com/dwwyegu5r/video/upload/so_0/IMG_0745_w0zlss.jpg"
+                                title={videoTitles[1]}
+                                preload="none"
+                                playsinline
+                                controls
+                                onvolumechange={syncSoundPrompt}
+                            >
+                                <source src="https://res.cloudinary.com/dwwyegu5r/video/upload/c_limit,w_1080,q_auto:good,vc_h264/IMG_0745_w0zlss.mp4" type="video/mp4" />
+                                <source src="https://res.cloudinary.com/dwwyegu5r/video/upload/IMG_0745_w0zlss.mp4" type="video/mp4" />
+                                Your browser does not support HTML video.
+                            </video>
+                            {#if showSoundPrompt}
+                                <button
+                                    type="button"
+                                    class="absolute bottom-14 right-3 z-10 border border-white/35 bg-black/90 px-4 py-3 text-[0.65rem] font-bold uppercase tracking-[0.16em] text-white backdrop-blur-sm transition-colors hover:border-[#f59e0b] hover:text-[#f59e0b] sm:bottom-16 sm:right-4"
+                                    onclick={enableVideoSound}
+                                    aria-label="Play the Emergence highlight with sound"
+                                >
+                                    Tap for sound
+                                </button>
+                            {/if}
+                        </div>
+                        <div class="min-h-[106px] border-t border-white/20 px-4 py-4 pr-32 sm:px-5 sm:pr-36">
+                            <p class="text-[0.6rem] font-bold uppercase tracking-[0.16em] text-[#f59e0b]">The highlight <span class="ml-2 text-white/45">02 / 02</span></p>
+                            <p class="mt-2 text-sm font-semibold leading-5">{videoTitles[1]}</p>
+                            <p class="mt-1 text-xs text-white/45">Swipe or scroll to watch again</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="absolute bottom-5 right-4 flex gap-2 sm:right-5">
                     <button
                         type="button"
-                        class="absolute bottom-14 right-3 z-10 border border-white/35 bg-black/90 px-4 py-3 text-[0.65rem] font-bold uppercase tracking-[0.16em] text-white backdrop-blur-sm transition-colors hover:border-[#f59e0b] hover:text-[#f59e0b] sm:bottom-16 sm:right-4"
-                        onclick={enableVideoSound}
-                        aria-label="Play the Emergence highlight with sound"
+                        class="flex h-11 w-11 items-center justify-center border border-white/35 text-xl text-white transition-colors enabled:hover:border-[#f59e0b] enabled:hover:bg-[#f59e0b] enabled:hover:text-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f59e0b] disabled:cursor-not-allowed disabled:opacity-30"
+                        onclick={() => goToVideo(activeVideoIndex - 1)}
+                        disabled={activeVideoIndex === 0}
+                        aria-label="Previous Emergence video"
+                        aria-controls="emergence-videos"
                     >
-                        Tap for sound
+                        <ArrowIcon direction="left" />
                     </button>
-                {/if}
+                    <button
+                        type="button"
+                        class="flex h-11 w-11 items-center justify-center border border-white/35 text-xl text-white transition-colors enabled:hover:border-[#f59e0b] enabled:hover:bg-[#f59e0b] enabled:hover:text-black focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#f59e0b] disabled:cursor-not-allowed disabled:opacity-30"
+                        onclick={() => goToVideo(activeVideoIndex + 1)}
+                        disabled={activeVideoIndex === videoTitles.length - 1}
+                        aria-label="Next Emergence video"
+                        aria-controls="emergence-videos"
+                    >
+                        <ArrowIcon />
+                    </button>
+                </div>
+                <p class="sr-only" aria-live="polite" aria-atomic="true">Video {activeVideoIndex + 1} of {videoTitles.length}: {videoTitles[activeVideoIndex]}</p>
             </div>
 
             <div class="flex flex-col justify-between px-0 py-9 lg:p-10 xl:p-14">
@@ -217,6 +347,14 @@
 </section>
 
 <style>
+    .emergence-videos {
+        scrollbar-width: none;
+    }
+
+    .emergence-videos::-webkit-scrollbar {
+        display: none;
+    }
+
     .emergence-gallery {
         scrollbar-color: rgba(245, 158, 11, 0.8) rgba(255, 255, 255, 0.08);
         scrollbar-width: thin;
